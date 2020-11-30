@@ -1,0 +1,65 @@
+logging:
+  level:
+    root: INFO
+    com:
+      prez: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+
+customer:
+  ws:
+    url: http://fixme.todo.fr
+
+management:
+  endpoint:
+    info:
+      enabled: false
+      cache:
+        time-to-live: 10s
+    health:
+      enabled: false
+    healthcheckAll:
+      enabled: false
+    healthcheckByType:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include:
+
+spring:
+  sleuth:
+    sampler:
+      probability: 0
+  zipkin:
+    enabled: false
+
+  security:
+    oauth2:
+      client:
+        clientId: "randomClientId"
+        clientSecret: "DontDoThisAtHome"
+      #      resource:
+      #        token-info-uri: ${authorization-server.url}/check_token
+      resourceserver:
+        jwt:
+          public-key-location: classpath:public.pem
+
+  redis:
+    host: ${redis.hostname}
+    port: ${redis.port}
+    time-to-live:
+      customer: 10
+
+  # mongo
+  data:
+    mongodb:
+      uri: "mongodb://127.0.0.1:27017"
+      database: "customerdbtest"
+
+redis:
+  hostname: localhost
+  port: 6379
+
+

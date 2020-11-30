@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.prez.model</OriginalElement>
+  <nodes>
+    <node x="0.0" y="214.0">com.prez.model.LoyaltyProgram</node>
+    <node x="558.5" y="0.0">com.prez.model.SeatPreference</node>
+    <node x="278.0" y="0.0">com.prez.model.PassType</node>
+    <node x="513.0" y="148.0">com.prez.model.CustomerPreferences</node>
+    <node x="111.0" y="406.0">com.prez.model.Customer</node>
+    <node x="45.5" y="0.0">com.prez.model.LoyaltyStatus</node>
+    <node x="245.0" y="214.0">com.prez.model.RailPass</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.prez.model.Customer" target="com.prez.model.RailPass">
+      <point x="61.75" y="-104.0" />
+      <point x="296.25" y="381.0" />
+      <point x="356.5" y="381.0" />
+      <point x="0.0" y="71.0" />
+    </edge>
+    <edge source="com.prez.model.CustomerPreferences" target="com.prez.model.SeatPreference">
+      <point x="0.0" y="-82.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="com.prez.model.RailPass" target="com.prez.model.PassType">
+      <point x="0.0" y="-71.0" />
+      <point x="0.0" y="82.0" />
+    </edge>
+    <edge source="com.prez.model.LoyaltyProgram" target="com.prez.model.LoyaltyStatus">
+      <point x="0.0" y="-71.0" />
+      <point x="0.0" y="82.0" />
+    </edge>
+    <edge source="com.prez.model.Customer" target="com.prez.model.LoyaltyProgram">
+      <point x="-61.75" y="-104.0" />
+      <point x="172.75" y="381.0" />
+      <point x="112.5" y="381.0" />
+      <point x="0.0" y="71.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="381.0" y="307.0" />
+  <SelectedNodes>
+    <node>com.prez.model.LoyaltyProgram</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

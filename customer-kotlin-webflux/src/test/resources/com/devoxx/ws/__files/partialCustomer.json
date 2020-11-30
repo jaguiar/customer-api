@@ -1,0 +1,136 @@
+{
+  "id": "222748af-ba4b-4a58-91ce-817ab8454d33",
+  "creationDate": "1999-12-31T23:59:59Z",
+  "updatedTime": "1999-12-31T23:59:59Z",
+  "personalInformation": {
+    "lastName": "Groves",
+    "firstName": "Samantha",
+    "alive": false
+  },
+  "personalDetails": {
+    "address": {
+      "zipvalue": "78343",
+      "city": "BISHOP",
+      "country": "US",
+      "default": true
+    },
+    "email": {
+      "address": "root@themachine",
+      "default": true,
+      "confirmed": {
+        "value": "CHECKED"
+      }
+    }
+  },
+  "cards": {
+    "records": [
+      {
+        "number": "001.548.25.MPPS",
+        "type": {
+          "value": "LOYALTY"
+        },
+        "ticketless": false,
+        "requestDate": "2019-11-10",
+        "activationDate": "2012-05-03",
+        "disableStatus": {
+          "value": "000"
+        },
+        "expirationDate": "2013-05-03",
+        "status": {
+          "value": "A"
+        }
+      }
+    ]
+  },
+  "services": {
+    "list": [
+      {
+        "updateCause": "something",
+        "name": {
+          "value": "objectID"
+        },
+        "status": {
+          "value": "subscribed"
+        },
+        "updatedTime": "2019-08-29T15:26:31Z",
+        "migrated": "true"
+      },
+      {
+        "name": {
+          "value": "loyalty"
+        },
+        "status": {
+          "value": "_019875"
+        },
+        "updatedTime": "2019-11-10T00:00:00Z"
+      }
+    ]
+  },
+  "photos": {
+    "file": {
+      "@id": "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/222748af-ba4b-4a58-91ce-817ab8454d33/photos/file"
+    },
+    "data": {
+      "@id": "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/222748af-ba4b-4a58-91ce-817ab8454d33/photos/data"
+    }
+  },
+  "misc": [
+    {
+      "type": {
+        "value": "LOYALTY"
+      },
+      "count": 1,
+      "hasMore": true,
+      "records": [
+        {
+          "otherId": "001.548.25.MPPS",
+          "type": {
+            "value": "LOYALTY"
+          },
+          "fields": [
+            {
+              "key": "some_key",
+              "value": "some_value"
+            },
+            {
+              "key": "loyalty_status_label",
+              "value": "EMERAUDE"
+            },
+            {
+              "key": "status_d",
+              "value": "2019-11-10"
+            },
+            {
+              "key": "how_are_you_today",
+              "value": "cold"
+            },
+            {
+              "key": "validity_end",
+              "value": "2013-03-05"
+            },
+            {
+              "key": "loyalty_number",
+              "value": "001.548.25.MPPS"
+            },
+            {
+              "key": "disable_status",
+              "value": "000"
+            },
+            {
+              "key": "old_product_code",
+              "value": "FIDELITE"
+            },
+            {
+              "key": "validity_start",
+              "value": "2012-03-05"
+            },
+            {
+              "key": "loyalty_status",
+              "value": "_019875"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

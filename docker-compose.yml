@@ -1,0 +1,127 @@
+version: '3.2'
+services:
+  # FIXME to remove
+  mongo:
+    image: mongo:4.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodata:/opt/mongodata
+    networks: 
+      - prez
+    
+  redis:
+    image: redis:6.0.9
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redisdata:/opt/redisdata
+    networks:
+      - prez  
+
+  # The zipkin process services the UI, and also exposes a POST endpoint that
+  # instrumentation can send trace data to. Scribe is disabled by default.
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - 5672:5672
+      - 15671:15671
+      - 15672:15672
+    networks:
+      - prez
+
+  zipkin-server:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    environment:
+      - zipkin.collector.rabbitmq.uri=amqp://guest:guest@rabbitmq:5672
+    networks:
+      - prez
+
+  castlemock:
+    image: castlemock/castlemock
+    ports: 
+      - "8085:8080"
+    networks:
+      - prez
+
+  elasticsearch:
+    # pour linux, écrire "vm.max_map_count=262144" dans le fichier /etc/sysctl.d/elasticsearch.conf
+    # puis reboot ou bien, sysctl --system
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    container_name: elasticsearch
+    volumes:
+      #- ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - prez
+
+#  elasticsearch-hq:
+#    image: elastichq/elasticsearch-hq
+#    ports:
+#      - "5020:5000"
+#    networks:
+#      - prez
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.6.1
+    #build:
+    #  context: logstash/
+    #  args:
+    #    ELK_VERSION: 7.6.1
+    volumes:
+    #  - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      XPACK_MONITORING_ENABLED: "false"
+    networks:
+      - prez
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.6.1
+    #volumes:
+    #  - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    environment: 
+      XPACK_MONITORING_ENABLED: "false"
+    links:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+    networks:
+      - prez
+    depends_on:
+      - elasticsearch
+
+networks:
+  prez:
+    driver: bridge
+
+volumes:
+  elasticsearch-data:
+    driver: local
+      

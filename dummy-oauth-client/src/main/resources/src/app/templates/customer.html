@@ -1,0 +1,100 @@
+<div class="row pt-4">
+  <h2 class="col-sm-12"><small>Your information</small></h2>
+</div>
+<div class="row">
+  <div class="col-sm-3">
+    <label>ID</label>
+  </div>
+  <div class="col-sm-8"><span>{{customer.customerId}}</span></div>
+</div>
+<div class="row">
+  <div class="col-sm-3">
+    <label>Name</label>
+  </div>
+  <div class="col-sm-8"><span>{{customer.firstName}} {{customer.lastName}}</span></div>
+</div>
+<div *ngIf="customer.email" class="row">
+  <div class="col-sm-3">
+    <label>Email</label>
+  </div>
+  <div class="col-sm-8"><span>{{customer.email}}</span></div>
+</div>
+<div *ngIf="customer.birthDate" class="row">
+  <div class="col-sm-3">
+    <label>Age</label>
+  </div>
+  <div class="col-sm-8"><span>{{customer.age}}</span></div>
+</div>
+<div *ngIf="customer.loyaltyProgram" class="row">
+  <div class="col-sm-3">
+    <label>Loyalty program</label>
+  </div>
+  <div class="col-sm-8"><span>{{customer.loyaltyProgram.label}}</span></div>
+</div>
+<div class="row pt-2">
+  <div class="col-sm-12">
+    <button class="btn btn-primary" (click)="getCustomer()" type="submit">Refresh</button>
+  </div>
+</div>
+<!-- Customer preferences form -->
+<div class="row pt-4">
+  <h2 class="col-sm-12"><small>Your preferences profiles</small></h2>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
+      <div class="form-group">
+        <select formControlName="selectedProfile" (change)="onProfileChange()">
+          <option [ngValue]="null" disabled>Choose your profile</option>
+          <option *ngFor="let prf of allProfiles" [ngValue]="prf.id" >
+            {{ prf.profileName }}
+          </option>
+        </select>
+      </div>   
+      <div class="form-group">
+        <label for="profileName">Profile Name</label>
+        <input type="text" id="profileName" class="form-control" formControlName="profileName" placeholder="myProfile">
+      </div>
+      <div *ngIf="userForm.controls['profileName'].invalid && (userForm.controls['profileName'].dirty || userForm.controls['profileName'].touched)" class="alert alert-danger">
+        <div *ngIf="userForm.controls['profileName'].errors.required">Profile name is required</div>
+        <div *ngIf="userForm.controls['profileName'].errors.pattern">Only alphanumeric characters or spaces are allowed</div>
+      </div>
+      <div class="form-group">
+        <label for="seatPreference">Seat</label>
+        <select id="seatPreference" class="form-control" formControlName="seatPreference">
+          <option value="NO_PREFERENCE">Pas de préférence</option>
+          <option value="NEAR_WINDOW">Fenêtre</option>
+          <option value="NEAR_CORRIDOR">Couloir</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="classPreference">Travel class</label>
+        <input type="text" id="classPreference" class="form-control" formControlName="classPreference" placeholder="1 or 2">
+      </div>
+      <div *ngIf="userForm.controls['classPreference'].invalid && (userForm.controls['classPreference'].dirty || userForm.controls['classPreference'].touched)" class="alert alert-danger">
+        <div *ngIf="userForm.controls['classPreference'].errors.pattern">Valid values are 1 or 2</div>
+      </div>
+      <div class="form-group">
+        <label for="language">Preferred language</label>
+        <select id="language" class="form-control" formControlName="language">
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <div *ngIf="displaySuccessMsg" class="alert alert-success alert-dismissible" (click)="closeMessage()">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Success!</strong> Preferences were sucessfully saved.
+      </div>
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible" (click)="closeMessage()">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Failure!</strong> Preferences could not be saved. Error is : {{errorMessage}}
+      </div>
+      <div *ngIf="warningMessage" class="alert alert-warning alert-dismissible" (click)="closeMessage()">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Actually ...</strong> It seems there are no saved preferences. FYI : {{warningMessage}}
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+
+</div>

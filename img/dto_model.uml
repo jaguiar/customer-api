@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.prez.api.dto</OriginalElement>
+  <nodes>
+    <node x="268.0" y="462.0">com.prez.api.dto.ErrorResponse</node>
+    <node x="354.0" y="0.0">com.prez.api.dto.CustomerPreferencesProfileResponse</node>
+    <node x="0.0" y="462.0">com.prez.api.dto.LoyaltyProgramResponse</node>
+    <node x="0.0" y="627.0">com.prez.api.dto.CustomerPreferencesResponse</node>
+    <node x="0.0" y="297.0">com.prez.api.dto.CreateCustomerPreferencesRequest</node>
+    <node x="327.0" y="297.0">com.prez.api.dto.RailPassResponse</node>
+    <node x="0.0" y="726.0">com.prez.api.dto.CustomerResponseTest</node>
+    <node x="0.0" y="0.0">com.prez.api.dto.CustomerResponse</node>
+    <node x="429.0" y="627.0">com.prez.api.dto.CreateCustomerWSRequestRequestTest</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="371.5" y="428.0" />
+  <SelectedNodes>
+    <node>com.prez.api.dto.ErrorResponse</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

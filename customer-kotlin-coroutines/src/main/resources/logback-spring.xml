@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!-- see https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <logger name="org.springframework.web" level="INFO"/>
+
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+
+    <springProfile name="!jsonlog">
+        <property name="CONSOLE_LOG_PATTERN"
+                  value="%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} \\(%X{X-B3-TraceId:--}|%X{X-B3-SpanId:--}|%X{user-device-platform:--}|%X{user-app-client-version:--}\\) %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    </springProfile>
+
+    <springProfile name="jsonlog">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <logLevel>${logging.level.com.prez}</logLevel>
+                    <timestamp>
+                        <fieldName>apptimestamp</fieldName>
+                    </timestamp>
+                    <threadName/>
+                    <loggerName/>
+                    <message/>
+                    <mdc>
+                        <fieldName>mdc</fieldName>
+                        <!-- We exclude some fields -->
+                        <excludeMdcKeyName>X-Span-Export</excludeMdcKeyName>
+                        <excludeMdcKeyName>spanExportable</excludeMdcKeyName>
+                    </mdc>
+                    <stackTrace>
+                        <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                            <maxDepthPerThrowable>full</maxDepthPerThrowable>
+                            <maxLength>full</maxLength>
+                            <shortenedClassNameLength>full</shortenedClassNameLength>
+                            <rootCauseFirst>false</rootCauseFirst>
+                        </throwableConverter>
+                    </stackTrace>
+                </providers>
+            </encoder>
+        </appender>
+
+        <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>localhost:5000</destination>
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <logLevel>${logging.level.com.prez}</logLevel>
+                    <timestamp>
+                        <fieldName>apptimestamp</fieldName>
+                    </timestamp>
+                    <threadName/>
+                    <loggerName/>
+                    <message/>
+                    <mdc>
+                        <fieldName>mdc</fieldName>
+                        <!-- We exclude some fields -->
+                        <excludeMdcKeyName>X-Span-Export</excludeMdcKeyName>
+                        <excludeMdcKeyName>spanExportable</excludeMdcKeyName>
+                    </mdc>
+                    <stackTrace>
+                        <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                            <maxDepthPerThrowable>full</maxDepthPerThrowable>
+                            <maxLength>full</maxLength>
+                            <shortenedClassNameLength>full</shortenedClassNameLength>
+                            <rootCauseFirst>false</rootCauseFirst>
+                        </throwableConverter>
+                    </stackTrace>
+                </providers>
+            </encoder>
+        </appender>
+
+
+        <springProperty name="rootLevel" source="logging.level.root" defaultValue="INFO"/>
+
+        <root level="${rootLevel}">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="stash"/>
+        </root>
+    </springProfile>
+</configuration>

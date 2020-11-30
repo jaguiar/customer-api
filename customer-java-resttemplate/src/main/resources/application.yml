@@ -1,0 +1,163 @@
+server:
+  port: 4600
+  servlet:
+    context-path: "/"
+
+logging:
+  level:
+    root: INFO
+    com:
+      prez: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+
+APP_VERSION: devoxx
+
+# Cache config
+redis:
+  hostname: localhost
+  port: 6379
+
+# Authorization service config
+authorization-server:
+  url: http://localhost:8081/shady-authorization-server
+
+# web service config
+customer:
+  ws:
+    base-path: http://localhost:8085/castlemock
+    url: ${customer.ws.base-path}/mock/rest/project/8Nnnqp/application/e8IHUl/customers
+    cache:
+      time-to-live: 10s
+
+
+# handle health and info endpoints (actuators)
+management:
+  endpoint:
+    info:
+      enabled: true
+      cache:
+        time-to-live: ${customer.ws.cache.time-to-live.info:1s}
+    health:
+      enabled: true
+      show-details: always #don't do that at home and add some security
+      show-components: always #don't do that at home and add some security
+      status:
+        http-mapping:
+          down: 500
+          out-of-service: 500
+      group:
+        external:
+          include: customerSourceHisto,customerSourceUrl
+        datastore:
+          include: mongo,redis
+        internal:
+          include: diskSpace,ping
+  endpoints:
+    web:
+      base-path: /
+      path-mapping.info: app.info
+      exposure:
+        include: info,health
+      path-mapping.health: app.health
+  info:
+    # Enable the BuildInfoContributor: https://github.com/spring-projects/spring-boot/blob/2.3.x/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/info/BuildInfoContributor.java
+    build:
+      enabled: true
+    # Enable the GitInfoContributor: https://github.com/spring-projects/spring-boot/blob/2.3.x/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/info/GitInfoContributor.java
+    git:
+      enabled: true
+      mode: full
+    env:
+      enabled: false
+  health:
+    mongo:
+      enabled: true
+    redis:
+      enabled: true
+info:
+  version-qualifier: '@parsedVersion.qualifier@'
+  application-type: 'Java RestTemplate'
+
+  metrics:
+    enable:
+      jvm: false
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+      sla:
+        http:
+          server:
+            requests: 1ms,5ms
+
+# SPRING
+spring:
+  jackson: # timezone jackson
+    time-zone: "Europe/Paris"
+    default-property-inclusion: non_empty
+
+  redis:
+    host: ${redis.hostname}
+    port: ${redis.port}
+    time-to-live:
+      customer: 300
+    # for fine grained control
+  #    lettuce:
+  #      pool:
+  #        max-active: 8
+  #        max-idle: 8
+  #        max-wait: 1ms
+  #        min-idle: 0
+  #      shutdown-timeout:
+  #    timeout:
+  #    ssl: false
+
+  # mongo
+  data:
+    mongodb:
+      uri: "mongodb://127.0.0.1:27017/?minPoolSize=3&maxPoolSize=10&waitQueueMultiple=2&waitQueueTimeoutMS=5000"
+      database: "CustomerDB"
+
+  # Security with oauth2
+  security:
+    oauth2:
+      client:
+        clientId: "randomClientId"
+        clientSecret: "DontDoThisAtHome"
+      #      resource:
+      #        token-info-uri: ${authorization-server.url}/check_token
+      resourceserver:
+        jwt:
+          public-key-location: classpath:public.pem
+
+  # Tracing with Sleuth
+  # Logs : https://cloud.spring.io/spring-cloud-static/spring-cloud-sleuth/2.1.0.RELEASE/multi/multi__propagation.html
+  sleuth:
+    baggage-keys:
+      - user-device-platform
+      - user-app-client-version
+    propagation-keys:
+      - user-device-platform
+      - user-app-client-version
+    log:
+      slf4j:
+        whitelisted-mdc-keys:
+          - user-device-platform
+          - user-app-client-version
+
+    # For span aggregation purpose
+    sampler:
+      probability: 1.0
+    # Patterns à ignorer en plus de ceux de spring sleuth
+    web:
+      additionalSkipPattern: (/app.info|/app.health|/app.health/*)
+
+#to disable spring-cloud automagically injected indicator
+  cloud:
+    discovery:
+      client:
+        composite-indicator:
+          enabled: false

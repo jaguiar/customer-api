@@ -1,0 +1,307 @@
+{
+    "id": "72f028e2-fbb8-48b3-b943-bf4daad961ed",
+    "creationDate": "2017-12-11T08:51:37Z",
+    "updatedTime": "2020-02-27T16:58:47Z",
+    "personalInformation": {
+        "civility": {
+            "value": "M"
+        },
+        "lastName": "Alderson",
+        "firstName": "Elliot",
+        "birthdate": "1986-09-17",
+        "alive": true
+    },
+    "personalDetails": {
+        "address": {
+            "street": "217 E BROADWAY",
+            "zipvalue": "10002",
+            "city": "NEW YORK CITY",
+            "country": "US",
+            "default": false
+        },
+        "email": {
+            "address": "elliotalderson@protonmail.com",
+            "default": true,
+            "confirmed": {
+                "value": "CHECKED"
+            }
+        },
+        "phone": {
+            "number": "0012125550179"
+        },
+        "cell": {
+            "number": "0012125550179"
+        }
+    },
+    "cards": {
+        "records": [
+            {
+                "number": "29090108600311527",
+                "type": {
+                    "value": "WEIRD_VALUE"
+                },
+                "ticketless": true,
+                "activationDate": "2020-01-29",
+                "disableStatus": {
+                    "value": "000"
+                },
+                "expirationDate": "2021-11-25"
+            },
+            {
+                "number": "ER28-0652",
+                "type": {
+                    "value": "LOYALTY"
+                },
+                "ticketless": true,
+                "requestDate": "2019-11-10",
+                "activationDate": "2017-12-26",
+                "disableStatus": {
+                    "value": "000"
+                },
+                "expirationDate": "2022-11-20",
+                "status": {
+                    "value": "A"
+                }
+            },
+            {
+                "number": "07239107/23/91",
+                "type": {
+                    "value": "FAMILY"
+                },
+                "ticketless": true,
+                "activationDate": "2019-07-24",
+                "disableStatus": {
+                    "value": "000"
+                },
+                "expiryDate": "2021-12-23"
+            }
+        ]
+    },
+    "services": {
+        "list": [
+            {
+                "updateCause": "something",
+                "name": {
+                    "value": "fda"
+                },
+                "status": {
+                    "value": "subscribed"
+                },
+                "updatedTime": "2019-08-29T15:26:31Z",
+                "migrated": "true"
+            },
+            {
+                "name": {
+                    "value": "loyalty"
+                },
+                "status": {
+                    "value": "B0B0B0"
+                },
+                "updatedTime": "2019-11-10T00:00:00Z"
+            },
+            {
+                "updateCause": "cgu",
+                "name": {
+                    "value": "dematerialization"
+                },
+                "status": {
+                    "value": "subscribed"
+                },
+                "updatedTime": "2019-08-29T15:28:09Z"
+            },
+            {
+                "updateCause": "cgu",
+                "name": {
+                    "value": "photo"
+                },
+                "status": {
+                    "value": "subscribed"
+                },
+                "updatedTime": "2019-08-29T15:28:06Z",
+                "eligibility": null
+            }
+        ]
+    },
+    "photos": {
+        "file": {
+            "@id": "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/72f028e2-fbb8-48b3-b943-bf4daad961ed/photos/file"
+        },
+        "data": {
+            "@id": "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/72f028e2-fbb8-48b3-b943-bf4daad961ed/photos/data"
+        }
+    },
+    "misc": [
+        {
+            "type": {
+                "value": "LOYALTY"
+            },
+            "count": 1,
+            "hasMore": true,
+            "records": [
+                {
+                    "otherId": "ER28-0652",
+                    "type": {
+                        "value": "LOYALTY"
+                    },
+                    "fields": [
+                         {
+                            "key": "some_key",
+                            "value": "some_value"
+                        },
+                        {
+                            "key": "loyalty_status_label",
+                            "value": "PLATINIUM"
+                        },
+                        {
+                            "key": "status_d",
+                            "value": "2019-11-10"
+                        },
+                        {
+                            "key": "how_are_you_today",
+                            "value": "delusional"
+                        },
+                        {
+                            "key": "validity_end",
+                            "value": "2020-11-09"
+                        },
+                        {
+                            "key": "loyalty_number",
+                            "value": "ER28-0652"
+                        },
+                        {
+                            "key": "disable_status",
+                            "value": "000"
+                        },
+                        {
+                            "key": "old_product_code",
+                            "value": "FIDELITE"
+                        },
+                        {
+                            "key": "validity_start",
+                            "value": "2019-11-10"
+                        },
+                        {
+                            "key": "loyalty_status",
+                            "value": "B0B0B0"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": {
+                "value": "PASS"
+            },
+            "count": 2,
+            "hasMore": false,
+            "records": [
+                {
+                    "otherId": "07239107/23/91",
+                    "type": {
+                        "value": "PASS"
+                    },
+                    "from": "NOWHERE",
+                    "fields": [
+                        {
+                            "key": "pass_number",
+                            "value": "07239107/23/91"
+                        },
+                        {
+                            "key": "some_other_key",
+                            "value": "for_no_reason"
+                        },
+                        {
+                            "key": "pass_validity_end",
+                            "value": "2021-12-23"
+                        },
+                        {
+                            "key": "sous_type",
+                            "value": "PASS_QUI_S_ACHETE"
+                        },
+                        {
+                            "key": "old_pass_label",
+                            "value": "Pass Famille"
+                        },
+                        {
+                            "key": "pass_is_active",
+                            "value": "000"
+                        },
+                        {
+                            "key": "some_reference",
+                            "value": "UWVDJW"
+                        },
+                        {
+                            "key": "pass_label",
+                            "value": "FAMILY PASS"
+                        },
+                        {
+                            "key": "some_date_key",
+                            "value": "2021-12-23"
+                        },
+                        {
+                            "key": "new_product_code",
+                            "value": "FAMILY"
+                        },
+                        {
+                            "key": "pass_validity_start",
+                            "value": "2019-12-23"
+                        }
+                    ]
+                },
+                {
+                    "otherId": "29090113600311527",
+                    "type": {
+                        "value": "PASS"
+                    },
+					  "from": "NOWHERE",
+                    "fields": [
+                        {
+                            "key": "pass_number",
+                            "value": "29090113600311527"
+                        },
+                        {
+                            "key": "some_other_key",
+                            "value": "for_no_reason"
+                        },
+                        {
+                            "key": "pass_validity_end",
+                            "value": "2019-12-23"
+                        },
+                        {
+                            "key": "sous_type",
+                            "value": "PASS_QUI_S_ACHETE"
+                        },
+                        {
+                            "key": "old_pass_label",
+                            "value": "Pass Famille"
+                        },
+                        {
+                            "key": "pass_is_active",
+                            "value": "000"
+                        },
+                        {
+                            "key": "some_reference",
+                            "value": "ZZWWEE"
+                        },
+                        {
+                            "key": "pass_label",
+                            "value": "FAMILY PASS"
+                        },
+                        {
+                            "key": "some_date_key",
+                            "value": "2020-12-23"
+                        },
+                        {
+                            "key": "new_product_code",
+                            "value": "FAMILY"
+                        },
+                        {
+                            "key": "pass_validity_start",
+                            "value": "2018-12-23"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

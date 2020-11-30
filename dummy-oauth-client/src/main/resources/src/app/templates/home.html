@@ -1,0 +1,23 @@
+<div *ngIf="!isReady" class="row justify-content-center" style="margin-top:12px">
+  <div class="spinner-border text-primary"></div>
+</div>
+<div *ngIf="isReady">
+  <div *ngIf="!isLoggedIn" class="row justify-content-center" style="margin-top:12px">
+    <button class="btn btn-primary" (click)="login()" type="submit">Login</button>
+  </div>
+  <div *ngIf="isLoggedIn" class="content">
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-between">
+      <a class="navbar-brand" href="#">Welcome {{user}} ! You're on {{applicationType}}</a>
+      <ul class="navbar-nav justify-content-end">
+        <li class="nav-item">
+          <a class="nav-link" (click)="logout()">Logout</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="container-fluid">
+      <customer-details user="user"></customer-details>
+    </div>
+  </div>
+</div>

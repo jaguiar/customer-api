@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: '@project.name@'
+  cloud:
+    config:
+      enabled: false
+    consul:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
+
+---
+# Avec le profil consul ou devconsul on active la conf
+spring:
+  profiles: consul,devconsul
+  cloud:
+    consul:
+      enabled: true
+      host: ${CONSUL_HOST}
+      port: 8500
+      config:
+        format: KEY_VALUE
+        data-key: data
+        #https://cloud.spring.io/spring-cloud-static/spring-cloud-consul/2.0.0.M4/multi/multi_spring-cloud-consul-config.html#spring-cloud-consul-config-format
+        # Spring nous fabrique les routes suivantes: PREFIX/NAME et PREFIX/DEFAULTCONTEXT
+        # Nous on a les clés suivantes : /config/env/${env} et /config/color/${color}
+        # on déduit alors : PREFIX = config   NAME = env/${env}   DEFAULTCONTEXT = color/${color}
+        prefix: config
+        name: version/${APP_VERSION}
+        failFast: false
+        defaultContext: env/${ENVIRONMENT_TYPE}
+
+---
+spring:
+  profiles: dev, test
+  cloud:
+    consul:
+      enabled: false
