@@ -35,8 +35,7 @@ class CreateCustomerPreferencesIntegrationTest(
   }
 
   @Test
-  fun `should return Bad Request when missing mandatory fields`(): Unit = runBlocking { /* FIXME this is really pretty weird
-    => without runBlocking we get the ClassCast exception */
+  fun `should return Bad Request when missing mandatory fields`() {
     // Given
     val validToken: String = fakeTokenGenerator.generateNotExpiredSignedToken("cached", 3600, "customer.write")
 
