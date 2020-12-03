@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Period.between
 
-class CustomerExtensionTest {
+class CustomerExtensionsTest {
 
     @Test
     fun `should transform to CustomerResponse`() {

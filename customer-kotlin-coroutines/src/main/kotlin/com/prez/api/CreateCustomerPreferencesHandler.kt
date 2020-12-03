@@ -1,6 +1,7 @@
 package com.prez.api
 
 import com.prez.api.dto.CreateCustomerPreferencesRequest
+import com.prez.extension.awaitBodyAndValidate
 import com.prez.extension.toCustomerPreferencesProfileResponse
 import com.prez.service.CustomerService
 import org.apache.commons.lang3.LocaleUtils
@@ -15,17 +16,18 @@ import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import java.net.URI
 
 @Component
-class CreateCustomerPreferencesHandler(validator: Validator, val customerService: CustomerService) :
-  ValidationHandler<CreateCustomerPreferencesRequest, Validator>(validator) {
+class CreateCustomerPreferencesHandler(val validator: Validator, val customerService: CustomerService) {
 
   private val logger = LoggerFactory.getLogger(CreateCustomerPreferencesHandler::class.java)
 
-  suspend fun processBody(
-    originalRequest: ServerRequest,
-    validBody: CreateCustomerPreferencesRequest
-    ): ServerResponse {
+  suspend fun createCustomerPreferences(
+    originalRequest: ServerRequest
+  ): ServerResponse {
     logger.info("createCustomer : {}", originalRequest.uri())
     val principal = originalRequest.awaitPrincipal()!!
+
+    val validBody: CreateCustomerPreferencesRequest =
+      originalRequest.awaitBodyAndValidate(validator)
     val created = customerService
       .saveCustomerPreferences(
         principal.name, validBody.seatPreference, validBody.classPreference,
@@ -33,10 +35,4 @@ class CreateCustomerPreferencesHandler(validator: Validator, val customerService
       ).toCustomerPreferencesProfileResponse()
     return created(URI.create("/customers/preferences/${created.id}")).bodyValueAndAwait(created)
   }
-
-  override val processBodyHandler: suspend (ServerRequest, CreateCustomerPreferencesRequest) -> ServerResponse =
-    ::processBody
-  //{ validBody, originalRequest -> processBody(validBody, originalRequest) }
-
-  // si on veut overrider override val onValidationErrorsHandler: (Errors, CreateCustomerPreferencesRequest, ServerRequest) -> ServerResponse = super.onValidationErrorsHandler
 }

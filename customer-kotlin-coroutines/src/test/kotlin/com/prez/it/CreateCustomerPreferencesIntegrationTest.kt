@@ -115,7 +115,7 @@ class CreateCustomerPreferencesIntegrationTest(
       .expectStatus().isBadRequest
       .expectBody()
       .jsonPath("$.code").isEqualTo("VALIDATION_ERROR")
-      .jsonPath("$.message").value(Matchers.startsWith("3 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
+      .jsonPath("$.message").value(Matchers.startsWith("400 BAD_REQUEST \"3 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(Matchers.containsString("The profile name contains forbidden characters"))
       .jsonPath("$.message").value(Matchers.containsString("Max value for class preference is 2"))
       .jsonPath("$.message").value(Matchers.containsString("The language is not valid. Accepted languages are : fr,de,es,en,it,pt"))

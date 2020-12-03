@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.server.ServerWebInputException
 import reactor.core.publisher.Mono
 
-class ValidationErrorHandler  : HandlerFilterFunction<ServerResponse, ServerResponse> {
+class ValidationErrorHandler : HandlerFilterFunction<ServerResponse, ServerResponse> {
   private val logger = LoggerFactory.getLogger(ValidationErrorHandler::class.java)
   override fun filter(request: ServerRequest, next: HandlerFunction<ServerResponse>): Mono<ServerResponse> {
     return next
@@ -19,7 +19,7 @@ class ValidationErrorHandler  : HandlerFilterFunction<ServerResponse, ServerResp
       .onErrorResume({ e -> e is ServerWebInputException || e is DecodingException }) { e ->
         logger.error(e.cause?.localizedMessage ?: e.localizedMessage, e)
         ServerResponse.status(BAD_REQUEST)
-          .bodyValue(ErrorResponse("VALIDATION_ERROR", "Bad input"))
+          .bodyValue(ErrorResponse("VALIDATION_ERROR", e.localizedMessage ?: "Bad input"))
       }
   }
 }
