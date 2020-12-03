@@ -44,6 +44,8 @@ services:
     image: castlemock/castlemock
     ports: 
       - "8085:8080"
+    volumes:
+      - ./castlemock:/root/.castlemock
     networks:
       - prez
 
