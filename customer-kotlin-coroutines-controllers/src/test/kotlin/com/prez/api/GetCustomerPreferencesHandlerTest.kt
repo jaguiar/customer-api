@@ -5,6 +5,7 @@ import com.prez.model.CustomerPreferences
 import com.prez.model.SeatPreference
 import com.prez.service.CustomerService
 import com.prez.utils.FakeTokenGenerator
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
@@ -88,7 +89,7 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read")
     `when`(customerService.getCustomerPreferences("trotro"))
       .thenReturn(
-        listOf(
+        flowOf(
           CustomerPreferences(
             customerId = "trotro",
             profileName = "rigolo",
