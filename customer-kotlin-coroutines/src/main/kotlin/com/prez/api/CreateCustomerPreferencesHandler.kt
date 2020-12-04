@@ -4,6 +4,7 @@ import com.prez.api.dto.CreateCustomerPreferencesRequest
 import com.prez.extension.awaitBodyAndValidate
 import com.prez.extension.toCustomerPreferencesProfileResponse
 import com.prez.service.CustomerService
+import kotlinx.coroutines.FlowPreview
 import org.apache.commons.lang3.LocaleUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -20,6 +21,7 @@ class CreateCustomerPreferencesHandler(val validator: Validator, val customerSer
 
   private val logger = LoggerFactory.getLogger(CreateCustomerPreferencesHandler::class.java)
 
+  @FlowPreview
   suspend fun createCustomerPreferences(
     originalRequest: ServerRequest
   ): ServerResponse {
