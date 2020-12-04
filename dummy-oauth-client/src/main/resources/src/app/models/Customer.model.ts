@@ -8,12 +8,6 @@ export class Customer {
   ) {}
 }
 
-export class CustomerPreferences {
-  constructor(
-    public profiles: CustomerPreferencesProfile[] = []
-  ) {}
-}
-
 export class CustomerPreferencesProfile {
   constructor(
     public profileName: string,

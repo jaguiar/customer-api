@@ -5,11 +5,11 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import { CustomerPreferences, CustomerPreferencesProfile, SaveCustomerPreferencesRequest } from '../models/Customer.model';
+import { CustomerPreferencesProfile, SaveCustomerPreferencesRequest } from '../models/Customer.model';
 
 @Injectable()
 export class CustomerService {
-  private baseUrl = 'http://localhost:4600/';
+   private baseUrl = 'http://localhost:4600/';
    private customerUrl = this.baseUrl + 'customers';
    private lastCreated: CustomerPreferencesProfile;
    private customerPreferences: CustomerPreferencesProfile[];
@@ -90,12 +90,12 @@ export class CustomerService {
         });
     const userName = Cookie.get('user_name');    
     const url = this.customerUrl + '/preferences';
-    this._http.get<CustomerPreferences>(url, { headers: headers })
+    this._http.get<CustomerPreferencesProfile[]>(url, { headers: headers })
                    .subscribe(data => {
                       console.log('Customer preferences retrieved', data);
-                      if (data && data.profiles && data.profiles.length > 0) {
-                        console.log('data.profiles', data.profiles);
-                        this.customerPreferences = data.profiles;
+                      if (data && data.length > 0) {
+                        console.log('data', data);
+                        this.customerPreferences = data;
                         this.emitAllCustomerPreferences();
                       }
                    },
