@@ -24,7 +24,6 @@ import org.springframework.test.context.ActiveProfiles
 @Tag("docker")
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @ActiveProfiles(profiles = ["test"])
-@DockerTest //FIXME do we want to use this annotation?
 @SpringBootTest
 internal class CustomerCacheRepositoryTest(@Autowired val customerInfoRedisTemplate: ReactiveRedisTemplate<String, Customer>) :
     UsingRedis() {

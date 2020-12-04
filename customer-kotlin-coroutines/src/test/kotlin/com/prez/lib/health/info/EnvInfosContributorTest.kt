@@ -26,7 +26,8 @@ class EnvInfosContributorTest {
     val details = result.details["properties"] as Map<String, String>
     assertThat(details)
       .isNotNull
-      .containsExactly(
+      .hasSize(2)
+      .contains(
         entry("Foo", "Bar"),
         entry("PIF", "PAF")
       )
@@ -71,7 +72,8 @@ class EnvInfosContributorTest {
     val details = result.details["properties"] as Map<String, String>
     assertThat(details)
       .isNotNull
-      .containsExactly(
+      .hasSize(2)
+      .contains(
         entry("do-not-talk-about", "Fight Club"),
         entry("FirstRule", "You do not talk about Fight Club")
       )
@@ -96,7 +98,8 @@ class EnvInfosContributorTest {
     val details = result.details["properties"] as Map<String, String>
     assertThat(details)
       .isNotNull
-      .containsExactly(
+      .hasSize(2)
+      .contains(
         entry("do-not-talk-about", "Fight Club"),
         entry("FirstRule", "You do not talk about Fight Club")
       )
@@ -122,7 +125,8 @@ class EnvInfosContributorTest {
     val details = result.details["properties"] as Map<String, String>
     assertThat(details)
       .isNotNull
-      .containsExactly(
+      .hasSize(4)
+      .contains(
         entry("fake.passwd", "******"),
         entry("login", "Tyler_Durden"),
         entry("password", "******"),
@@ -150,7 +154,8 @@ class EnvInfosContributorTest {
     val details = result.details["properties"] as Map<String, String>
     assertThat(details)
       .isNotNull
-      .containsExactly(
+      .hasSize(4)
+      .contains(
         entry("fake.passwd", "do-talk-about_Fight Club"),
         entry("login", "******"),
         entry("password", "you_do_not_talk_about_Fight_Club"),
