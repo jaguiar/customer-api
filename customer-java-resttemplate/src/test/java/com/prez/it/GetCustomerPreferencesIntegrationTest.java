@@ -15,6 +15,7 @@ import com.prez.model.CustomerPreferences;
 import com.prez.model.SeatPreference;
 import com.prez.utils.FakeTokenGenerator;
 import java.net.URI;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.keyvalue.core.KeyValueAdapter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.http.HttpHeaders;
@@ -137,14 +139,18 @@ class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
 
     // When && Then
     RequestEntity<Object> requestEntity = new RequestEntity<>(null, httpHeaders, GET, new URI(CUSTOMERS_PREFERENCES_ENDPOINT));
-    ResponseEntity<CustomerPreferencesResponse> responseEntity =
-        this.restTemplate.exchange(baseUrl + CUSTOMERS_PREFERENCES_ENDPOINT, GET, requestEntity, CustomerPreferencesResponse.class);
+    ResponseEntity<List<CustomerPreferencesProfileResponse>> responseEntity =
+        this.restTemplate.exchange(baseUrl + CUSTOMERS_PREFERENCES_ENDPOINT,
+            GET,
+            requestEntity,
+            new ParameterizedTypeReference<List<CustomerPreferencesProfileResponse>>() {});
 
     // When && Then
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody())
-        .isEqualTo(CustomerPreferencesResponse.builder()
-            .profiles(asList(
+        .usingRecursiveComparison()
+        .ignoringCollectionOrder()
+        .isEqualTo(asList(
                 CustomerPreferencesProfileResponse.builder()
                     .id("L-Ane")
                     .customerId("trotro")
@@ -159,7 +165,7 @@ class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
                     .seatPreference(NEAR_WINDOW)
                     .classPreference(1)
                     .build()
-            ))
-            .build());
+            )
+        );
   }
 }

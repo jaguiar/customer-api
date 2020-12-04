@@ -42,13 +42,15 @@ public class ExternalServiceHealthIndicator implements HealthIndicator {
       // handle 4xx and 5xx errors and timeouts
       LOGGER.info("Cannot connect to {} ({}). Exception: {}", serviceName, serviceUrl, ex);
       final String errorMessage = defaultIfBlank(ex.getMessage(), ex.toString());
-      return new Health.Builder().down().withDetail("name", serviceName).withDetail("Error", errorMessage).build();
+      return new Health.Builder().down().withDetail("name", serviceName)
+          .withDetail("url", serviceUrl)
+          .withDetail("error", errorMessage).build();
     }
   }
 
   private Health check() {
     webClient.headForHeaders("/");
-    return new Health.Builder().up().withDetail("name", serviceName).build();
+    return new Health.Builder().up().withDetail("name", serviceName).withDetail("url", serviceUrl).build();
   }
 
 }

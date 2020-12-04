@@ -63,7 +63,6 @@ public class CustomerService {
 
   public List<CustomerPreferences> getCustomerPreferences(String customerId) {
     LOGGER.debug("getCustomerPreferences for customer: \"{}\"", customerId);
-    // FIXME mieux gérer l'exception
     List<CustomerPreferences> preferences = database.findByCustomerId(customerId);
     if (preferences == null || preferences.isEmpty()) {
       throw new NotFoundException(customerId, "customer");
