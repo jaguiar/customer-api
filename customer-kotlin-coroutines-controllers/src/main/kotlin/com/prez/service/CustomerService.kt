@@ -9,6 +9,9 @@ import com.prez.model.CustomerPreferences
 import com.prez.model.SeatPreference
 import com.prez.ws.CustomerClient
 import com.prez.ws.model.CreateCustomerPreferencesWSRequest
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
 import org.slf4j.LoggerFactory
@@ -32,7 +35,9 @@ interface CustomerService {
     profileName: String,
     language: Locale?
   ): CustomerPreferences
-  suspend fun getCustomerPreferences(customerId: String): List<CustomerPreferences>
+
+  @FlowPreview
+  suspend fun getCustomerPreferences(customerId: String): Flow<CustomerPreferences>
 }
 
 @Component
@@ -101,11 +106,13 @@ class CustomerServiceImpl(
     return database.save(createCustomerPreferencesRequest).awaitSingle()
   }
 
-  override suspend fun getCustomerPreferences(customerId: String): List<CustomerPreferences> {
+  @FlowPreview
+  override suspend fun getCustomerPreferences(customerId: String): Flow<CustomerPreferences> {
     logger.debug("getCustomerPreferences for customer \"{}\"", customerId)
-    return database.findByCustomerId(customerId).collectList().awaitSingle().ifEmpty {
+    return database.findByCustomerId(customerId).asFlow();
+    /*ifEmpty {
       throw NotFoundException(customerId, "customer")
-    }
+    }*/
   }
 }
 

@@ -6,11 +6,6 @@ import com.prez.model.SeatPreference
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-data class CustomerPreferencesResponse (
-  val profiles: List<CustomerPreferencesProfileResponse>
-)
-
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class CustomerPreferencesProfileResponse(
   val id: String,
   val customerId: String,
