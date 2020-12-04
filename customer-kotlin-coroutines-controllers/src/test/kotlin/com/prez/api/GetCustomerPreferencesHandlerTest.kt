@@ -107,14 +107,12 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
       .expectStatus().isOk
       .expectBody().json(
         """
-            {
-              "profiles":[{
+             [{
                 "customerId":"trotro",
             "seatPreference":"NO_PREFERENCE",
             "classPreference":2,
                 "profileName":"rigolo"
               }]
-            }
             """.trimIndent()
       )
 
