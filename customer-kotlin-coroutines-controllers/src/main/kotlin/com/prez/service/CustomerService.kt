@@ -39,7 +39,7 @@ interface CustomerService {
   ): CustomerPreferences
 
   @FlowPreview
-  suspend fun getCustomerPreferences(customerId: String): Flow<CustomerPreferences>
+  fun getCustomerPreferences(customerId: String): Flow<CustomerPreferences>
 }
 
 @Component
@@ -94,27 +94,22 @@ class CustomerServiceImpl(
     )
   }
 
-  override suspend fun saveCustomerPreferences(
-    customerId: String, seatPreference: SeatPreference,
-    classPreference: Int, profileName: String, language: Locale?
-  ): CustomerPreferences {
-    logger.debug(
-      "saveCustomerPreferences : seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
-          " with locale\"{}\" for customer \"{}\"", seatPreference, classPreference, profileName, language, customerId
-    )
+  override suspend fun saveCustomerPreferences(customerId: String, seatPreference: SeatPreference,
+    classPreference: Int, profileName: String, language: Locale?): CustomerPreferences {
+    logger.debug("saveCustomerPreferences : seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
+      " with locale\"{}\" for customer \"{}\"", seatPreference, classPreference, profileName, language, customerId)
     val createCustomerPreferencesRequest = CustomerPreferences(
       UUID.randomUUID().toString(),
       customerId,
       seatPreference,
       classPreference,
       profileName,
-      language
-    )
+      language)
     return database.save(createCustomerPreferencesRequest).awaitSingle()
   }
 
   @FlowPreview
-  override suspend fun getCustomerPreferences(customerId: String): Flow<CustomerPreferences> {
+  override fun getCustomerPreferences(customerId: String): Flow<CustomerPreferences> {
     logger.debug("getCustomerPreferences for customer \"{}\"", customerId)
     return database.findByCustomerId(customerId)
       .asFlow()

@@ -77,14 +77,12 @@ internal class GetCustomerPreferencesIntegrationTest(
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
       .expectStatus().isNotFound
-      .expectBody().json(
-        """
+      .expectBody().json("""
           {
             "code":"NOT_FOUND",
             "message":"No result for the given customer id=trotro"
           }
-          """.trimIndent()
-      )
+          """.trimIndent())
   }
 
   // Given

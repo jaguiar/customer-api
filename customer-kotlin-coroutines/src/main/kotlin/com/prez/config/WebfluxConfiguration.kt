@@ -45,7 +45,6 @@ class WebfluxConfiguration(val spanCustomizer: SpanCustomizer) {
     return CorsWebFilter(source)
   }
 
-  @FlowPreview
   @Bean
   internal fun getCustomer(getCustomerHandler: GetCustomerHandler) = coRouter {
     (GET("/customers") and (accept(APPLICATION_JSON)))
@@ -56,7 +55,6 @@ class WebfluxConfiguration(val spanCustomizer: SpanCustomizer) {
     .filter(ElementNotFoundErrorHandler())
     .filter(GlobalErrorHandler())
 
-  @FlowPreview
   @Bean
   fun createCustomerPreferences(createCustomerPreferencesHandler: CreateCustomerPreferencesHandler) = coRouter {
     (POST("/customers/preferences") and (accept(APPLICATION_JSON)))

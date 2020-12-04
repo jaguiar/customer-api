@@ -56,7 +56,7 @@ class CustomerController(private val customerService: CustomerService, private v
   @FlowPreview
   @GetMapping(produces = ["application/json"], path = ["/preferences"])
   @ResponseBody
-  suspend fun getCustomerPreferences(principal: Principal): Flow<CustomerPreferencesProfileResponse> {
+  fun getCustomerPreferences(principal: Principal): Flow<CustomerPreferencesProfileResponse> {
     spanCustomizer.tag("service", "GET /customers/preferences")
     LOGGER.info("getCustomerPreferences for user: {}", principal.name)
     return customerService.getCustomerPreferences(principal.name)
