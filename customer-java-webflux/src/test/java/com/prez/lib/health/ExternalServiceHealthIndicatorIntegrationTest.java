@@ -18,7 +18,7 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
 @Tag("integration")
-public class ExternalServiceHealthIndicatorTest {
+class ExternalServiceHealthIndicatorIntegrationTest {
 
   private final static String INDICATOR_NAME = "LaCompagnieCreole";
   private final static Duration TIMEOUT = Duration.ofSeconds(5);
@@ -42,7 +42,7 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when Health is UP")
-  public void health_shouldReturnHealth_whenHealthIsUp() {
+  void health_shouldReturnHealth_whenHealthIsUp() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withBody("Decalecatan, decalecatan, ohe, ohe !").withStatus(200))
@@ -59,7 +59,7 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when Health is DOWN (5xx)")
-  public void health_shouldReturnHealth_whenHealthIsDown5xx() {
+  void health_shouldReturnHealth_whenHealthIsDown5xx() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withBody("I'm dead").withStatus(500))
@@ -78,7 +78,7 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when Health is DOWN (4xx)")
-  public void health_shouldReturnHealth_whenHealthIsDown_4xx() {
+  void health_shouldReturnHealth_whenHealthIsDown_4xx() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withStatus(404))
@@ -95,7 +95,7 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when there is a timeout")
-  public void health_shouldReturnHealth_whenTimeout() {
+  void health_shouldReturnHealth_whenTimeout() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withFixedDelay(3000))
@@ -112,7 +112,7 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when the body is empty")
-  public void health_shouldReturnHealth_whenEmptyBody() {
+  void health_shouldReturnHealth_whenEmptyBody() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withStatus(200))

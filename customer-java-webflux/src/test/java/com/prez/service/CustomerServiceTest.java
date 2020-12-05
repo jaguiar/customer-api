@@ -3,7 +3,6 @@ package com.prez.service;
 import static com.prez.model.LoyaltyStatus._019875;
 import static com.prez.model.SeatPreference.NEAR_WINDOW;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;

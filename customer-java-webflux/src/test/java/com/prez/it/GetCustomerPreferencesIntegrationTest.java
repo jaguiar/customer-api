@@ -21,7 +21,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @Tag("docker")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = {"test"})
-public class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
+class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
 
   private static final FakeTokenGenerator FAKE_TOKEN_GENERATOR = new FakeTokenGenerator("test-authorization-server");
 

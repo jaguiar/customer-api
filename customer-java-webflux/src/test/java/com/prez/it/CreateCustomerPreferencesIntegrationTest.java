@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.prez.UsingMongoDBAndRedis;
-import com.prez.api.dto.CreateCustomerPreferencesRequest;
 import com.prez.model.Customer;
 import com.prez.model.CustomerPreferences;
 import com.prez.utils.FakeTokenGenerator;

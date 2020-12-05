@@ -47,7 +47,9 @@ public class ExternalServiceHealthIndicator implements ReactiveHealthIndicator {
           LOGGER.info("Cannot connect to {} ({}). Exception: {}", serviceName, serviceUrl, ex);
           final String errorMessage = defaultIfBlank(ex.getMessage(), ex.toString());
           return Mono
-              .just(new Health.Builder().down().withDetail("name", serviceName).withDetail("Error", errorMessage).build());
+              .just(new Health.Builder().down().withDetail("name", serviceName)
+                  .withDetail("url", serviceUrl)
+                  .withDetail("error", errorMessage).build());
         });
   }
 
@@ -57,7 +59,8 @@ public class ExternalServiceHealthIndicator implements ReactiveHealthIndicator {
         .bodyToMono(
             String.class) // we need to consume the body if any if we do not want to die a terrible death : https://docs.spring.io/spring/docs/5.1.5.RELEASE/spring-framework-reference/web-reactive.html#webflux-client-retrieve
         .defaultIfEmpty("")//to handle no content body
-        .flatMap(b -> Mono.just(new Health.Builder().up().withDetail("name", serviceName).build()));
+        .flatMap(b -> Mono.just(new Health.Builder().up()
+            .withDetail("name", serviceName).withDetail("url", serviceUrl).build()));
   }
 
 }
