@@ -11,6 +11,7 @@ import com.prez.ws.CustomerClient
 import com.prez.ws.model.CreateCustomerPreferencesWSRequest
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.Locale
 import java.util.UUID
@@ -18,29 +19,29 @@ import java.util.UUID
 interface CustomerService {
   fun getCustomerInfo(customerId: String): Mono<Customer>
   fun createCustomerPreferences(
-      customerId: String,
-      seatPreference: String,
-      classPreference: Int,
-      profileName: String,
-      language: Locale?
+    customerId: String,
+    seatPreference: String,
+    classPreference: Int,
+    profileName: String,
+    language: Locale?
   ): Mono<CustomerPreferences>
 
   fun saveCustomerPreferences(
-      customerId: String,
-      seatPreference: SeatPreference,
-      classPreference: Int,
-      profileName: String,
-      language: Locale?
+    customerId: String,
+    seatPreference: SeatPreference,
+    classPreference: Int,
+    profileName: String,
+    language: Locale?
   ): Mono<CustomerPreferences>
 
-  fun getCustomerPreferences(customerId: String): Mono<List<CustomerPreferences>>
+  fun getCustomerPreferences(customerId: String): Flux<CustomerPreferences>
 }
 
 @Component
 class CustomerServiceImpl(
-    val customerWebService: CustomerClient,
-    val cache: CustomerCacheRepository,
-    val database: CustomerPreferencesRepository
+  val customerWebService: CustomerClient,
+  val cache: CustomerCacheRepository,
+  val database: CustomerPreferencesRepository
 ) : CustomerService {
 
   companion object {
@@ -50,7 +51,7 @@ class CustomerServiceImpl(
   override fun getCustomerInfo(customerId: String): Mono<Customer> {
     logger.debug("Getting customer with customerId=$customerId")
     return cache.findById(customerId)
-        .switchIfEmpty(deferCallingCustomerWebService(customerId))
+      .switchIfEmpty(deferCallingCustomerWebService(customerId))
   }
 
   /**
@@ -61,69 +62,70 @@ class CustomerServiceImpl(
   private fun deferCallingCustomerWebService(customerId: String): Mono<Customer> {
     return Mono.defer {
       customerWebService
-          .getCustomer(customerId)
-          .switchIfEmpty(Mono.error(NotFoundException(customerId, "customer")))
-          .map { wsResponse -> wsResponse!!.toCustomer() }
-          .flatMap { customer ->
-            cache.save(customer)
-                .defaultIfEmpty(false)
-                .doOnSuccess { savedInCache ->
-                  if (savedInCache)
-                    logger.debug("Customer ${customer.customerId} avec in cache")
-                  else
-                    logger.error("COULD NOT SAVE ${customer.customerId} in cache")
-                }
-                // then we just return the customer
-                .then(Mono.justOrEmpty(customer))
-          }
+        .getCustomer(customerId)
+        .switchIfEmpty(Mono.error(NotFoundException(customerId, "customer")))
+        .map { wsResponse -> wsResponse!!.toCustomer() }
+        .flatMap { customer ->
+          cache.save(customer)
+            .defaultIfEmpty(false)
+            .doOnSuccess { savedInCache ->
+              if (savedInCache)
+                logger.debug("Customer ${customer.customerId} saved in cache")
+              else
+                logger.error("COULD NOT SAVE ${customer.customerId} in cache")
+            }
+            // then we just return the customer
+            .then(Mono.justOrEmpty(customer))
+        }
     }
   }
 
   override fun createCustomerPreferences(
-      customerId: String,
-      seatPreference: String,
-      classPreference: Int,
-      profileName: String,
-      language: Locale?
+    customerId: String,
+    seatPreference: String,
+    classPreference: Int,
+    profileName: String,
+    language: Locale?
   ): Mono<CustomerPreferences> {
     logger.debug("createCustomerPreferences : seatPreference $seatPreference, classPreference $classPreference and profileName $profileName with locale $language for customer $customerId")
     val createCustomerPreferencesRequest =
-        CreateCustomerPreferencesWSRequest(seatPreference, classPreference, profileName)
+      CreateCustomerPreferencesWSRequest(seatPreference, classPreference, profileName)
     return customerWebService.createCustomerPreferences(customerId, createCustomerPreferencesRequest, language)
-        .map { response ->
-          CustomerPreferences(
-              response.id,
-              customerId,
-              SeatPreference.valueOf(response.seatPreference),
-              response.classPreference,
-              response.profileName,
-              language
-          )
-        }
+      .map { response ->
+        CustomerPreferences(
+          response.id,
+          customerId,
+          SeatPreference.valueOf(response.seatPreference),
+          response.classPreference,
+          response.profileName,
+          language
+        )
+      }
   }
 
-  override fun saveCustomerPreferences(customerId: String, seatPreference: SeatPreference,
-                                       classPreference: Int, profileName: String, language: Locale?): Mono<CustomerPreferences> {
-    logger.debug("saveCustomerPreferences : " +
-        "seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
-        " with locale\"{}\" for customer \"{}\"",
-        seatPreference, classPreference, profileName, language, customerId)
+  override fun saveCustomerPreferences(
+    customerId: String, seatPreference: SeatPreference,
+    classPreference: Int, profileName: String, language: Locale?
+  ): Mono<CustomerPreferences> {
+    logger.debug(
+      "createCustomerPreferences : " +
+          "seatPreference ${seatPreference}, classPreference ${classPreference} and profileName ${profileName}" +
+          " with locale ${language} for customer ${customerId}"
+    )
     val createCustomerPreferencesRequest = CustomerPreferences(
-        UUID.randomUUID().toString(),
-        customerId,
-        seatPreference,
-        classPreference,
-        profileName,
-        language)
+      UUID.randomUUID().toString(),
+      customerId,
+      seatPreference,
+      classPreference,
+      profileName,
+      language
+    )
     return database.save(createCustomerPreferencesRequest)
   }
 
-  override fun getCustomerPreferences(customerId: String): Mono<List<CustomerPreferences>> {
+  override fun getCustomerPreferences(customerId: String): Flux<CustomerPreferences> {
     logger.debug("getCustomerPreferences for customer \"{}\"", customerId)
-    // FIXME mieux gérer les exceptions
     return database.findByCustomerId(customerId)
-        .switchIfEmpty(Mono.defer { Mono.error(NotFoundException(customerId, "customer")) })
-        .collectList()
   }
 }
 
