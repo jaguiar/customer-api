@@ -31,20 +31,20 @@ jobs:
 
     # Runs the rest template project
     - name: Build with Maven rest template project
-      run: mvn -B package --file customer-java-resttemplate/pom.xml
+      run: mvn -B package --file customer-java-resttemplate/pom.xml -Pdocker
       
     # Runs the webflux java project
     - name: Build with Maven webflux java project
-      run: mvn -B package --file  customer-java-webflux/pom.xml   
+      run: mvn -B package --file  customer-java-webflux/pom.xml -Pdocker  
       
     # Runs the webflux kotlin project
     - name: Build with Maven webflux kotlin project
-      run: mvn -B package --file customer-kotlin-webflux/pom.xml
+      run: mvn -B package --file customer-kotlin-webflux/pom.xml -Pdocker
       
     # Runs the coroutines project
     - name: Build with Maven coroutines functionnal project
-      run: mvn -B package --file customer-kotlin-coroutines/pom.xml
+      run: mvn -B package --file customer-kotlin-coroutines/pom.xml -Pdocker
     
     # Runs the coroutines controllers project
     - name: Build with Maven coroutines controllers project
-      run: mvn -B package --file customer-kotlin-coroutines-controllers/pom.xml
+      run: mvn -B package --file customer-kotlin-coroutines-controllers/pom.xml -Pdocker
