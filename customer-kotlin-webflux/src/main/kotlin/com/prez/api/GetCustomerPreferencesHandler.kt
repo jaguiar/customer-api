@@ -26,32 +26,6 @@ class GetCustomerPreferencesHandler(private val customerService: CustomerService
 
   @CrossOrigin
   fun getCustomerPreferences(request: ServerRequest): Mono<ServerResponse> {
-    /* v1
-     return request.principal()
-       .map { principalToken ->
-         customerService.getCustomerPreferences(principalToken.name)
-           .map(CustomerPreferences::toCustomerPreferencesProfileResponse)
-       }
-       .flatMap { preferences ->
-         preferences.hasElements().flatMap {
-           if (it) ok().json().body(preferences, CustomerPreferencesProfileResponse::class.java)
-           else Mono.error(NotFoundException("","customer"))//status(HttpStatus.NOT_FOUND).bodyValue(ErrorResponse("NOT_FOUND", "ex.localizedMessage"))
-         }
-       }.log(Loggers.getLogger(GetCustomerPreferencesHandler::class.java), Level.FINE, true)
-     */
-/*
-    return request.principal()
-      .map { principalToken -> customerService.getCustomerPreferences(principalToken.name) }
-      .flatMap { preferences ->
-        preferences.hasElements().flatMap {
-          if (it) ok().json().body(
-            preferences.map(CustomerPreferences::toCustomerPreferencesProfileResponse),
-            CustomerPreferencesProfileResponse::class.java
-          )
-          else Mono.error(NotFoundException("", "customer"))
-        }
-      }.log(Loggers.getLogger(GetCustomerPreferencesHandler::class.java), Level.FINE, true)
-    */
     return request.principal()
       .flatMap { principalToken ->
         val preferences = customerService.getCustomerPreferences(principalToken.name)

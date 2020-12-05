@@ -11,7 +11,6 @@ import com.prez.model.CustomerPreferences;
 import com.prez.service.CustomerService;
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.LocaleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
