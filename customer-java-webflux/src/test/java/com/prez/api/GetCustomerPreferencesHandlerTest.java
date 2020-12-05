@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @SpringBootTest
@@ -70,7 +71,7 @@ class GetCustomerPreferencesHandlerTest {
     // Given
     final String accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read");
     when(customerService.getCustomerPreferences("trotro"))
-        .thenReturn(Mono.error(new NotFoundException("trotro", "Ane")));
+        .thenReturn(Flux.error(new NotFoundException("trotro", "Ane")));
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")
@@ -87,12 +88,12 @@ class GetCustomerPreferencesHandlerTest {
     // Given
     final String accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read");
     when(customerService.getCustomerPreferences("trotro"))
-        .thenReturn(Mono.just(singletonList(CustomerPreferences.builder()
+        .thenReturn(Flux.just(CustomerPreferences.builder()
             .customerId("trotro")
             .profileName("rigolo")
             .seatPreference(SeatPreference.NO_PREFERENCE)
             .classPreference(2)
-            .build())));
+            .build()));
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")
@@ -100,10 +101,10 @@ class GetCustomerPreferencesHandlerTest {
         .accept(APPLICATION_JSON)
         .exchange()
         .expectStatus().isOk()
-        .expectBody().json("{\"profiles\":[{\"customerId\":\"trotro\","
+        .expectBody().json("[{\"customerId\":\"trotro\","
         + "\"seatPreference\":\"NO_PREFERENCE\","
         + "\"classPreference\":2,"
-        + "\"profileName\":\"rigolo\"}]}");
+        + "\"profileName\":\"rigolo\"}]");
     verify(customerService).getCustomerPreferences("trotro");
   }
 }

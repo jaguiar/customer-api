@@ -108,7 +108,7 @@ public class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis 
         .accept(APPLICATION_JSON)
         .exchange()
         .expectStatus().isOk()
-        .expectBody().json("{\"profiles\":["
+        .expectBody().json("["
           + "{\"customerId\":\"trotro\","
           + "\"profileName\":\"rigolo\","
           + "\"seatPreference\":\"NO_PREFERENCE\","
@@ -117,6 +117,6 @@ public class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis 
           + "\"profileName\":\"drole\","
           + "\"seatPreference\":\"NEAR_WINDOW\","
           + "\"classPreference\":1}"
-          + "]}");
+          + "]");
   }
 }

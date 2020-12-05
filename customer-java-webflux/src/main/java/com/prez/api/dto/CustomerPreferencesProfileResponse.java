@@ -1,6 +1,7 @@
 package com.prez.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.prez.model.CustomerPreferences;
 import com.prez.model.SeatPreference;
 import java.util.Locale;
 import lombok.AccessLevel;
@@ -23,4 +24,15 @@ public class CustomerPreferencesProfileResponse {
   Integer classPreference;
   String profileName;
   Locale language;
+
+  public static CustomerPreferencesProfileResponse of(CustomerPreferences profile) {
+    return CustomerPreferencesProfileResponse.builder()
+        .id(profile.getId())
+        .customerId(profile.getCustomerId())
+        .seatPreference(profile.getSeatPreference())
+        .classPreference(profile.getClassPreference())
+        .profileName(profile.getProfileName())
+        .language(profile.getLanguage())
+        .build();
+  }
 }
