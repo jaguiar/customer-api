@@ -2,7 +2,6 @@ package com.prez.it;
 
 import static com.prez.model.SeatPreference.NEAR_WINDOW;
 import static com.prez.model.SeatPreference.NO_PREFERENCE;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
@@ -10,7 +9,6 @@ import static org.springframework.http.HttpMethod.GET;
 import com.prez.Application;
 import com.prez.UsingMongoDBAndRedis;
 import com.prez.api.dto.CustomerPreferencesProfileResponse;
-import com.prez.api.dto.CustomerPreferencesResponse;
 import com.prez.model.CustomerPreferences;
 import com.prez.model.SeatPreference;
 import com.prez.utils.FakeTokenGenerator;
@@ -139,18 +137,14 @@ class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
 
     // When && Then
     RequestEntity<Object> requestEntity = new RequestEntity<>(null, httpHeaders, GET, new URI(CUSTOMERS_PREFERENCES_ENDPOINT));
-    ResponseEntity<List<CustomerPreferencesProfileResponse>> responseEntity =
-        this.restTemplate.exchange(baseUrl + CUSTOMERS_PREFERENCES_ENDPOINT,
-            GET,
-            requestEntity,
-            new ParameterizedTypeReference<List<CustomerPreferencesProfileResponse>>() {});
+    ResponseEntity<CustomerPreferencesProfileResponse[]> responseEntity =
+        this.restTemplate.exchange(baseUrl + CUSTOMERS_PREFERENCES_ENDPOINT, GET, requestEntity, CustomerPreferencesProfileResponse[].class);
 
     // When && Then
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody())
-        .usingRecursiveComparison()
-        .ignoringCollectionOrder()
-        .isEqualTo(asList(
+        .usingRecursiveFieldByFieldElementComparator()
+        .containsExactlyInAnyOrder(
                 CustomerPreferencesProfileResponse.builder()
                     .id("L-Ane")
                     .customerId("trotro")
@@ -165,7 +159,6 @@ class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
                     .seatPreference(NEAR_WINDOW)
                     .classPreference(1)
                     .build()
-            )
-        );
+            );
   }
 }
