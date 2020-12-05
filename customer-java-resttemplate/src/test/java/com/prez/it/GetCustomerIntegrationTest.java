@@ -396,7 +396,7 @@ class GetCustomerIntegrationTest extends UsingMongoDBAndRedis {
         "\"message\":\"Unexpected response from the server.\"}");
   }
 
-  // TODO add examples of timeout, etc. + cas pour tester les exceptions handlers
+  // we could have added other tests with timeouts... (like "a real app in production", right? :>)
 
   static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
     @Override

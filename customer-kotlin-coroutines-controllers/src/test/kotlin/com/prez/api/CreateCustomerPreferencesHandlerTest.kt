@@ -159,7 +159,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .value(startsWith("1 error(s) while validating createCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(containsString("The language is not valid. Accepted languages are : fr,de,es,en,it,pt"))
 
-    // FIXME noteworthy https://discuss.kotlinlang.org/t/how-to-use-mockito-with-kotlin/324/13
+    // noteworthy https://discuss.kotlinlang.org/t/how-to-use-mockito-with-kotlin/324/13
     // any() must not be null at the second argument
     verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
@@ -292,7 +292,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
   fun `POST customers preferences should return 400 bad request when profileName is null`(): Unit = runBlocking {
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.write")
-    val toCreate = // TODO Note Autre différence avec la version Java
+    val toCreate = //Note Autre différence avec la version Java
       """
             {
             "seatPreference":"NEAR_CORRIDOR",
@@ -434,7 +434,6 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
     }
 
   /**
-   * FIXME
    * Look at this thread for more explanation of this weird thing
    * https://discuss.kotlinlang.org/t/how-to-use-mockito-with-kotlin/324
    */

@@ -129,7 +129,7 @@ class CustomerServiceTest {
     verify(customerCacheRepository).save(customer)
   }
 
-  // TODO create customer
+  // TODO create customer preferences
 
   /*
    Et là ... vous vous demandez surement pourquoi ces 2 fonctions ?

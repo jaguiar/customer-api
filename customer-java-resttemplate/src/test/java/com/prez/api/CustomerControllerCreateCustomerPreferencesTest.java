@@ -28,7 +28,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-// FIXME suggestion : on pourrait tous les renommer **ApiTest, ça ferait le même nom ?
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles({"test"})

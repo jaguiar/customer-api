@@ -211,5 +211,5 @@ class CreateCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
     );
   }
 
-  // TODO add other tests ?
+  // we could have added other tests with timeouts... (like "a real app in production", right? :>)
 }

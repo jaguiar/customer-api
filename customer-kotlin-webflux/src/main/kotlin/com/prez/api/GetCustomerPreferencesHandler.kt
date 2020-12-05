@@ -26,12 +26,16 @@ class GetCustomerPreferencesHandler(private val customerService: CustomerService
 
   @CrossOrigin
   fun getCustomerPreferences(request: ServerRequest): Mono<ServerResponse> {
+    LOGGER.info("getCustomerPreferences : ${request.uri()}")
     return request.principal()
       .flatMap { principalToken ->
         val preferences = customerService.getCustomerPreferences(principalToken.name)
         preferences.hasElements()
           .flatMap {
-            if (it) ok().json().body(preferences.map(CustomerPreferences::toCustomerPreferencesProfileResponse), CustomerPreferencesProfileResponse::class.java)
+            if (it) ok().json().body(
+              preferences.map(CustomerPreferences::toCustomerPreferencesProfileResponse),
+              CustomerPreferencesProfileResponse::class.java
+            )
             else Mono.error(NotFoundException(principalToken.name, "customer"))
           }
       }

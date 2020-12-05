@@ -119,7 +119,6 @@ class CustomerServiceTest {
         // When
         val customer = toTest.getCustomerInfo("123456789").block()
 
-        // Then FIXME
         assertThat(customer?.customerId).isEqualTo("123456789")
         assertThat(customer?.firstName).isEqualTo("Jack")
         assertThat(customer?.lastName).isEqualTo("Bower")
@@ -132,7 +131,7 @@ class CustomerServiceTest {
         verify(customerCacheRepository).save(customer)
     }
 
-    // TODO create customer
+    // TODO create customer preferences
 
     /*
      Et là ... vous vous demandez surement pourquoi ces 2 fonctions ?

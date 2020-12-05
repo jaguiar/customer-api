@@ -31,7 +31,7 @@ class CustomerCacheRepositoryTest extends UsingRedis {
 
   @BeforeEach
   void beforeEach() {
-    toTest = new CustomerCache(4L, customerInfoRedisTemplate); //FIXME c'est degueu
+    toTest = new CustomerCache(4L, customerInfoRedisTemplate);
     customerInfoRedisTemplate.delete(customerInfoRedisTemplate.keys("Customer:*")).block();
   }
 
