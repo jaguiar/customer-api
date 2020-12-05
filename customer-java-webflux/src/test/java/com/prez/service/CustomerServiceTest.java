@@ -135,7 +135,7 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("createCustomerPreferences should call customerPreferencesRepository")
+  @DisplayName("createCustomerPreferences should save with customerPreferencesRepository")
   void shouldCallcustomerPreferencesRepository() {
     // Given
     final CustomerPreferences expected = CustomerPreferences.builder()

@@ -86,7 +86,6 @@ class CustomerServiceImpl(
     logger.debug("getCustomerPreferences for customer \"{}\"", customerId)
     return database.findByCustomerId(customerId)
       .asFlow()
-      .onEmpty { throw NotFoundException(customerId, "customer") };
   }
 }
 

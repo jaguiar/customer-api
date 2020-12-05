@@ -50,7 +50,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
     // Given
     final String accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("Ane", 3600, "customer.write");
 
-    when(customerService.saveCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), eq(Locale.FRENCH)))
+    when(customerService.createCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), eq(Locale.FRENCH)))
         .thenReturn(CustomerPreferences.builder()
             .id("ane.trotro@rigo.lo")
             .customerId("Ane")
@@ -78,7 +78,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
             "\"classPreference\":1," +
             "\"profileName\":\"Trotro\"}"));
     verify(customerService)
-        .saveCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), eq(Locale.FRENCH));
+        .createCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), eq(Locale.FRENCH));
   }
 
   @Test
@@ -88,7 +88,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
     // Given
     final String accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("Ane", 3600, "customer.write");
 
-    when(customerService.saveCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), isNull()))
+    when(customerService.createCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), isNull()))
         .thenReturn(CustomerPreferences.builder()
             .id("ane.trotro@rigo.lo")
             .customerId("Ane")
@@ -115,7 +115,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
             "\"classPreference\":1," +
             "\"profileName\":\"Trotro\"}"));
     verify(customerService)
-        .saveCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), isNull());
+        .createCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), isNull());
   }
 
   @Test
@@ -138,7 +138,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(status().is(400))
         .andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json("{\"code\":\"VALIDATION_ERROR\",\"message\":\"1 error(s) while validating createCustomerPreferencesRequest : [The language is not valid. Accepted languages are : fr,de,es,en,it,pt]\"}"));
-    verify(customerService, never()).saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+    verify(customerService, never()).createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -158,7 +158,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(status().is(403))
         .andExpect(content().string(""));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -180,7 +180,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(status().is(403))
         .andExpect(content().string(""));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -203,7 +203,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json("{\"code\":\"VALIDATION_ERROR\",\"message\":\"1 error(s) while validating createCustomerPreferencesRequest : [The seat preference is missing]\"}"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -226,7 +226,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json("{\"code\":\"VALIDATION_ERROR\",\"message\":\"1 error(s) while validating createCustomerPreferencesRequest : [The class preference is missing]\"}"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -250,7 +250,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json("{\"code\":\"VALIDATION_ERROR\",\"message\":\"1 error(s) while validating createCustomerPreferencesRequest : [Max value for class preference is 2]\"}"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -273,7 +273,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json("{\"code\":\"VALIDATION_ERROR\",\"message\":\"1 error(s) while validating createCustomerPreferencesRequest : [The profile name is missing]\"}"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -297,7 +297,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json("{\"code\":\"VALIDATION_ERROR\",\"message\":\"1 error(s) while validating createCustomerPreferencesRequest : [The profile name contains forbidden characters]\"}"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -321,7 +321,7 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json("{\"code\":\"VALIDATION_ERROR\",\"message\":\"1 error(s) while validating createCustomerPreferencesRequest : [The profile name should have a size between 1 and 50 characters]\"}"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
 
@@ -346,6 +346,6 @@ class CustomerControllerCreateCustomerPreferencesTest {
         .andExpect(content().contentType(APPLICATION_JSON))
         .andExpect(content().json("{\"code\":\"VALIDATION_ERROR\",\"message\":\"1 error(s) while validating createCustomerPreferencesRequest : [The profile name should have a size between 1 and 50 characters]\"}"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 }

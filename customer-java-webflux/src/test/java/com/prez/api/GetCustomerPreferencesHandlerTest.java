@@ -70,7 +70,7 @@ class GetCustomerPreferencesHandlerTest {
     // Given
     final String accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read");
     when(customerService.getCustomerPreferences("trotro"))
-        .thenReturn(Flux.error(new NotFoundException("trotro", "Ane")));
+        .thenReturn(Flux.empty());
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")

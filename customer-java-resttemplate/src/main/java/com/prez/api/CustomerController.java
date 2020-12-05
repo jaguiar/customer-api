@@ -56,7 +56,7 @@ public class CustomerController {
     spanCustomizer.tag("service", "POST /customers/preferences");
     LOGGER.info("CreateCustomerPreferences for user: {}, CustomerPreferences = {}", principal.getName(), validBody);
     final CustomerPreferences saved =
-        customerService.saveCustomerPreferences(principal.getName(), validBody.getSeatPreference(),
+        customerService.createCustomerPreferences(principal.getName(), validBody.getSeatPreference(),
             validBody.getClassPreference(), validBody.getProfileName(),
             LocaleUtils.toLocale(validBody.getLanguage()));
     return CustomerPreferencesProfileResponse.of(saved);

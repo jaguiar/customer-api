@@ -29,7 +29,6 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import reactor.core.publisher.Mono
 import java.time.LocalDate
-import java.util.Locale
 import java.util.Locale.ENGLISH
 
 @ExtendWith(MockitoExtension::class)
@@ -37,9 +36,9 @@ class CustomerServiceTest {
 
   private val customerCacheRepository = mock(CustomerCacheRepository::class.java)
 
-  private val customerPreferencesRepository = mock(CustomerPreferencesRepository::class.java)
-
   private val customerWSClient = mock(CustomerWSClient::class.java)
+
+  private val customerPreferencesRepository = mock(CustomerPreferencesRepository::class.java)
 
   private val toTest = CustomerServiceImpl(customerWSClient, customerCacheRepository, customerPreferencesRepository)
 
@@ -135,7 +134,8 @@ class CustomerServiceTest {
     verify(customerCacheRepository).save(customer)
   }
 
-  fun `createCustomerPreferences should call customerPreferencesRepository`() {
+  @Test
+  fun `createCustomerPreferences should save with customerPreferencesRepository`() {
     // Given
     val expected: CustomerPreferences = CustomerPreferences(
       id = "Iprefer007",

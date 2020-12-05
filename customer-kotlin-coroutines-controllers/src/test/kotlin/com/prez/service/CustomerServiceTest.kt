@@ -4,8 +4,10 @@ import com.prez.cache.CustomerCacheRepository
 import com.prez.db.CustomerPreferencesRepository
 import com.prez.exception.NotFoundException
 import com.prez.model.Customer
+import com.prez.model.CustomerPreferences
 import com.prez.model.LoyaltyProgram
 import com.prez.model.LoyaltyStatus._019875
+import com.prez.model.SeatPreference
 import com.prez.ws.CustomerWSClient
 import com.prez.ws.model.GetCustomerWSResponse
 import com.prez.ws.model.Email
@@ -16,6 +18,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyString
@@ -26,6 +29,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import reactor.core.publisher.Mono
 import java.time.LocalDate
+import java.util.Locale
 import kotlin.test.assertFailsWith
 
 @ExtendWith(MockitoExtension::class)
@@ -33,15 +37,16 @@ class CustomerServiceTest {
 
   private val customerCacheRepository = mock(CustomerCacheRepository::class.java)
 
-  private val customerWSClient = mock(CustomerWSClient::class.java)
-
   private val customerPreferencesRepository = mock(CustomerPreferencesRepository::class.java)
+
+  private val customerWSClient = mock(CustomerWSClient::class.java)
 
   private val toTest = CustomerServiceImpl(customerWSClient, customerCacheRepository, customerPreferencesRepository)
 
   @BeforeEach
   fun setup() {
     reset(customerCacheRepository)
+    reset(customerPreferencesRepository)
     reset(customerWSClient)
   }
 
@@ -129,7 +134,42 @@ class CustomerServiceTest {
     verify(customerCacheRepository).save(customer)
   }
 
-  // TODO create customer preferences
+  @Test
+  fun `createCustomerPreferences should save with customerPreferencesRepository`(): Unit = runBlocking {
+    // Given
+    val expected: CustomerPreferences = CustomerPreferences(
+      id = "Iprefer007",
+      customerId = "James",
+      seatPreference = SeatPreference.NEAR_WINDOW,
+      classPreference = 1,
+      profileName = "Bond",
+      language = Locale.ENGLISH
+    )
+    val captureRequest = ArgumentCaptor.forClass(CustomerPreferences::class.java)
+    `when`(customerPreferencesRepository.save(captureRequest.capture()))
+      .thenReturn(Mono.just(expected))
+
+    // When I create a customer preferences
+    val customerPreferences =
+      toTest.createCustomerPreferences("James", SeatPreference.NEAR_WINDOW, 1, "Bond", Locale.ENGLISH)
+
+    // Then
+    assertThat(customerPreferences)
+      .hasFieldOrPropertyWithValue("id", "Iprefer007")
+      .hasFieldOrPropertyWithValue("customerId", "James")
+      .hasFieldOrPropertyWithValue("seatPreference", SeatPreference.NEAR_WINDOW)
+      .hasFieldOrPropertyWithValue("classPreference", 1)
+      .hasFieldOrPropertyWithValue("profileName", "Bond")
+      .hasFieldOrPropertyWithValue("language", Locale.ENGLISH)
+    val captured = captureRequest.value
+    assertThat(captured)
+      .hasFieldOrPropertyWithValue("customerId", "James")
+      .hasFieldOrPropertyWithValue("seatPreference", SeatPreference.NEAR_WINDOW)
+      .hasFieldOrPropertyWithValue("classPreference", 1)
+      .hasFieldOrPropertyWithValue("profileName", "Bond")
+      .hasFieldOrPropertyWithValue("language", Locale.ENGLISH)
+    verify(customerPreferencesRepository).save(captured)
+  }
 
   /*
    Et là ... vous vous demandez surement pourquoi ces 2 fonctions ?

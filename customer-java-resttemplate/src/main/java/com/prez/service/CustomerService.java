@@ -45,8 +45,8 @@ public class CustomerService {
         );
   }
 
-  public CustomerPreferences saveCustomerPreferences(String customerId, SeatPreference seatPreference,
-                                                             Integer classPreference, String profileName, Locale language) {
+  public CustomerPreferences createCustomerPreferences(String customerId, SeatPreference seatPreference,
+                                                       Integer classPreference, String profileName, Locale language) {
     LOGGER.debug("saveCustomerPreferences : " +
                     "seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
                     " with locale\"{}\" for customer \"{}\"",

@@ -63,7 +63,7 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read")
     `when`(customerService.getCustomerPreferences("trotro"))
-      .thenReturn(Flux.error(NotFoundException("trotro", "Ane")))
+      .thenReturn(Flux.empty())
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")

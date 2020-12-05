@@ -4,11 +4,13 @@ import com.prez.cache.CustomerCacheRepository
 import com.prez.db.CustomerPreferencesRepository
 import com.prez.exception.NotFoundException
 import com.prez.model.Customer
+import com.prez.model.CustomerPreferences
 import com.prez.model.LoyaltyProgram
 import com.prez.model.LoyaltyStatus._019875
+import com.prez.model.SeatPreference.NEAR_WINDOW
 import com.prez.ws.CustomerWSClient
-import com.prez.ws.model.GetCustomerWSResponse
 import com.prez.ws.model.Email
+import com.prez.ws.model.GetCustomerWSResponse
 import com.prez.ws.model.PersonalDetails
 import com.prez.ws.model.PersonalInformation
 import kotlinx.coroutines.runBlocking
@@ -16,6 +18,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyString
@@ -26,6 +29,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import reactor.core.publisher.Mono
 import java.time.LocalDate
+import java.util.Locale.ENGLISH
 import kotlin.test.assertFailsWith
 
 @ExtendWith(MockitoExtension::class)
@@ -42,13 +46,14 @@ class CustomerServiceTest {
   @BeforeEach
   fun setup() {
     reset(customerCacheRepository)
+    reset(customerPreferencesRepository)
     reset(customerWSClient)
   }
 
   /* use runBlocking before kotlin.coroutines 1.4.0 and runBlockingTest from 1.4.0,
     see https://craigrussell.io/2019/11/unit-testing-coroutine-suspend-functions-using-testcoroutinedispatcher/ regarding issue with runBlocking */
   @Test
-    fun `getCustomerInfo should return empty customer when customer does not exist`(): Unit = runBlocking {
+  fun `getCustomerInfo should return empty customer when customer does not exist`(): Unit = runBlocking {
     // Given the customer 123456789 cannot be found
     `when`(customerCacheRepository.findById("123456789")).thenReturn(Mono.empty())
     `when`(customerWSClient.getCustomer("123456789")).thenReturn(null)
@@ -129,7 +134,44 @@ class CustomerServiceTest {
     verify(customerCacheRepository).save(customer)
   }
 
-  // TODO create customer preferences
+  @Test
+  fun `createCustomerPreferences should save with customerPreferencesRepository`(): Unit = runBlocking {
+    // Given
+    val expected: CustomerPreferences = CustomerPreferences(
+      id = "Iprefer007",
+      customerId = "James",
+      seatPreference = NEAR_WINDOW,
+      classPreference = 1,
+      profileName = "Bond",
+      language = ENGLISH
+    )
+    val captureRequest = ArgumentCaptor.forClass(CustomerPreferences::class.java)
+    `when`(customerPreferencesRepository.save(captureRequest.capture()))
+      .thenReturn(Mono.just(expected))
+
+    // When I create a customer preferences
+    val customerPreferences =
+      toTest.createCustomerPreferences("James", NEAR_WINDOW, 1, "Bond", ENGLISH)
+
+    // Then
+    assertThat(customerPreferences)
+      .hasFieldOrPropertyWithValue("id", "Iprefer007")
+      .hasFieldOrPropertyWithValue("customerId", "James")
+      .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+      .hasFieldOrPropertyWithValue("classPreference", 1)
+      .hasFieldOrPropertyWithValue("profileName", "Bond")
+      .hasFieldOrPropertyWithValue("language", ENGLISH)
+    val captured = captureRequest.value
+    assertThat(captured)
+      .hasFieldOrPropertyWithValue("customerId", "James")
+      .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+      .hasFieldOrPropertyWithValue("classPreference", 1)
+      .hasFieldOrPropertyWithValue("profileName", "Bond")
+      .hasFieldOrPropertyWithValue("language", ENGLISH)
+    verify(customerPreferencesRepository).save(captured)
+  }
+
+  // TODO get customer preferences
 
   /*
    Et là ... vous vous demandez surement pourquoi ces 2 fonctions ?

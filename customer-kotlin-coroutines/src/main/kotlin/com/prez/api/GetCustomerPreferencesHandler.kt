@@ -1,9 +1,11 @@
 package com.prez.api
 
+import com.prez.exception.NotFoundException
 import com.prez.extension.toCustomerPreferencesProfileResponse
 import com.prez.model.CustomerPreferences
 import com.prez.service.CustomerService
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.map
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -30,8 +32,13 @@ class GetCustomerPreferencesHandler(private val customerService: CustomerService
   suspend fun getCustomerPreferences(request: ServerRequest): ServerResponse {
     val principal = request.awaitPrincipal()!!
     LOGGER.info("getCustomerPreferences for user: {}", principal.name)
-    val customerPreferencesProfileResponses = customerService.getCustomerPreferences(principal.name)
-      .map(CustomerPreferences::toCustomerPreferencesProfileResponse)
-    return ok().json().bodyAndAwait(customerPreferencesProfileResponses)
+    val customerPreferences = customerService.getCustomerPreferences(principal.name)
+    if (customerPreferences.count() < 1) {
+      throw NotFoundException(principal.name, "customer")
+    }
+    return ok().json().bodyAndAwait(
+      customerPreferences
+        .map(CustomerPreferences::toCustomerPreferencesProfileResponse)
+    )
   }
 }
