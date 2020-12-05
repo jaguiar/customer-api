@@ -18,6 +18,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 import com.prez.api.dto.CreateCustomerPreferencesRequest;
 import com.prez.model.CustomerPreferences;
+import com.prez.model.SeatPreference;
 import com.prez.service.CustomerService;
 import com.prez.utils.FakeTokenGenerator;
 import java.util.Locale;
@@ -58,7 +59,7 @@ class CreateCustomerPreferencesHandlerTest {
         .build();
 
 
-    when(customerService.saveCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), eq(Locale.FRENCH)))
+    when(customerService.createCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), eq(Locale.FRENCH)))
         .thenReturn(Mono.just(CustomerPreferences.builder()
             .id("ane.trotro@rigo.lo")
             .customerId("Ane")
@@ -84,7 +85,7 @@ class CreateCustomerPreferencesHandlerTest {
             "\"classPreference\":1," +
             "\"profileName\":\"Trotro\"}");
     verify(customerService)
-        .saveCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), eq(Locale.FRENCH));
+        .createCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), eq(Locale.FRENCH));
   }
 
   @Test
@@ -100,7 +101,7 @@ class CreateCustomerPreferencesHandlerTest {
         .profileName("Trotro")
         .build();
 
-    when(customerService.saveCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), isNull()))
+    when(customerService.createCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), isNull()))
         .thenReturn(Mono.just(CustomerPreferences.builder()
             .id("ane.trotro@rigo.lo")
             .customerId("Ane")
@@ -125,7 +126,7 @@ class CreateCustomerPreferencesHandlerTest {
             "\"classPreference\":1," +
             "\"profileName\":\"Trotro\"}");
     verify(customerService)
-        .saveCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), isNull());
+        .createCustomerPreferences(eq("Ane"), eq(NO_PREFERENCE), eq(1), eq("Trotro"), isNull());
   }
 
   @Test
@@ -153,7 +154,7 @@ class CreateCustomerPreferencesHandlerTest {
         .expectBody().json("{\"code\":\"VALIDATION_ERROR\"}")
         .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The language is not valid. Accepted languages are : fr,de,es,en,it,pt"));
-    verify(customerService, never()).saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+    verify(customerService, never()).createCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -177,7 +178,7 @@ class CreateCustomerPreferencesHandlerTest {
         .expectBody(String.class)
         .isEqualTo("CSRF Token has been associated to this client");
     verify(customerService, never())
-        .createCustomerPreferences(anyString(), anyString(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -202,7 +203,7 @@ class CreateCustomerPreferencesHandlerTest {
         .expectStatus().isForbidden()
         .expectBody().json("");
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(),any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
 
@@ -231,7 +232,7 @@ class CreateCustomerPreferencesHandlerTest {
         .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The seat preference is missing"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -259,7 +260,7 @@ class CreateCustomerPreferencesHandlerTest {
         .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The class preference is missing"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -288,7 +289,7 @@ class CreateCustomerPreferencesHandlerTest {
         .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("Max value for class preference is 2"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -317,7 +318,7 @@ class CreateCustomerPreferencesHandlerTest {
         .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The profile name is missing"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -347,7 +348,7 @@ class CreateCustomerPreferencesHandlerTest {
         .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The profile name contains forbidden characters"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -376,7 +377,7 @@ class CreateCustomerPreferencesHandlerTest {
         .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The profile name is missing"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
   @Test
@@ -407,7 +408,7 @@ class CreateCustomerPreferencesHandlerTest {
         .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The profile name should have a size between 1 and 50 characters"));
     verify(customerService, never())
-        .saveCustomerPreferences(anyString(), any(), anyInt(), anyString(), any(Locale.class));
+        .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }
 
 }

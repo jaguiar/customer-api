@@ -66,29 +66,8 @@ public class CustomerService {
     );
   }
 
-  public Mono<CustomerPreferences> createCustomerPreferences(
-      final String customerId,
-      final String seatPreference,
-      final Integer classPreference,
-      final String profileName,
-      final Locale language) {
-    LOGGER.debug("createCustomerPreferences : seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\" with locale\"{}\" for customer \"{}\"",
-        seatPreference, classPreference, profileName, language, customerId);
-    CreateCustomerPreferencesWSRequest createCustomerPreferencesRequest =
-        new CreateCustomerPreferencesWSRequest(seatPreference, classPreference, profileName);
-    return customerWebService.createCustomerPreferences(customerId, createCustomerPreferencesRequest, language)
-        .map(response -> CustomerPreferences.builder()
-            .id(response.getId())
-            .customerId(customerId)
-            .seatPreference(SeatPreference.valueOf(response.getSeatPreference()))
-            .classPreference(response.getClassPreference())
-            .profileName(response.getProfileName())
-            .build()
-        );
-  }
-
-  public Mono<CustomerPreferences> saveCustomerPreferences(String customerId, SeatPreference seatPreference,
-                                                           Integer classPreference, String profileName, Locale language) {
+  public Mono<CustomerPreferences> createCustomerPreferences(String customerId, SeatPreference seatPreference,
+                                                             Integer classPreference, String profileName, Locale language) {
     LOGGER.debug("saveCustomerPreferences : " +
             "seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
             " with locale\"{}\" for customer \"{}\"",

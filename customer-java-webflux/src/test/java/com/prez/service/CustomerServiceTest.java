@@ -2,6 +2,7 @@ package com.prez.service;
 
 import static com.prez.model.LoyaltyStatus._019875;
 import static com.prez.model.SeatPreference.NEAR_WINDOW;
+import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.mockito.ArgumentMatchers.eq;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.prez.cache.CustomerCacheRepository;
+import com.prez.db.CustomerPreferencesRepository;
 import com.prez.exception.NotFoundException;
 import com.prez.model.Customer;
 import com.prez.model.CustomerPreferences;
@@ -24,7 +26,6 @@ import com.prez.ws.model.GetCustomerWSResponse;
 import com.prez.ws.model.PersonalDetails;
 import com.prez.ws.model.PersonalInformation;
 import java.time.LocalDate;
-import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,10 @@ class CustomerServiceTest {
 
   @Mock
   private CustomerCacheRepository customerCacheRepository;
+
+  @Mock
+  private CustomerPreferencesRepository customerPreferencesRepository;
+
   @Mock
   private CustomerWSClient customerWSClient;
   @Mock
@@ -51,6 +56,7 @@ class CustomerServiceTest {
   @BeforeEach
   void setup() {
     reset(customerCacheRepository);
+    reset(customerPreferencesRepository);
     reset(customerWSClient);
   }
 
@@ -133,23 +139,25 @@ class CustomerServiceTest {
   }
 
   @Test
-  @DisplayName("createCustomerPreferences should call Customer web service when Locale provided")
-  void shouldCallCreateCustomerPreferences_whenLocaleProvided() {
+  @DisplayName("createCustomerPreferences should call customerPreferencesRepository")
+  void shouldCallcustomerPreferencesRepository() {
     // Given
-    final CreateCustomerPreferencesWSResponse expected = CreateCustomerPreferencesWSResponse.builder()
+    final CustomerPreferences expected = CustomerPreferences.builder()
         .id("Iprefer007")
-        .seatPreference("NEAR_WINDOW")
+        .customerId("James")
+        .seatPreference(NEAR_WINDOW)
         .classPreference(1)
         .profileName("Bond")
+        .language(ENGLISH)
         .build();
-    final ArgumentCaptor<CreateCustomerPreferencesWSRequest> captureRequest =
-        ArgumentCaptor.forClass(CreateCustomerPreferencesWSRequest.class);
-    when(customerWSClient.createCustomerPreferences(eq("James"), captureRequest.capture(), eq(Locale.ENGLISH)))
+    final ArgumentCaptor<CustomerPreferences> captureRequest =
+        ArgumentCaptor.forClass(CustomerPreferences.class);
+    when(customerPreferencesRepository.save(captureRequest.capture()))
         .thenReturn(Mono.just(expected));
 
     // When I create a customer preferences
     final CustomerPreferences customerPreferences =
-        toTest.createCustomerPreferences("James", "NEAR_WINDOW", 1, "Bond", Locale.ENGLISH).block();
+        toTest.createCustomerPreferences("James", NEAR_WINDOW, 1, "Bond", ENGLISH).block();
 
     // Then
     assertThat(customerPreferences)
@@ -157,50 +165,17 @@ class CustomerServiceTest {
         .hasFieldOrPropertyWithValue("customerId", "James")
         .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
         .hasFieldOrPropertyWithValue("classPreference", 1)
-        .hasFieldOrPropertyWithValue("profileName", "Bond");
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH);
 
-    final CreateCustomerPreferencesWSRequest captured = captureRequest.getValue();
+    final CustomerPreferences captured = captureRequest.getValue();
     assertThat(captured)
-        .hasFieldOrPropertyWithValue("seatPreference", "NEAR_WINDOW")
-        .hasFieldOrPropertyWithValue("classPreference", 1)
-        .hasFieldOrPropertyWithValue("profileName", "Bond");
-
-    verify(customerWSClient).createCustomerPreferences("James", captured, Locale.ENGLISH);
-  }
-
-  @Test
-  @DisplayName("createCustomerPreferences should call Customer web service when no Locale")
-  void shouldCallCreateCustomerPreferences_whenNoLocale() {
-    // Given
-    final CreateCustomerPreferencesWSResponse expected = CreateCustomerPreferencesWSResponse.builder()
-        .id("Iprefer007")
-        .seatPreference("NEAR_WINDOW")
-        .classPreference(1)
-        .profileName("Bond")
-        .build();
-    final ArgumentCaptor<CreateCustomerPreferencesWSRequest> captureRequest =
-        ArgumentCaptor.forClass(CreateCustomerPreferencesWSRequest.class);
-    when(customerWSClient.createCustomerPreferences(eq("James"), captureRequest.capture(), isNull()))
-        .thenReturn(Mono.just(expected));
-
-    // When I create a customer preferences
-    final CustomerPreferences customerPreferences =
-        toTest.createCustomerPreferences("James", "NEAR_WINDOW", 1, "Bond", null).block();
-
-    // Then
-    assertThat(customerPreferences)
-        .hasFieldOrPropertyWithValue("id", "Iprefer007")
         .hasFieldOrPropertyWithValue("customerId", "James")
         .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
         .hasFieldOrPropertyWithValue("classPreference", 1)
-        .hasFieldOrPropertyWithValue("profileName", "Bond");
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH);
 
-    final CreateCustomerPreferencesWSRequest captured = captureRequest.getValue();
-    assertThat(captured)
-        .hasFieldOrPropertyWithValue("seatPreference", "NEAR_WINDOW")
-        .hasFieldOrPropertyWithValue("classPreference", 1)
-        .hasFieldOrPropertyWithValue("profileName", "Bond");
-
-    verify(customerWSClient).createCustomerPreferences(eq("James"), eq(captured), isNull());
+    verify(customerPreferencesRepository).save(captured);
   }
 }

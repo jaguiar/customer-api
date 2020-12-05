@@ -34,7 +34,7 @@ public class CreateCustomerPreferencesHandler
     LOGGER.info("CreateCustomerPreferences : {}", originalRequest.uri());
     return originalRequest.principal()
         .flatMap(principal -> customerService
-            .saveCustomerPreferences(principal.getName(), validBody.getSeatPreference(), validBody.getClassPreference(),
+            .createCustomerPreferences(principal.getName(), validBody.getSeatPreference(), validBody.getClassPreference(),
                 validBody.getProfileName(), LocaleUtils.toLocale(validBody.getLanguage())))
         .map(customerPreferences -> CustomerPreferencesProfileResponse.builder()
             .id(customerPreferences.getId())
