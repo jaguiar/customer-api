@@ -34,7 +34,6 @@ class EnvInfosContributor(private val environment: ConfigurableEnvironment, sens
       .flatMap { it.source.keys }
       .distinct()
       .associateBy({ it }) { key: String -> obfuscateSensiblesProps(key) }
-    //.collect(Collectors.toMap(Function.identity(), { key: String -> obfuscateSensiblesProps(key) }))
 }
 
 private fun obfuscateSensiblesProps(key: String): String {

@@ -18,15 +18,8 @@ import java.util.UUID
 
 interface CustomerService {
   fun getCustomerInfo(customerId: String): Mono<Customer>
-  fun createCustomerPreferences(
-    customerId: String,
-    seatPreference: String,
-    classPreference: Int,
-    profileName: String,
-    language: Locale?
-  ): Mono<CustomerPreferences>
 
-  fun saveCustomerPreferences(
+  fun createCustomerPreferences(
     customerId: String,
     seatPreference: SeatPreference,
     classPreference: Int,
@@ -81,29 +74,6 @@ class CustomerServiceImpl(
   }
 
   override fun createCustomerPreferences(
-    customerId: String,
-    seatPreference: String,
-    classPreference: Int,
-    profileName: String,
-    language: Locale?
-  ): Mono<CustomerPreferences> {
-    logger.debug("createCustomerPreferences : seatPreference $seatPreference, classPreference $classPreference and profileName $profileName with locale $language for customer $customerId")
-    val createCustomerPreferencesRequest =
-      CreateCustomerPreferencesWSRequest(seatPreference, classPreference, profileName)
-    return customerWebService.createCustomerPreferences(customerId, createCustomerPreferencesRequest, language)
-      .map { response ->
-        CustomerPreferences(
-          response.id,
-          customerId,
-          SeatPreference.valueOf(response.seatPreference),
-          response.classPreference,
-          response.profileName,
-          language
-        )
-      }
-  }
-
-  override fun saveCustomerPreferences(
     customerId: String, seatPreference: SeatPreference,
     classPreference: Int, profileName: String, language: Locale?
   ): Mono<CustomerPreferences> {

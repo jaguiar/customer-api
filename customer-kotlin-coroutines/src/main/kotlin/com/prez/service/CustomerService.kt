@@ -22,15 +22,8 @@ import java.util.UUID
 
 interface CustomerService {
   suspend fun getCustomerInfo(customerId: String): Customer
-  suspend fun createCustomerPreferences(
-    customerId: String,
-    seatPreference: String,
-    classPreference: Int,
-    profileName: String,
-    language: Locale?
-  ): CustomerPreferences
 
-  suspend fun saveCustomerPreferences(
+  suspend fun createCustomerPreferences(
     customerId: String,
     seatPreference: SeatPreference,
     classPreference: Int,
@@ -74,27 +67,7 @@ class CustomerServiceImpl(
     return customer
   }
 
-  override suspend fun createCustomerPreferences(
-    customerId: String,
-    seatPreference: String,
-    classPreference: Int,
-    profileName: String,
-    language: Locale?
-  ): CustomerPreferences {
-    logger.debug("createCustomerPreferences : seatPreference $seatPreference, classPreference $classPreference and profileName $profileName with locale $language for customer $customerId")
-    val createCustomerPreferencesRequest =
-      CreateCustomerPreferencesWSRequest(seatPreference, classPreference, profileName)
-    val response = customerWebService.createCustomerPreferences(customerId, createCustomerPreferencesRequest, language)
-    return CustomerPreferences(
-      response.id,
-      customerId,
-      SeatPreference.valueOf(response.seatPreference),
-      response.classPreference,
-      response.profileName
-    )
-  }
-
-  override suspend fun saveCustomerPreferences(customerId: String, seatPreference: SeatPreference,
+  override suspend fun createCustomerPreferences(customerId: String, seatPreference: SeatPreference,
     classPreference: Int, profileName: String, language: Locale?): CustomerPreferences {
     logger.debug("saveCustomerPreferences : seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
       " with locale\"{}\" for customer \"{}\"", seatPreference, classPreference, profileName, language, customerId)

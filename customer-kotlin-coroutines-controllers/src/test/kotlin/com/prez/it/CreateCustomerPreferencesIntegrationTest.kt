@@ -3,7 +3,6 @@ package com.prez.it
 import com.prez.UsingMongoDBAndRedis
 import com.prez.model.Customer
 import com.prez.utils.FakeTokenGenerator
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
@@ -118,7 +117,8 @@ class CreateCustomerPreferencesIntegrationTest(
       .jsonPath("$.message").value(Matchers.startsWith("3 error(s) while validating createCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(Matchers.containsString("The profile name contains forbidden characters"))
       .jsonPath("$.message").value(Matchers.containsString("Max value for class preference is 2"))
-      .jsonPath("$.message").value(Matchers.containsString("The language is not valid. Accepted languages are : fr,de,es,en,it,pt"))
+      .jsonPath("$.message")
+      .value(Matchers.containsString("The language is not valid. Accepted languages are : fr,de,es,en,it,pt"))
     // Then
   }
 
@@ -196,7 +196,8 @@ class CreateCustomerPreferencesIntegrationTest(
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
       .expectStatus().isCreated
-      .expectBody().json("""
+      .expectBody().json(
+        """
         {
           "seatPreference":"NO_PREFERENCE",
           "classPreference":1,

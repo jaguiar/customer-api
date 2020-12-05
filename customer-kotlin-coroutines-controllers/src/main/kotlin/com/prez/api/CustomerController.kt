@@ -45,7 +45,7 @@ class CustomerController(private val customerService: CustomerService, private v
   ): CustomerPreferencesProfileResponse {
     spanCustomizer.tag("service", "POST /customers/preferences")
     LOGGER.info("CreateCustomerPreferences for user: {}, CustomerPreferences = {}", principal.name, validBody)
-    val saved = customerService.saveCustomerPreferences(
+    val saved = customerService.createCustomerPreferences(
       principal.name, validBody.seatPreference,
       validBody.classPreference, validBody.profileName,
       LocaleUtils.toLocale(validBody.language)

@@ -31,7 +31,7 @@ class CreateCustomerPreferencesHandler(validator: Validator, val customerService
     logger.info("CreateCustomerPreferences : {}", originalRequest.uri())
     return originalRequest.principal()
         .flatMap { principal ->
-          customerService.saveCustomerPreferences(
+          customerService.createCustomerPreferences(
               principal.name, validBody.seatPreference, validBody.classPreference,
               validBody.profileName, LocaleUtils.toLocale(validBody.language)
           )
