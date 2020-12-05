@@ -75,7 +75,7 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
         """
           {
             "code":"NOT_FOUND",
-            "message":"No result for the given Ane id=trotro"
+            "message":"No result for the given customer id=trotro"
           }
         """.trimIndent()
       )
