@@ -78,7 +78,7 @@ class GetCustomerPreferencesHandlerTest {
         .accept(APPLICATION_JSON)
         .exchange()
         .expectStatus().isNotFound()
-        .expectBody().json("{\"code\":\"NOT_FOUND\",\"message\":\"No result for the given Ane id=trotro\"}");
+        .expectBody().json("{\"code\":\"NOT_FOUND\",\"message\":\"No result for the given customer id=trotro\"}");
   }
 
   @Test
