@@ -1,5 +1,6 @@
 package com.prez.api;
 
+import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.springframework.web.reactive.function.server.ServerResponse.created;
 
 import com.prez.api.dto.CreateCustomerPreferencesRequest;
@@ -35,15 +36,8 @@ public class CreateCustomerPreferencesHandler
     return originalRequest.principal()
         .flatMap(principal -> customerService
             .createCustomerPreferences(principal.getName(), validBody.getSeatPreference(), validBody.getClassPreference(),
-                validBody.getProfileName(), LocaleUtils.toLocale(validBody.getLanguage())))
-        .map(customerPreferences -> CustomerPreferencesProfileResponse.builder()
-            .id(customerPreferences.getId())
-            .customerId(customerPreferences.getCustomerId())
-            .seatPreference(customerPreferences.getSeatPreference())
-            .classPreference(customerPreferences.getClassPreference())
-            .profileName(customerPreferences.getProfileName())
-            .language(customerPreferences.getLanguage())
-            .build())
+                validBody.getProfileName(), toLocale(validBody.getLanguage())))
+        .map(CustomerPreferencesProfileResponse::of)
         .flatMap(created -> created(URI.create("/customers/preferences/" + created.getId())).bodyValue(created))
         .log(Loggers.getLogger(CreateCustomerPreferencesHandler.class), Level.FINE, true);
   }
