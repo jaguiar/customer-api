@@ -28,6 +28,7 @@ import com.prez.model.Customer;
 import com.prez.model.LoyaltyProgram;
 import com.prez.model.RailPass;
 import com.prez.utils.FakeTokenGenerator;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
@@ -58,8 +59,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 
 @Tag("docker")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"test"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = {GetCustomerIntegrationTest.Initializer.class})
 class GetCustomerIntegrationTest extends UsingMongoDBAndRedis {
 
@@ -293,15 +294,12 @@ class GetCustomerIntegrationTest extends UsingMongoDBAndRedis {
             .withHeader("Content-Type", new EqualToPattern("application/json"))
     );
 
-    // redis
-    // FIXME TTL ?
-    // final Duration ttl = customerInfoRedisTemplate.getExpire("72f028e2-fbb8-48b3-b943-bf4daad961ed", "customer");
-    // assertThat(ttl).isGreaterThanOrEqualTo(Duration.ofSeconds(3));
-    // assertThat(ttl).isLessThanOrEqualTo(Duration.ofSeconds(10));
-
+    /*
+     redis
+    */
     final Customer savedCustomer = (Customer) customerInfoRedisTemplate.get("72f028e2-fbb8-48b3-b943-bf4daad961ed", "customer");
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(savedCustomer).usingRecursiveComparison().isEqualTo(Customer.builder()
+    assertThat(savedCustomer).usingRecursiveComparison().ignoringFields("timeToLive").isEqualTo(Customer.builder()
         .customerId("72f028e2-fbb8-48b3-b943-bf4daad961ed")
         .firstName("Elliot")
         .lastName("Alderson")
@@ -329,6 +327,10 @@ class GetCustomerIntegrationTest extends UsingMongoDBAndRedis {
                 .validityStartDate(LocalDate.of(2018, 12, 23))
                 .validityEndDate(LocalDate.of(2019, 12, 23))
                 .build())).build());
+
+    final Duration ttl = Duration.ofSeconds(savedCustomer.getTimeToLive());
+    assertThat(ttl).isGreaterThanOrEqualTo(Duration.ofSeconds(3));
+    assertThat(ttl).isLessThanOrEqualTo(Duration.ofSeconds(10));
   }
 
   @Test
