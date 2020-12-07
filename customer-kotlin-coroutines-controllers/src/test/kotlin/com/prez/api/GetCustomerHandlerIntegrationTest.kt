@@ -22,13 +22,15 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.LocalDate
 
 @Tag("integration")
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureWebTestClient
-internal class GetCustomerHandlerTest(
+internal class GetCustomerHandlerIntegrationTest(
     @Autowired val webTestClient: WebTestClient
 ) {
 

@@ -15,7 +15,7 @@ import org.springframework.boot.actuate.health.Status
 import java.time.Duration
 
 @Tag("integration")
-class ExternalServiceHealthIndicatorTest {
+class ExternalServiceHealthIndicatorIntegrationTest {
 
   companion object {
     private const val INDICATOR_NAME = "LaCompagnieCreole"
