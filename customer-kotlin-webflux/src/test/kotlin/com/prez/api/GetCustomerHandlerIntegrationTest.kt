@@ -30,7 +30,7 @@ import java.time.LocalDate
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureWebTestClient
-internal class GetCustomerHandlerTest {
+internal class GetCustomerHandlerIntegrationTest {
 
   @Autowired
   private lateinit var webTestClient: WebTestClient
