@@ -20,9 +20,11 @@ import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.keyvalue.core.KeyValueAdapter;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 
+@ActiveProfiles({"test"})
 @Tag("docker")
 @DataRedisTest
 @ContextConfiguration(initializers = CustomerCacheRepositoryTest.Initializer.class, classes = RedisConfig.class)
@@ -76,11 +78,10 @@ class CustomerCacheRepositoryTest extends UsingRedis {
 
     // Assert
     assertThat(saved).isNotNull();
-    /* FIXME TTL
-    final Long ttl = redisTemplate.getExpire("Customer:35adcf57-2cf7-4945-a980-e9753eb146f7");
+    final Long ttl = savedCustomer.getTimeToLive();
     assertThat(ttl).isGreaterThanOrEqualTo(3L);
-    assertThat(ttl).isLessThanOrEqualTo(4L);*/
-    assertThat(savedCustomer).usingRecursiveComparison().isEqualTo(customerInfo);
+    assertThat(ttl).isLessThanOrEqualTo(4L);
+    assertThat(savedCustomer).usingRecursiveComparison().ignoringFields("timeToLive").isEqualTo(customerInfo);
 
   }
 
@@ -146,11 +147,10 @@ class CustomerCacheRepositoryTest extends UsingRedis {
 
     // Assert
     assertThat(saved).isNotNull();
-    /* FIXME TTL tsts
-    final Long ttl = saved.;
+    final Long ttl = expectedCustomer.getTimeToLive();
     assertThat(ttl).isGreaterThanOrEqualTo(3L);
-    assertThat(ttl).isLessThanOrEqualTo(4L);*/
-    assertThat(expectedCustomer).usingRecursiveComparison().isEqualTo(customerInfoUpdate);
+    assertThat(ttl).isLessThanOrEqualTo(4L);
+    assertThat(expectedCustomer).usingRecursiveComparison().ignoringFields("timeToLive").isEqualTo(customerInfoUpdate);
   }
 
   @Test
@@ -187,7 +187,7 @@ class CustomerCacheRepositoryTest extends UsingRedis {
     final Customer savedCustomer = toTest.findById("35adcf57-2cf7-4945-a980-e9753eb146f7").orElse(null);
 
     // Assert
-    assertThat(savedCustomer).usingRecursiveComparison().isEqualTo(customerInfo);
+    assertThat(savedCustomer).usingRecursiveComparison().ignoringFields("timeToLive").isEqualTo(customerInfo);
   }
 
   @Test

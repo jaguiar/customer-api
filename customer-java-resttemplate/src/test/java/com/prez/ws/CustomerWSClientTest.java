@@ -150,55 +150,6 @@ class CustomerWSClientTest {
     toTest = new CustomerWSClient(configuration, createTestCustomerRestTemplate());
   }
 
-  /* FIXME should adapt these 2 tests for createCustomerPreferences
-  @Test
-  @DisplayName("createCustomer should should call customer web service")
-  void createCustomer_shouldCallCustomerWS() {
-    // Arrange
-    CreateCustomerWSRequest createCustomerWSRequest =
-        new CreateCustomerWSRequest("youpi@dummy.fr", "pass;1234", "John", "Wayne", LocalDate.of(2000, 1, 1));
-    final Locale language = Locale.ENGLISH;
-
-    // Test
-    toTest.createCustomer(createCustomerWSRequest, language);
-
-    //Assert
-    verify(postRequestedFor(urlEqualTo(POST_URL))
-        .withHeader("Content-Type", equalTo("application/json"))
-        .withHeader("Accept-Language", equalTo("en"))
-        .withRequestBody(matchingJsonPath("$.email", equalTo("youpi@dummy.fr")))
-        .withRequestBody(matchingJsonPath("$.password", equalTo("pass;1234")))
-        .withRequestBody(matchingJsonPath("$.firstName", equalTo("John")))
-        .withRequestBody(matchingJsonPath("$.lastName", equalTo("Wayne")))
-        .withRequestBody(matchingJsonPath("$.birthdate", equalTo("2000-01-01")))
-    );
-
-  }
-
-  @Test
-  @DisplayName("createCustomer should should call customer web service with input parameters and locale French when language is not set")
-  void createCustomer_shouldCallCustomerWSWithInputParametersAndLocaleFrench_whenLanguageIsNotSet() {
-    // Arrange
-    CreateCustomerWSRequest createCustomerWSRequest =
-        new CreateCustomerWSRequest("youpi@dummy.fr", "pass;1234", "John", "Wayne", LocalDate.of(2000, 1, 1));
-
-    // Test
-    toTest.createCustomer(createCustomerWSRequest, null);
-
-    //Assert
-    verify(postRequestedFor(urlEqualTo(POST_URL))
-        .withHeader("Content-Type", equalTo("application/json"))
-        .withHeader("Accept-Language", equalTo("fr"))
-        .withRequestBody(matchingJsonPath("$.email", equalTo("youpi@dummy.fr")))
-        .withRequestBody(matchingJsonPath("$.password", equalTo("pass;1234")))
-        .withRequestBody(matchingJsonPath("$.firstName", equalTo("John")))
-        .withRequestBody(matchingJsonPath("$.lastName", equalTo("Wayne")))
-        .withRequestBody(matchingJsonPath("$.birthdate", equalTo("2000-01-01")))
-    );
-
-  }
- */
-
   @Test
   @DisplayName("getCustomer should return a customer when successful call to customer web service with a full response")
   void getCustomer_shouldReturnCustomer_whenCallToCustomerWebServiceSuccessfulWithFullResponse() {

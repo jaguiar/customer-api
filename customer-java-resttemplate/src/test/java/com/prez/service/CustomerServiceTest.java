@@ -1,6 +1,11 @@
 package com.prez.service;
 
 import static com.prez.model.LoyaltyStatus._019875;
+import static com.prez.model.SeatPreference.NEAR_CORRIDOR;
+import static com.prez.model.SeatPreference.NEAR_WINDOW;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.never;
@@ -9,8 +14,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.prez.cache.CustomerCacheRepository;
+import com.prez.db.CustomerPreferencesRepository;
 import com.prez.exception.NotFoundException;
 import com.prez.model.Customer;
+import com.prez.model.CustomerPreferences;
 import com.prez.model.LoyaltyProgram;
 import com.prez.ws.CustomerWSClient;
 import com.prez.ws.model.Email;
@@ -18,11 +25,13 @@ import com.prez.ws.model.GetCustomerWSResponse;
 import com.prez.ws.model.PersonalDetails;
 import com.prez.ws.model.PersonalInformation;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,6 +41,8 @@ class CustomerServiceTest {
 
   @Mock
   private CustomerCacheRepository customerCacheRepository;
+  @Mock
+  private CustomerPreferencesRepository customerPreferencesRepository;
   @Mock
   private CustomerWSClient customerWSClient;
   @Mock
@@ -43,6 +54,7 @@ class CustomerServiceTest {
   @BeforeEach
   void setup() {
     reset(customerCacheRepository);
+    reset(customerPreferencesRepository);
     reset(customerWSClient);
   }
 
@@ -130,156 +142,109 @@ class CustomerServiceTest {
     verify(customerCacheRepository).save(expected);
   }
 
-  // TODO create customer
+  @Test
+  @DisplayName("createCustomerPreferences should save with customerPreferencesRepository")
+  void shouldCallcustomerPreferencesRepository() {
+    // Given
+    final CustomerPreferences expected = CustomerPreferences.builder()
+        .id("Iprefer007")
+        .customerId("James")
+        .seatPreference(NEAR_WINDOW)
+        .classPreference(1)
+        .profileName("Bond")
+        .language(ENGLISH)
+        .build();
+    final ArgumentCaptor<CustomerPreferences> captureRequest =
+        ArgumentCaptor.forClass(CustomerPreferences.class);
+    when(customerPreferencesRepository.save(captureRequest.capture()))
+        .thenReturn(expected);
 
-    /*
-    @Test
-    void createAccount_shouldCalledSncfClientWithToMigrateFalse_whenCalled() throws Exception {
-        //Arrange
-        final String email = "youpi@yopmail.com";
-        final String password = "pass;1234";
-        final String firstName = "Blaise";
-        final String lastname = "S";
-        final LocalDate birthDate = LocalDate.of(1922, 04, 01);
-        final Locale language = Locale.FRENCH;
+    // When I create a customer preferences
+    final CustomerPreferences customerPreferences =
+        toTest.createCustomerPreferences("James", NEAR_WINDOW, 1, "Bond", ENGLISH);
 
-        //Act
-        CustomerService service = new CustomerService(jwtValidator, customerWSClient, accountRepository, customerCacheRepository);
-        service.createAccount(email, password, firstName, lastname, birthDate, language);
+    // Then
+    assertThat(customerPreferences)
+        .hasFieldOrPropertyWithValue("id", "Iprefer007")
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+        .hasFieldOrPropertyWithValue("classPreference", 1)
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH);
 
-        //Assert
-        ArgumentCaptor<CreateCustomer> argumentCaptor = ArgumentCaptor.forClass(CreateCustomer.class);
-        verify(customerWSClient).createAccount(argumentCaptor.capture(), eq(false), eq(language));
-        assertThat(argumentCaptor.getValue())
-                .hasFieldOrPropertyWithValue("email", email)
-                .hasFieldOrPropertyWithValue("password", password)
-                .hasFieldOrPropertyWithValue("firstname", firstName)
-                .hasFieldOrPropertyWithValue("lastname", lastname)
-                .hasFieldOrPropertyWithValue("birthdate", birthDate);
-    }
+    final CustomerPreferences captured = captureRequest.getValue();
+    assertThat(captured)
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+        .hasFieldOrPropertyWithValue("classPreference", 1)
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH);
 
-    @Test(expected = NotMatchingDataException.class)
-    void getAccountInfo_shouldThrowNoMatchindDataException_whenNoDevice() {
-        // Given
-        Customer customerWithoutDevice = Customer.builder().build();
-        when(jwtValidator.getIuc(VALID_TOKEN)).thenReturn("35adcf57-2cf7-4945-a980-e9753eb146f7");
-        when(accountRepository.findById("35adcf57-2cf7-4945-a980-e9753eb146f7")).thenReturn(Optional.of(customerWithoutDevice));
+    verify(customerPreferencesRepository).save(captured);
+  }
 
-        // When
-        CustomerService service = new CustomerService(jwtValidator, customerWSClient, accountRepository, customerCacheRepository);
-        service.getAccountInfo("deviceId", VALID_TOKEN);
 
-        // Then expect no matching data exception
-    }
+  @Test
+  @DisplayName("getCustomerPreferences should return found customer preferences from repository when present")
+  void shouldReturnFoundPreferencesFromRepository() {
+    // Given
+    final CustomerPreferences doubleZero7 = CustomerPreferences.builder()
+        .id("Iprefer007")
+        .customerId("James")
+        .seatPreference(NEAR_WINDOW)
+        .classPreference(1)
+        .profileName("Bond")
+        .language(ENGLISH)
+        .build();
+    final CustomerPreferences gordon = CustomerPreferences.builder()
+        .id("IpreferJim")
+        .customerId("James")
+        .seatPreference(NEAR_CORRIDOR)
+        .classPreference(2)
+        .profileName("Gordon")
+        .language(ENGLISH)
+        .build();
 
-    @Test(expected = NotMatchingDataException.class)
-    void getAccountInfo_shouldThrowNoMatchindDataException_whenInactiveDevice() {
-        // Given
-        Device inactiveDevice = Device.builder().deviceId("deviceId").active(false).build();
-        when(jwtValidator.getIuc(VALID_TOKEN)).thenReturn("35adcf57-2cf7-4945-a980-e9753eb146f7");
-        when(accountRepository.findById("35adcf57-2cf7-4945-a980-e9753eb146f7"))
-                .thenReturn(Optional.of(Customer.builder()
-                        .devices(singletonList(inactiveDevice))
-                        .build()));
+    when(customerPreferencesRepository.findByCustomerId("James")).thenReturn(asList(doubleZero7, gordon));
 
-        // When
-        CustomerService service = new CustomerService(jwtValidator, customerWSClient, accountRepository, customerCacheRepository);
-        service.getAccountInfo("deviceId", VALID_TOKEN);
+    // When
+    final List<CustomerPreferences> customerPreferences =
+        toTest.getCustomerPreferences("James");
 
-        // Then expect no matching data exception
-    }
+    // Then
+    assertThat(customerPreferences).isNotNull();
+    assertThat(customerPreferences).hasSize(2);
+    assertThat(customerPreferences.get(0))
+        .hasFieldOrPropertyWithValue("id", "Iprefer007")
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+        .hasFieldOrPropertyWithValue("classPreference", 1)
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH);
 
-    @Test(expected = NotMatchingDataException.class)
-    void getAccountInfo_shouldThrowNoMatchindDataException_whenNoDeviceMatchingDeviceId() {
-        // Given
-        Device wrongDevice = Device.builder().deviceId("otherDeviceId").active(true).build();
-        when(jwtValidator.getIuc(VALID_TOKEN)).thenReturn("35adcf57-2cf7-4945-a980-e9753eb146f7");
-        when(accountRepository.findById("35adcf57-2cf7-4945-a980-e9753eb146f7"))
-                .thenReturn(Optional.of(Customer.builder()
-                        .devices(singletonList(wrongDevice))
-                        .build()));
+    assertThat(customerPreferences.get(1))
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_CORRIDOR)
+        .hasFieldOrPropertyWithValue("classPreference", 2)
+        .hasFieldOrPropertyWithValue("profileName", "Gordon")
+        .hasFieldOrPropertyWithValue("language", ENGLISH);
 
-        // When
-        CustomerService service = new CustomerService(jwtValidator, customerWSClient, accountRepository, customerCacheRepository);
-        service.getAccountInfo("deviceId", VALID_TOKEN);
+    verify(customerPreferencesRepository).findByCustomerId("James");
+  }
 
-        // Then expect no matching data exception
-    }
+  @Test()
+  @DisplayName("getCustomerPreferences should return nothing when no customer preferences in repository")
+  void shouldReturnEmptyWhenNoCustomerPreferencesInRepository() {
+    // Given
+    when(customerPreferencesRepository.findByCustomerId("James")).thenReturn(emptyList());
 
-    @Test
-    void getAccountInfo_shouldNotCallCustomerSource_whenDeviceFound_andValidToken_And_RecordInCache() {
-        // Given
-        Device matchindDevice = Device.builder().deviceId("deviceId").active(true).build();
-        when(jwtValidator.getIuc(VALID_TOKEN)).thenReturn("35adcf57-2cf7-4945-a980-e9753eb146f7");
-        when(accountRepository.findById("35adcf57-2cf7-4945-a980-e9753eb146f7"))
-                .thenReturn(Optional.of(Customer.builder()
-                        .devices(singletonList(matchindDevice))
-                        .build()));
-        AccountInfo accountInfo = AccountInfo.builder()
-                .iuc("35adcf57-2cf7-4945-a980-e9753eb146f7")
-                .email("mission.impossible@connect.fr")
-                .firstName("Jim")
-                .lastName("Phelps").build();
-        when(customerCacheRepository.findById("35adcf57-2cf7-4945-a980-e9753eb146f7")).thenReturn(Optional.of(accountInfo));
+    // When
+    Throwable notFound = catchThrowable(() -> toTest.getCustomerPreferences("James"));
 
-        // When
-        CustomerService service = new CustomerService(jwtValidator, customerWSClient, accountRepository, customerCacheRepository);
-        Optional<CustomerSourceAccountInfoResponse> result = service.getAccountInfo("deviceId", VALID_TOKEN);
+    // Then
+    assertThat(notFound).isNotNull();
+    assertThat(notFound).isInstanceOf(NotFoundException.class);
+    verify(customerPreferencesRepository).findByCustomerId("James");
+  }
 
-        // Then
-        assertThat(result)
-                .isNotEmpty()
-                .hasValueSatisfying(
-                        customerSourceAccountInfoResponse ->
-                                assertThat(customerSourceAccountInfoResponse)
-                                        .hasFieldOrPropertyWithValue("id", accountInfo.getIuc())
-                                        .hasFieldOrPropertyWithValue("email", accountInfo.getEmail())
-                                        .hasFieldOrPropertyWithValue("firstname", accountInfo.getFirstName())
-                                        .hasFieldOrPropertyWithValue("lastname", accountInfo.getLastName())
-                                        .hasFieldOrPropertyWithValue("birthDate", accountInfo.getBirthdate())
-                                        .hasFieldOrPropertyWithValue("phoneNumber", accountInfo.getMobileNumber())
-                                        .hasFieldOrPropertyWithValue("device", matchindDevice)
-                );
-        verify(customerWSClient, never()).getAccountInfo("35adcf57-2cf7-4945-a980-e9753eb146f7");
-        verify(customerCacheRepository, never()).save(any());
-    }
-
-    @Test
-    void getAccountInfo_shouldCallCustomerSource_whenDeviceFound_andValidToken_And_NothingInCache() {
-        // Given
-        Device matchingDevice = Device.builder().deviceId("deviceId").active(true).build();
-        when(jwtValidator.getIuc(VALID_TOKEN)).thenReturn("35adcf57-2cf7-4945-a980-e9753eb146f7");
-        when(accountRepository.findById("35adcf57-2cf7-4945-a980-e9753eb146f7"))
-                .thenReturn(Optional.of(Customer.builder()
-                        .devices(singletonList(matchingDevice))
-                        .build()));
-        when(customerCacheRepository.findById("35adcf57-2cf7-4945-a980-e9753eb146f7")).thenReturn(Optional.empty());
-        AccountInfo accountInfo = AccountInfo.builder()
-                .iuc("35adcf57-2cf7-4945-a980-e9753eb146f7")
-                .email("mission.impossible@connect.fr")
-                .firstName("Jim")
-                .lastName("Phelps").build();
-        when(customerWSClient.getAccountInfo("35adcf57-2cf7-4945-a980-e9753eb146f7")).thenReturn(Optional.of(accountInfo));
-
-        // When
-        CustomerService service = new CustomerService(jwtValidator, customerWSClient, accountRepository, customerCacheRepository);
-        Optional<CustomerSourceAccountInfoResponse> result = service.getAccountInfo("deviceId", VALID_TOKEN);
-
-        // Then
-        assertThat(result)
-                .isNotEmpty()
-                .hasValueSatisfying(
-                        customerSourceAccountInfoResponse ->
-                                assertThat(customerSourceAccountInfoResponse)
-                                        .hasFieldOrPropertyWithValue("id", accountInfo.getIuc())
-                                        .hasFieldOrPropertyWithValue("email", accountInfo.getEmail())
-                                        .hasFieldOrPropertyWithValue("firstname", accountInfo.getFirstName())
-                                        .hasFieldOrPropertyWithValue("lastname", accountInfo.getLastName())
-                                        .hasFieldOrPropertyWithValue("birthDate", accountInfo.getBirthdate())
-                                        .hasFieldOrPropertyWithValue("phoneNumber", accountInfo.getMobileNumber())
-                                        .hasFieldOrPropertyWithValue("device", matchingDevice)
-                );
-        verify(customerWSClient).getAccountInfo("35adcf57-2cf7-4945-a980-e9753eb146f7");
-        verify(customerCacheRepository).save(eq(accountInfo));
-    }*/
 }

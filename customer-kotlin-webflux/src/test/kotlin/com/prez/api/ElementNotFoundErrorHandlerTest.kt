@@ -1,11 +1,13 @@
 package com.prez.api
 
+import com.prez.api.dto.ErrorResponse
 import com.prez.exception.NotFoundException
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.reactive.function.server.MockServerRequest
+import org.springframework.web.reactive.function.server.EntityResponse
 import org.springframework.web.reactive.function.server.HandlerFunction
 import reactor.core.publisher.Mono
 
@@ -20,11 +22,12 @@ internal class ElementNotFoundErrorHandlerTest {
     val serverRequest = MockServerRequest.builder().build()
 
     // When
-    val serverResponse = toTest.filter(serverRequest, webServiceException).block()
+    val serverResponse = toTest.filter(serverRequest, webServiceException).block() as EntityResponse<ErrorResponse>
 
     // Then
     assertThat(serverResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND)
-    // FIXME we are not able to test the body
+    assertThat(serverResponse.entity().code).isEqualTo("NOT_FOUND")
+    assertThat(serverResponse.entity().message).isEqualTo("No result for the given Being id=Nonexistent")
   }
 
   @Test

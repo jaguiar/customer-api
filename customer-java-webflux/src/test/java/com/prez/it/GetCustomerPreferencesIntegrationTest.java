@@ -21,7 +21,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @Tag("docker")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = {"test"})
-public class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
+class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
 
   private static final FakeTokenGenerator FAKE_TOKEN_GENERATOR = new FakeTokenGenerator("test-authorization-server");
 
@@ -108,7 +108,7 @@ public class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis 
         .accept(APPLICATION_JSON)
         .exchange()
         .expectStatus().isOk()
-        .expectBody().json("{\"profiles\":["
+        .expectBody().json("["
           + "{\"customerId\":\"trotro\","
           + "\"profileName\":\"rigolo\","
           + "\"seatPreference\":\"NO_PREFERENCE\","
@@ -117,6 +117,6 @@ public class GetCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis 
           + "\"profileName\":\"drole\","
           + "\"seatPreference\":\"NEAR_WINDOW\","
           + "\"classPreference\":1}"
-          + "]}");
+          + "]");
   }
 }

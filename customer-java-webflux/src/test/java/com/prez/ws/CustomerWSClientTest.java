@@ -2,15 +2,9 @@ package com.prez.ws;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static com.prez.model.SeatPreference.NEAR_CORRIDOR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.springframework.http.HttpHeaders.ACCEPT;
@@ -26,8 +20,6 @@ import com.google.common.collect.Maps;
 import com.prez.ws.model.Card;
 import com.prez.ws.model.Cards;
 import com.prez.ws.model.Cell;
-import com.prez.ws.model.CreateCustomerPreferencesWSRequest;
-import com.prez.ws.model.CreateCustomerPreferencesWSResponse;
 import com.prez.ws.model.Email;
 import com.prez.ws.model.File;
 import com.prez.ws.model.GetCustomerWSResponse;
@@ -42,7 +34,6 @@ import com.prez.ws.model.Services;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Locale;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -182,100 +173,6 @@ class CustomerWSClientTest {
         .filter(basicAuthentication("user", "pwd"))
         .build();
     toTest = new CustomerWSClient(configuration, webClient);
-  }
-
-  @Test
-  @DisplayName("createCustomerPreferences should should call customer web service with provided locale")
-  void createCustomerPreferences_shouldCallCustomerWS_withProvidedLocale() {
-    // Arrange
-    CreateCustomerPreferencesWSRequest createCustomerPreferencesWSRequest =
-        new CreateCustomerPreferencesWSRequest(NEAR_CORRIDOR.name(), 1, "JurassicPark");
-
-    // Test
-    CreateCustomerPreferencesWSResponse response =
-        toTest.createCustomerPreferences("ok", createCustomerPreferencesWSRequest, Locale.FRANCE).block();
-
-    //Assert
-    assertThat(response).isEqualTo(
-        CreateCustomerPreferencesWSResponse.builder()
-            .id("T-Rex")
-            .seatPreference("NEAR_CORRIDOR")
-            .classPreference(1)
-            .profileName("JurassicPark")
-            .build()
-    );
-    verify(postRequestedFor(urlEqualTo("/customers/ok/preferences"))
-        .withHeader("Content-Type", equalTo("application/json"))
-        .withHeader("Accept-Language", equalTo("fr"))
-        .withRequestBody(matchingJsonPath("$.seatPreference", equalTo("NEAR_CORRIDOR")))
-        .withRequestBody(matchingJsonPath("$.classPreference", equalTo("1")))
-        .withRequestBody(matchingJsonPath("$.profileName", equalTo("JurassicPark")))
-    );
-
-  }
-
-
-  @Test
-  @DisplayName("createCustomer should should call customer web service with input parameters and locale French when language is not set")
-  void createCustomer_shouldCallCustomerWSWithInputParametersAndLocaleFrench_whenLanguageIsNotSet() {
-    // Arrange
-    CreateCustomerPreferencesWSRequest createCustomerPreferencesWSRequest =
-        new CreateCustomerPreferencesWSRequest(NEAR_CORRIDOR.name(), 1, "JurassicPark");
-
-    // Test
-    CreateCustomerPreferencesWSResponse response =
-        toTest.createCustomerPreferences("ok", createCustomerPreferencesWSRequest, null).block();
-
-    //Assert
-    assertThat(response).isEqualTo(
-        CreateCustomerPreferencesWSResponse.builder()
-            .id("T-Rex")
-            .seatPreference("NEAR_CORRIDOR")
-            .classPreference(1)
-            .profileName("JurassicPark")
-            .build()
-    );
-    verify(postRequestedFor(urlEqualTo("/customers/ok/preferences"))
-        .withHeader("Content-Type", equalTo("application/json"))
-        .withHeader("Accept-Language", equalTo("fr"))
-        .withRequestBody(matchingJsonPath("$.seatPreference", equalTo("NEAR_CORRIDOR")))
-        .withRequestBody(matchingJsonPath("$.classPreference", equalTo("1")))
-        .withRequestBody(matchingJsonPath("$.profileName", equalTo("JurassicPark")))
-    );
-  }
-
-  @Test
-  @DisplayName("createCustomer should raise a web service exception when response is 400")
-  void createCustomer_shouldRaiseWebServiceException_whenCustomerWSResponseIs400() {
-    // Given && When
-    Throwable thrown = catchThrowable(() -> toTest
-        .createCustomerPreferences("bad", new CreateCustomerPreferencesWSRequest(NEAR_CORRIDOR.name(), 1, "JurassicPark"),
-            Locale.ENGLISH).block());
-
-    // Then
-    assertThat(thrown)
-        .isNotNull()
-        .isInstanceOf(WebServiceException.class);
-    WebServiceException ex = (WebServiceException) thrown;
-    assertThat(ex.getHttpStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    assertThat(ex.getError().getErrorDescription()).isEqualTo(
-        "Unable to create customer for customerId=bad{\"error\":\"Bad est un album de Mickael Jackson\"}");
-  }
-
-  @Test
-  @DisplayName("createCustomer should raise web service exception when response is not OK at all (CONNECTION_RESET_BY_PEER)")
-  void createCustomer_shouldRaiseWebServiceException_whenCustomerWSResponseIsNotOKAtAll() {
-    // Given && When
-    Throwable thrown = catchThrowable(() -> toTest.createCustomerPreferences("connection-reset-by-peer",
-        new CreateCustomerPreferencesWSRequest(NEAR_CORRIDOR.name(), 1, "JurassicPark"), Locale.ENGLISH).block());
-
-    // Then
-    assertThat(thrown)
-        .isNotNull()
-        .isInstanceOf(Exception.class);
-    Exception ex = (Exception) thrown;
-    //because depending on your OS, the message is not always the same...
-    assertThat(ex.getMessage()).contains("Connection reset");
   }
 
   @Test

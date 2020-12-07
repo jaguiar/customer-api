@@ -1,6 +1,7 @@
 package com.prez.api
 
-import com.prez.api.dto.CustomerPreferencesResponse
+import com.prez.api.dto.CustomerPreferencesProfileResponse
+import com.prez.exception.NotFoundException
 import com.prez.extension.toCustomerPreferencesProfileResponse
 import com.prez.model.CustomerPreferences
 import com.prez.service.CustomerService
@@ -12,8 +13,6 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.reactive.function.server.json
 import reactor.core.publisher.Mono
-import reactor.util.Loggers
-import java.util.logging.Level
 
 /**
  * This is the equivalent of our RestTemplate controller
@@ -21,21 +20,26 @@ import java.util.logging.Level
 @Component
 class GetCustomerPreferencesHandler(private val customerService: CustomerService) {
 
-  private val logger = LoggerFactory.getLogger(GetCustomerPreferencesHandler::class.java)
-
+  companion object {
+    private val LOGGER = LoggerFactory.getLogger(GetCustomerPreferencesHandler::class.java)
+  }
 
   @CrossOrigin
   fun getCustomerPreferences(request: ServerRequest): Mono<ServerResponse> {
+    LOGGER.info("getCustomerPreferences : ${request.uri()}")
     return request.principal()
-        .flatMap { principalToken -> customerService.getCustomerPreferences(principalToken.name) }
-        .map { toCustomerPreferencesResponse(it) }
-        .doOnSuccess { response -> logger.debug("Response: $response") }
-        .flatMap(ok().json()::bodyValue)
-        .log(Loggers.getLogger(GetCustomerPreferencesHandler::class.java), Level.FINE, true)
+      .flatMap { principalToken ->
+        val preferences = customerService.getCustomerPreferences(principalToken.name)
+        preferences.hasElements()
+          .flatMap {
+            if (it) ok().json().body(
+              preferences.map(CustomerPreferences::toCustomerPreferencesProfileResponse),
+              CustomerPreferencesProfileResponse::class.java
+            )
+            else Mono.error(NotFoundException(principalToken.name, "customer"))
+          }
+      }
+
   }
 
-  private fun toCustomerPreferencesResponse(profiles: List<CustomerPreferences>): CustomerPreferencesResponse {
-    val profilesResponse = profiles.map { it.toCustomerPreferencesProfileResponse() }.toList()
-    return CustomerPreferencesResponse(profilesResponse);
-  }
 }

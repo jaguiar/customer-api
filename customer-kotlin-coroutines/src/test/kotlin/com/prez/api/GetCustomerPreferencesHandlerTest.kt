@@ -1,10 +1,11 @@
 package com.prez.api
 
-import com.prez.exception.NotFoundException
 import com.prez.model.CustomerPreferences
 import com.prez.model.SeatPreference
 import com.prez.service.CustomerService
 import com.prez.utils.FakeTokenGenerator
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
@@ -63,7 +64,7 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
   fun `GET customers preferences should return not found when no preferences`(): Unit = runBlocking {
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read")
-    `when`(customerService.getCustomerPreferences("trotro")).thenThrow(NotFoundException("trotro", "Ane"))
+    `when`(customerService.getCustomerPreferences("trotro")).thenReturn(emptyFlow())
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")
@@ -75,7 +76,7 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
         """
           {
             "code":"NOT_FOUND",
-            "message":"No result for the given Ane id=trotro"
+            "message":"No result for the given customer id=trotro"
           }
         """.trimIndent()
       )
@@ -88,7 +89,7 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read")
     `when`(customerService.getCustomerPreferences("trotro"))
       .thenReturn(
-        listOf(
+        flowOf(
           CustomerPreferences(
             customerId = "trotro",
             profileName = "rigolo",
@@ -106,14 +107,12 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
       .expectStatus().isOk
       .expectBody().json(
         """
-            {
-              "profiles":[{
+             [{
                 "customerId":"trotro",
             "seatPreference":"NO_PREFERENCE",
             "classPreference":2,
                 "profileName":"rigolo"
               }]
-            }
             """.trimIndent()
       )
 

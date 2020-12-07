@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
-import com.prez.lib.tracing.ResponseMarkerFilter;
 import io.micrometer.core.instrument.DistributionSummary;
 import java.net.URI;
 import java.net.URISyntaxException;

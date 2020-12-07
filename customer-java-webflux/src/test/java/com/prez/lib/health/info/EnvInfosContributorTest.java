@@ -4,16 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.MapEntry.entry;
 
 import java.util.Map;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.mock.env.MockEnvironment;
 
-public class EnvInfosContributorTest {
+class EnvInfosContributorTest {
 
   @Test
   @DisplayName("contribute should contribute some env Infos when called")
-  public void contribute_shouldContributeSomeEnvInfos_whenCalled() {
+  void contribute_shouldContributeSomeEnvInfos_whenCalled() {
     //Arrange
     final MockEnvironment mockEnv = new MockEnvironment()
         .withProperty("Foo", "Bar")
@@ -36,7 +36,7 @@ public class EnvInfosContributorTest {
 
   @Test
   @DisplayName("contribute should filter system properties and env when called")
-  public void contribute_shouldContributeFilterSystemPropertiesAndEnv_whenCalled() {
+  void contribute_shouldContributeFilterSystemPropertiesAndEnv_whenCalled() {
     //Arrange
     final MockEnvironment mockEnv = new MockEnvironment();
     System.setProperty("Tchoup", "Tchip");
@@ -57,7 +57,7 @@ public class EnvInfosContributorTest {
 
   @Test
   @DisplayName("contribute should resolve properties when called")
-  public void contribute_shouldResolveProperties_whenCalled() {
+  void contribute_shouldResolveProperties_whenCalled() {
     //Arrange
     final MockEnvironment mockEnv = new MockEnvironment()
         .withProperty("FirstRule", "You do not talk about ${do-not-talk-about}")
@@ -82,7 +82,7 @@ public class EnvInfosContributorTest {
 
   @Test
   @DisplayName("contribute should handle duplicated values when called")
-  public void contribute_shouldHandleDuplicatedValues_whenCalled() {
+  void contribute_shouldHandleDuplicatedValues_whenCalled() {
     //Arrange
     final MockEnvironment mockEnv = new MockEnvironment()
         .withProperty("FirstRule", "${FirstRule}")
@@ -108,7 +108,7 @@ public class EnvInfosContributorTest {
 
   @Test
   @DisplayName("contribute should obfuscate values when password in properties using default pattern")
-  public void contribute_shouldObfuscateValues_whenPasswordInPropertiesWithDefaultPattern() {
+  void contribute_shouldObfuscateValues_whenPasswordInPropertiesWithDefaultPattern() {
     //Arrange
     final MockEnvironment mockEnv = new MockEnvironment()
         .withProperty("login", "Tyler_Durden")
@@ -137,7 +137,7 @@ public class EnvInfosContributorTest {
 
   @Test
   @DisplayName("contribute should obfuscate values when password in properties with custom pattern")
-  public void contribute_shouldObfuscateValues_whenPasswordInPropertiesWithCustomPattern() {
+  void contribute_shouldObfuscateValues_whenPasswordInPropertiesWithCustomPattern() {
     //Arrange
     final MockEnvironment mockEnv = new MockEnvironment()
         .withProperty("login", "Tyler_Durden")

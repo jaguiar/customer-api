@@ -31,7 +31,6 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-// FIXME
 @Tag("docker")
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"test"})
@@ -60,6 +59,7 @@ class CreateCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
     httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     httpHeaders.setAccept(singletonList(MediaType.APPLICATION_JSON));
+    mongoOperations.dropCollection("preferences");
   }
 
   @AfterEach
@@ -197,6 +197,5 @@ class CreateCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
             .build());
   }
 
-  // TODO add other tests ?
-
+  // we could have added other tests with timeouts... (like "a real app in production", right? :>)
 }

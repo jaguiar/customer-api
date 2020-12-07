@@ -21,7 +21,6 @@ class CreateCustomerPreferencesHandler(val validator: Validator, val customerSer
 
   private val logger = LoggerFactory.getLogger(CreateCustomerPreferencesHandler::class.java)
 
-  @FlowPreview
   suspend fun createCustomerPreferences(
     originalRequest: ServerRequest
   ): ServerResponse {
@@ -31,7 +30,7 @@ class CreateCustomerPreferencesHandler(val validator: Validator, val customerSer
     val validBody: CreateCustomerPreferencesRequest =
       originalRequest.awaitBodyAndValidate(validator)
     val created = customerService
-      .saveCustomerPreferences(
+      .createCustomerPreferences(
         principal.name, validBody.seatPreference, validBody.classPreference,
         validBody.profileName, LocaleUtils.toLocale(validBody.language)
       ).toCustomerPreferencesProfileResponse()

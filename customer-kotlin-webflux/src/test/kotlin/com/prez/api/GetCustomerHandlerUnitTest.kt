@@ -207,7 +207,6 @@ internal class GetCustomerHandlerUnitTest {
    Et là ... vous vous demandez surement pourquoi ces 2 fonctions ?
    La réponse est ici : https://medium.com/@elye.project/befriending-kotlin-and-mockito-1c2e7b0ef791
    */
-  // FIXME bon c'est dégueu :-( !
   private fun <T> eq(v: T): T {
     Mockito.eq<T>(v)
     return uninitialized()

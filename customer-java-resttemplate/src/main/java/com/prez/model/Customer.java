@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
 @RedisHash(value = "customer")
 @Data
@@ -32,4 +33,6 @@ public class Customer implements Serializable {
   private String email;
   private LoyaltyProgram loyaltyProgram;
   private List<RailPass> railPasses = new ArrayList<>();
+  @TimeToLive
+  private Long timeToLive;
 }

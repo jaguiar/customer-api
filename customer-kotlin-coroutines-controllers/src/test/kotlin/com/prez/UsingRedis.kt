@@ -21,7 +21,7 @@ open class UsingRedis {
 
   internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
-      redis.withReuse(true) // FIXME another difference with Java version
+      redis.withReuse(true) // another difference with Java version
       redis.start()
       TestPropertyValues.of(
         "spring.redis.port=" + redis.getMappedPort(REDIS_PORT)

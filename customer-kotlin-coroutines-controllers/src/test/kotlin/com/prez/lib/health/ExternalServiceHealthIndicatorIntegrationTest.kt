@@ -15,13 +15,15 @@ import org.springframework.boot.actuate.health.Status
 import java.time.Duration
 
 @Tag("integration")
-class ExternalServiceHealthIndicatorTest {
+class ExternalServiceHealthIndicatorIntegrationTest {
 
   companion object {
     private const val INDICATOR_NAME = "LaCompagnieCreole"
     private val TIMEOUT = Duration.ofSeconds(5)
-
-    private val wireMockRule = WireMockRule(options().dynamicPort())
+    private val wireMockRule = WireMockRule(
+      options()
+        .dynamicPort()
+    )
 
     @BeforeAll
     @JvmStatic

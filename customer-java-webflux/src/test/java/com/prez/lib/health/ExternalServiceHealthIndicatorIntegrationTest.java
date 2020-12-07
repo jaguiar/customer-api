@@ -8,6 +8,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import java.time.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -17,10 +18,10 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
 @Tag("integration")
-public class ExternalServiceHealthIndicatorTest {
+class ExternalServiceHealthIndicatorIntegrationTest {
 
   private final static String INDICATOR_NAME = "LaCompagnieCreole";
-
+  private final static Duration TIMEOUT = Duration.ofSeconds(5);
 
   private static final WireMockRule wireMockRule = new WireMockRule(options()
       .dynamicPort());
@@ -41,14 +42,14 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when Health is UP")
-  public void health_shouldReturnHealth_whenHealthIsUp() {
+  void health_shouldReturnHealth_whenHealthIsUp() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withBody("Decalecatan, decalecatan, ohe, ohe !").withStatus(200))
     );
 
     //Act
-    Health result = toTest.health();
+    Health result = toTest.health().block(TIMEOUT);
 
     //Assert
     assertEquals(Status.UP, result.getStatus());
@@ -58,14 +59,14 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when Health is DOWN (5xx)")
-  public void health_shouldReturnHealth_whenHealthIsDown5xx() {
+  void health_shouldReturnHealth_whenHealthIsDown5xx() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withBody("I'm dead").withStatus(500))
     );
 
     //Act
-    Health result = toTest.health();
+    Health result = toTest.health().block(TIMEOUT);
 
     //Assert
     assertEquals(Status.DOWN, result.getStatus());
@@ -77,14 +78,14 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when Health is DOWN (4xx)")
-  public void health_shouldReturnHealth_whenHealthIsDown_4xx() {
+  void health_shouldReturnHealth_whenHealthIsDown_4xx() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withStatus(404))
     );
 
     //Act
-    Health result = toTest.health();
+    Health result = toTest.health().block(TIMEOUT);
 
     //Assert
     assertEquals(Status.DOWN, result.getStatus());
@@ -94,14 +95,14 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when there is a timeout")
-  public void health_shouldReturnHealth_whenTimeout() {
+  void health_shouldReturnHealth_whenTimeout() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withFixedDelay(3000))
     );
 
     //Act
-    Health result = toTest.health();
+    Health result = toTest.health().block(TIMEOUT);
 
     //Assert
     assertEquals(Status.DOWN, result.getStatus());
@@ -111,14 +112,14 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when the body is empty")
-  public void health_shouldReturnHealth_whenEmptyBody() {
+  void health_shouldReturnHealth_whenEmptyBody() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withStatus(200))
     );
 
     //Act
-    Health result = toTest.health();
+    Health result = toTest.health().block(TIMEOUT);
 
     //Assert
     assertEquals(Status.UP, result.getStatus());

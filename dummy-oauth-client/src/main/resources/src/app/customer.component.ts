@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomerService } from './services/customer.service'
-import { Customer, SaveCustomerPreferencesRequest, CustomerPreferences, CustomerPreferencesProfile } from './models/Customer.model'
+import { Customer, SaveCustomerPreferencesRequest, CustomerPreferencesProfile } from './models/Customer.model'
 
 @Component({
   selector: 'customer-details',

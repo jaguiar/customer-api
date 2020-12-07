@@ -8,7 +8,10 @@ import com.prez.model.Customer
 import com.prez.model.CustomerPreferences
 import com.prez.model.SeatPreference
 import com.prez.ws.CustomerClient
-import com.prez.ws.model.CreateCustomerPreferencesWSRequest
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEmpty
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
 import org.slf4j.LoggerFactory
@@ -18,21 +21,17 @@ import java.util.UUID
 
 interface CustomerService {
   suspend fun getCustomerInfo(customerId: String): Customer
+
   suspend fun createCustomerPreferences(
-    customerId: String,
-    seatPreference: String,
-    classPreference: Int,
-    profileName: String,
-    language: Locale?
-  ): CustomerPreferences
-  suspend fun saveCustomerPreferences(
     customerId: String,
     seatPreference: SeatPreference,
     classPreference: Int,
     profileName: String,
     language: Locale?
   ): CustomerPreferences
-  suspend fun getCustomerPreferences(customerId: String): List<CustomerPreferences>
+
+  @FlowPreview
+  fun getCustomerPreferences(customerId: String): Flow<CustomerPreferences>
 }
 
 @Component
@@ -68,44 +67,30 @@ class CustomerServiceImpl(
   }
 
   override suspend fun createCustomerPreferences(
-    customerId: String,
-    seatPreference: String,
-    classPreference: Int,
-    profileName: String,
-    language: Locale?
+    customerId: String, seatPreference: SeatPreference,
+    classPreference: Int, profileName: String, language: Locale?
   ): CustomerPreferences {
-    logger.debug("createCustomerPreferences : seatPreference $seatPreference, classPreference $classPreference and profileName $profileName with locale $language for customer $customerId")
-    val createCustomerPreferencesRequest =
-      CreateCustomerPreferencesWSRequest(seatPreference, classPreference, profileName)
-    val response = customerWebService.createCustomerPreferences(customerId, createCustomerPreferencesRequest, language)
-    return CustomerPreferences(
-      response.id,
-      customerId,
-      SeatPreference.valueOf(response.seatPreference),
-      response.classPreference,
-      response.profileName
+    logger.debug(
+      "saveCustomerPreferences : seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
+          " with locale\"{}\" for customer \"{}\"", seatPreference, classPreference, profileName, language, customerId
     )
-  }
-
-  override suspend fun saveCustomerPreferences(customerId: String, seatPreference: SeatPreference,
-    classPreference: Int, profileName: String, language: Locale?): CustomerPreferences {
-    logger.debug("saveCustomerPreferences : seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
-      " with locale\"{}\" for customer \"{}\"", seatPreference, classPreference, profileName, language, customerId)
     val createCustomerPreferencesRequest = CustomerPreferences(
       UUID.randomUUID().toString(),
       customerId,
       seatPreference,
       classPreference,
       profileName,
-      language)
+      language
+    )
     return database.save(createCustomerPreferencesRequest).awaitSingle()
   }
 
-  override suspend fun getCustomerPreferences(customerId: String): List<CustomerPreferences> {
+  @FlowPreview
+  override fun getCustomerPreferences(customerId: String): Flow<CustomerPreferences> {
     logger.debug("getCustomerPreferences for customer \"{}\"", customerId)
-    return database.findByCustomerId(customerId).collectList().awaitSingle().ifEmpty {
-      throw NotFoundException(customerId, "customer")
-    }
+    return database.findByCustomerId(customerId)
+      .asFlow()
+      .onEmpty { throw NotFoundException(customerId, "customer") };
   }
 }
 

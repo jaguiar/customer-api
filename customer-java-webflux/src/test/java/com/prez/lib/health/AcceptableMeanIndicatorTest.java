@@ -15,13 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
-public class AcceptableMeanIndicatorTest {
+class AcceptableMeanIndicatorTest {
 
   private final static Duration TIMEOUT = Duration.ofSeconds(5);
 
   @Test
   @DisplayName("health should return UNKNOWN health when there is no value in histogram")
-  public void health_shouldReturnUnknownHealth_whenNoValueInHistogram() throws Exception {
+  void health_shouldReturnUnknownHealth_whenNoValueInHistogram() throws Exception {
     //Arrange
     HistogramSupport mockHistogram = mock(HistogramSupport.class);
     when(mockHistogram.takeSnapshot()).thenReturn(
@@ -45,7 +45,7 @@ public class AcceptableMeanIndicatorTest {
 
   @Test
   @DisplayName("health should return UP health when the histogram mean is greater than the acceptable one")
-  public void health_shouldReturnUpHealth_whenHistogramMeanIsGreaterThanAcceptableMean() throws Exception {
+  void health_shouldReturnUpHealth_whenHistogramMeanIsGreaterThanAcceptableMean() throws Exception {
     //Arrange
     HistogramSupport mockHistogram = mock(HistogramSupport.class);
     when(mockHistogram.takeSnapshot()).thenReturn(getMockSnapshot(2l, 4d, 4d, new ValueAtPercentile[] {
@@ -70,7 +70,7 @@ public class AcceptableMeanIndicatorTest {
 
   @Test
   @DisplayName("health should return DOWN health when the histogram mean is lower than the acceptable one")
-  public void health_shouldReturnDownHealth_whenHistogramMeanIsLesserThanAcceptableMean() throws Exception {
+  void health_shouldReturnDownHealth_whenHistogramMeanIsLesserThanAcceptableMean() throws Exception {
     //Arrange
     HistogramSupport mockHistogram = mock(HistogramSupport.class);
     when(mockHistogram.takeSnapshot()).thenReturn(getMockSnapshot(2l, 0d, 0d, null));

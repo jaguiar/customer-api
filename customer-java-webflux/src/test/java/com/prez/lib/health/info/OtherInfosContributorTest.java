@@ -6,12 +6,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.info.Info;
 
-public class OtherInfosContributorTest {
+class OtherInfosContributorTest {
 
 
   @Test
   @DisplayName("contribute should contribute snapshot=True, startDate And ApplicationType when called")
-  public void contribute_shouldContributeSnapshotTrueStartDateAndResourceName_whenCalled() {
+  void contribute_shouldContributeSnapshotTrueStartDateAndResourceName_whenCalled() {
     //Arrange
     final Info.Builder infoBuilder = new Info.Builder();
     final OtherInfosContributor toTest = new OtherInfosContributor(true, "A great version for sure");
@@ -30,7 +30,7 @@ public class OtherInfosContributorTest {
 
   @Test
   @DisplayName("contribute should contribute snapshot=False, startDate And ApplicationType when called")
-  public void contribute_shouldContributeSnapshotFalseStartDateAndResourceName_whenCalled()  {
+  void contribute_shouldContributeSnapshotFalseStartDateAndResourceName_whenCalled()  {
     //Arrange
     final Info.Builder infoBuilder = new Info.Builder();
     final OtherInfosContributor toTest = new OtherInfosContributor(false, "Just a version");

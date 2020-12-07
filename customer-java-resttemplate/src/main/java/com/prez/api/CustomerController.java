@@ -1,9 +1,10 @@
 package com.prez.api;
 
+import static java.util.stream.Collectors.toList;
+
 import brave.SpanCustomizer;
 import com.prez.api.dto.CreateCustomerPreferencesRequest;
 import com.prez.api.dto.CustomerPreferencesProfileResponse;
-import com.prez.api.dto.CustomerPreferencesResponse;
 import com.prez.api.dto.CustomerResponse;
 import com.prez.model.Customer;
 import com.prez.model.CustomerPreferences;
@@ -55,7 +56,7 @@ public class CustomerController {
     spanCustomizer.tag("service", "POST /customers/preferences");
     LOGGER.info("CreateCustomerPreferences for user: {}, CustomerPreferences = {}", principal.getName(), validBody);
     final CustomerPreferences saved =
-        customerService.saveCustomerPreferences(principal.getName(), validBody.getSeatPreference(),
+        customerService.createCustomerPreferences(principal.getName(), validBody.getSeatPreference(),
             validBody.getClassPreference(), validBody.getProfileName(),
             LocaleUtils.toLocale(validBody.getLanguage()));
     return CustomerPreferencesProfileResponse.of(saved);
@@ -63,12 +64,13 @@ public class CustomerController {
 
   @GetMapping(produces = "application/json", path = "/preferences")
   @ResponseBody
-  public CustomerPreferencesResponse getCustomerPreferences(Principal principal) {
+  public List<CustomerPreferencesProfileResponse> getCustomerPreferences(Principal principal) {
     spanCustomizer.tag("service", "GET /customers/preferences");
     LOGGER.info("getCustomerPreferences for user: {}", principal.getName());
-    List<CustomerPreferences> customerPreferences = customerService.getCustomerPreferences(principal.getName());
-    return CustomerPreferencesResponse.of(customerPreferences);
+    return customerService.getCustomerPreferences(principal.getName())
+        .stream()
+        .map(CustomerPreferencesProfileResponse::of)
+        .collect(toList());
   }
-
 
 }

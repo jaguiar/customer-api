@@ -22,9 +22,9 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = ["test"])
 internal class GetCustomerPreferencesIntegrationTest(
-    @Autowired private val client: WebTestClient,
-    @Autowired private val customerInfoRedisTemplate: ReactiveRedisTemplate<String, Customer>,
-    @Autowired private val mongoOperations: ReactiveMongoOperations
+  @Autowired private val client: WebTestClient,
+  @Autowired private val customerInfoRedisTemplate: ReactiveRedisTemplate<String, Customer>,
+  @Autowired private val mongoOperations: ReactiveMongoOperations
 ) : UsingMongoDBAndRedis() {
 
   private val fakeTokenGenerator = FakeTokenGenerator("test-authorization-server")
@@ -43,11 +43,11 @@ internal class GetCustomerPreferencesIntegrationTest(
 
     // When && Then
     client.get().uri("/customers/preferences")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().isUnauthorized
-        .expectBody()
-        .isEmpty
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isUnauthorized
+      .expectBody()
+      .isEmpty
   }
 
   // Given
@@ -58,11 +58,11 @@ internal class GetCustomerPreferencesIntegrationTest(
 
     // When && Then
     client.get().uri("/customers/preferences")
-        .header("Authorization", "Bearer $accessToken")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().isForbidden
-        .expectBody().json("")
+      .header("Authorization", "Bearer $accessToken")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isForbidden
+      .expectBody().json("")
   }
 
   // Given
@@ -73,16 +73,18 @@ internal class GetCustomerPreferencesIntegrationTest(
 
     // When && Then
     client.get().uri("/customers/preferences")
-        .header("Authorization", "Bearer $accessToken")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().isNotFound
-        .expectBody().json("""
+      .header("Authorization", "Bearer $accessToken")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isNotFound
+      .expectBody().json(
+        """
           {
             "code":"NOT_FOUND",
             "message":"No result for the given customer id=trotro"
           }
-          """.trimIndent())
+          """.trimIndent()
+      )
   }
 
   // Given
@@ -90,29 +92,32 @@ internal class GetCustomerPreferencesIntegrationTest(
   fun `should return OK when found customer preferences`() {
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read")
-    mongoOperations.save(CustomerPreferences(
+    mongoOperations.save(
+      CustomerPreferences(
         customerId = "trotro",
         profileName = "rigolo",
         seatPreference = NO_PREFERENCE,
         classPreference = 2
-    )
+      )
     ).block()
-    mongoOperations.save(CustomerPreferences(
+    mongoOperations.save(
+      CustomerPreferences(
         customerId = "trotro",
         profileName = "drole",
         seatPreference = NEAR_WINDOW,
-        classPreference = 1)
+        classPreference = 1
+      )
     ).block()
 
     // When && Then
     client.get().uri("/customers/preferences")
-        .header("Authorization", "Bearer $accessToken")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().isOk
-        .expectBody().json("""
-          {
-            "profiles":[
+      .header("Authorization", "Bearer $accessToken")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isOk
+      .expectBody().json(
+        """
+           [
               {
                 "customerId":"trotro",
                 "profileName":"rigolo",
@@ -124,8 +129,8 @@ internal class GetCustomerPreferencesIntegrationTest(
                 "seatPreference":"NEAR_WINDOW",
                 "classPreference":1
               }]
-          }
-        """.trimIndent())
+        """.trimIndent()
+      )
 
   }
 }

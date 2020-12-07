@@ -18,9 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
 @Tag("docker")
 @SpringBootTest
+@ActiveProfiles("test")
 class CustomerCacheRepositoryTest extends UsingRedis {
 
   @Autowired
@@ -31,7 +33,7 @@ class CustomerCacheRepositoryTest extends UsingRedis {
 
   @BeforeEach
   void beforeEach() {
-    toTest = new CustomerCache(4L, customerInfoRedisTemplate); //FIXME c'est degueu
+    toTest = new CustomerCache(4L, customerInfoRedisTemplate);
     customerInfoRedisTemplate.delete(customerInfoRedisTemplate.keys("Customer:*")).block();
   }
 

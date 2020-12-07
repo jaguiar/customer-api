@@ -16,8 +16,7 @@ public class UsingRedis {
 
   @Container
   public static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:6.0.9"))
-      .withExposedPorts(REDIS_PORT)
-      .withReuse(true);
+      .withExposedPorts(REDIS_PORT);
 
   static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
     @Override

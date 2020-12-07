@@ -335,6 +335,254 @@ class CustomerWSClientTest {
         .contains("Unexpected error : ", "Connection reset")
     }
 
-    // TODO add full customer test
+  @Test
+  fun `getCustomer should return a customer when successful call to customer web service with a full response`(): Unit =
+    runBlocking {
+      // Given && When
+      val customerWSResponse = toTest.getCustomer("full-customer")
+
+      // Then
+      assertThat(customerWSResponse).isNotNull
+      val comparisonConf = RecursiveComparisonConfiguration()
+      comparisonConf.ignoreCollectionOrderInFields("misc.records.map")
+      assertThat(customerWSResponse).usingRecursiveComparison(comparisonConf)
+        .ignoringExpectedNullFields().isEqualTo(
+          GetCustomerWSResponse(
+            id = "72f028e2-fbb8-48b3-b943-bf4daad961ed",
+            personalDetails = PersonalDetails(
+              email = Email(
+                address = "elliotalderson@protonmail.com",
+                default = true,
+                confirmed = NestedValue(value = "CHECKED")
+              ),
+              cell = null
+            ),
+            personalInformation =
+            PersonalInformation(
+              civility = null,
+              firstName = "Elliot",
+              lastName = "Alderson",
+              alive = null,
+              birthdate = null
+            ),
+            cards = Cards(
+              listOf(
+                Card(
+                  number = "29090108600311527",
+                  type = NestedValue(value = "WEIRD_VALUE"),
+                  ticketless = true,
+                  disableStatus = NestedValue(value = "000")
+                ),
+                Card(
+                  number = "ER28-0652",
+                  type = NestedValue(value = "LOYALTY"),
+                  ticketless = true,
+                  disableStatus = NestedValue(value = "000")
+                ),
+                Card(
+                  number = "07239107/23/91",
+                  type = NestedValue(value = "FAMILY"),
+                  ticketless = true,
+                  disableStatus = NestedValue(value = "000")
+                )
+              )
+            ),
+            services = Services(
+              list = listOf(
+                Service(
+                  name = NestedValue(value = "fda"),
+                  status = NestedValue(value = "subscribed"),
+                  updatedTime = "2019-08-29T15:26:31Z"
+                ),
+                Service(
+                  name = NestedValue(value = "loyalty"),
+                  status = NestedValue(value = "B0B0B0"),
+                  updatedTime = "2019-11-10T00:00:00Z"
+                ),
+                Service(
+                  name = NestedValue(value = "dematerialization"),
+                  status = NestedValue(value = "subscribed"),
+                  updatedTime = "2019-08-29T15:28:09Z"
+                ),
+                Service(
+                  name = NestedValue(value = "photo"),
+                  status = NestedValue(value = "subscribed"),
+                  updatedTime = "2019-08-29T15:28:06Z"
+                )
+              )
+            ),
+            photos = Photos(
+              file = File(
+                id = "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/222748af-ba4b-4a58-91ce-817ab8454d33/photos/file"
+              )
+            ),
+            misc = listOf(
+              Misc(
+                type = NestedValue(value = "LOYALTY"),
+                count = 1,
+                hasMore = true,
+                records = listOf(
+                  Record(
+                    otherId = "ER28-0652",
+                    type = NestedValue(value = "LOYALY"),
+                    map = listOf(
+                      mapOf(
+                        "key" to "some_key",
+                        "value" to "some_value"
+                      ),
+                      mapOf(
+                        "key" to "loyalty_status_label",
+                        "value" to "PLATINIUM"
+                      ),
+                      mapOf(
+                        "key" to "status_d",
+                        "value" to "2019-11-10"
+                      ),
+                      mapOf(
+                        "key" to "how_are_you_today",
+                        "value" to "delusional"
+                      ),
+                      mapOf(
+                        "key" to "validity_end",
+                        "value" to "2020-11-09"
+                      ),
+                      mapOf(
+                        "key" to "loyalty_number",
+                        "value" to "ER28-0652"
+                      ),
+                      mapOf(
+                        "key" to "disable_status",
+                        "value" to "000"
+                      ),
+                      mapOf(
+                        "key" to "old_product_code",
+                        "value" to "FIDELITE"
+                      ),
+                      mapOf(
+                        "key" to "validity_start",
+                        "value" to "2019-11-10"
+                      ),
+                      mapOf(
+                        "key" to "loyalty_status",
+                        "value" to "B0B0B0"
+                      )
+                    )
+                  )
+                )
+              ),
+              Misc(
+                type = NestedValue(value = "PASS"),
+                count = 2,
+                hasMore = false,
+                records = listOf(
+                  Record(
+                    otherId = "07239107/23/91",
+                    type = NestedValue(value = "PASS"),
+                    map = listOf(
+                      mapOf(
+                        "key" to "pass_number",
+                        "value" to "07239107/23/91"
+                      ),
+                      mapOf(
+                        "key" to "some_other_key",
+                        "value" to "for_no_reason"
+                      ),
+                      mapOf(
+                        "key" to "pass_validity_end",
+                        "value" to "2021-12-23"
+                      ),
+                      mapOf(
+                        "key" to "sous_type",
+                        "value" to "PASS_QUI_S_ACHETE"
+                      ),
+                      mapOf(
+                        "key" to "old_pass_label",
+                        "value" to "Pass Famille"
+                      ),
+                      mapOf(
+                        "key" to "pass_is_active",
+                        "value" to "000"
+                      ),
+                      mapOf(
+                        "key" to "some_reference",
+                        "value" to "UWVDJW"
+                      ),
+                      mapOf(
+                        "key" to "pass_label",
+                        "value" to "FAMILY PASS"
+                      ),
+                      mapOf(
+                        "key" to "some_date_key",
+                        "value" to "2021-12-23"
+                      ),
+                      mapOf(
+                        "key" to "new_product_code ",
+                        " value " to " FAMILY"
+                      ),
+                      mapOf(
+                        "key" to "pass_validity_start",
+                        "value" to "2019-12-23"
+                      )
+
+                    )
+                  ),
+                  Record(
+                    otherId = "29090113600311527",
+                    type = NestedValue(value = "PASS"),
+                    map = listOf(
+                      mapOf(
+                        "key" to "pass_number",
+                        "value" to "29090113600311527"
+                      ),
+                      mapOf(
+                        "key" to "some_other_key",
+                        "value" to "for_no_reason"
+                      ),
+                      mapOf(
+                        "key" to "pass_validity_end",
+                        "value" to "2019-12-23"
+                      ),
+                      mapOf(
+                        "key" to "sous_type",
+                        "value" to "PASS_QUI_S_ACHETE"
+                      ),
+                      mapOf(
+                        "key" to "old_pass_label",
+                        "value" to "Pass Famille"
+                      ),
+                      mapOf(
+                        "key" to "pass_is_active",
+                        "value" to "000"
+                      ),
+                      mapOf(
+                        "key" to "some_reference",
+                        "value" to "ZZWWEE"
+                      ),
+                      mapOf(
+                        "key" to "pass_label",
+                        "value" to "FAMILY PASS"
+                      ),
+                      mapOf(
+                        "key" to "some_date_key",
+                        "value" to "2020-12-23"
+                      ),
+                      mapOf(
+                        "key" to "new_product_code",
+                        "value" to "FAMILY"
+                      ),
+                      mapOf(
+                        "key" to "pass_validity_start",
+                        "value" to "2018-12-23"
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+    }
+
+
 }
 

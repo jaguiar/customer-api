@@ -56,7 +56,6 @@ public class CustomerWebServiceConfig {
 
     @Bean(name = "customerRestTemplate")
     public RestOperations customerRestTemplate(CustomerWSProperties webServiceProperties) {
-        // TODO we should discuss names probably
         return createRestTemplate("CustomerWS", webServiceProperties, new CustomerErrorHandler());
     }
 

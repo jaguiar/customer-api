@@ -3,12 +3,14 @@ package com.prez.api
 import brave.SpanCustomizer
 import com.prez.api.dto.CreateCustomerPreferencesRequest
 import com.prez.api.dto.CustomerPreferencesProfileResponse
-import com.prez.api.dto.CustomerPreferencesResponse
 import com.prez.api.dto.CustomerResponse
 import com.prez.extension.toCustomerPreferencesProfileResponse
 import com.prez.extension.toCustomerResponse
 import com.prez.model.CustomerPreferences
 import com.prez.service.CustomerService
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.apache.commons.lang3.LocaleUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -43,7 +45,7 @@ class CustomerController(private val customerService: CustomerService, private v
   ): CustomerPreferencesProfileResponse {
     spanCustomizer.tag("service", "POST /customers/preferences")
     LOGGER.info("CreateCustomerPreferences for user: {}, CustomerPreferences = {}", principal.name, validBody)
-    val saved = customerService.saveCustomerPreferences(
+    val saved = customerService.createCustomerPreferences(
       principal.name, validBody.seatPreference,
       validBody.classPreference, validBody.profileName,
       LocaleUtils.toLocale(validBody.language)
@@ -51,20 +53,17 @@ class CustomerController(private val customerService: CustomerService, private v
     return saved.toCustomerPreferencesProfileResponse()
   }
 
+  @FlowPreview
   @GetMapping(produces = ["application/json"], path = ["/preferences"])
   @ResponseBody
-  suspend fun getCustomerPreferences(principal: Principal): CustomerPreferencesResponse {
+  fun getCustomerPreferences(principal: Principal): Flow<CustomerPreferencesProfileResponse> {
     spanCustomizer.tag("service", "GET /customers/preferences")
     LOGGER.info("getCustomerPreferences for user: {}", principal.name)
-    val customerPreferences = customerService.getCustomerPreferences(principal.name)
-    return toCustomerPreferencesResponse(customerPreferences)
+    return customerService.getCustomerPreferences(principal.name)
+      .map(CustomerPreferences::toCustomerPreferencesProfileResponse)
   }
 
   companion object {
     private val LOGGER = LoggerFactory.getLogger(CustomerController::class.java)
-    private fun toCustomerPreferencesResponse(profiles: List<CustomerPreferences>): CustomerPreferencesResponse {
-      val profilesResponse = profiles.map { it.toCustomerPreferencesProfileResponse() }.toList()
-      return CustomerPreferencesResponse(profilesResponse);
-    }
   }
 }

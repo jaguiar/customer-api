@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.prez.UsingMongoDBAndRedis;
-import com.prez.api.dto.CreateCustomerPreferencesRequest;
 import com.prez.model.Customer;
 import com.prez.model.CustomerPreferences;
 import com.prez.utils.FakeTokenGenerator;
@@ -212,5 +211,5 @@ class CreateCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
     );
   }
 
-  // TODO add other tests ?
+  // we could have added other tests with timeouts... (like "a real app in production", right? :>)
 }

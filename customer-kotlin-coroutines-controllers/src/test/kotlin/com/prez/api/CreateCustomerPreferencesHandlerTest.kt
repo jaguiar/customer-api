@@ -49,7 +49,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
         profileName = "Trotro",
         language = "fr"
       )
-      `when`(customerService.saveCustomerPreferences("Ane", NO_PREFERENCE, 1, "Trotro", FRENCH))
+      `when`(customerService.createCustomerPreferences("Ane", NO_PREFERENCE, 1, "Trotro", FRENCH))
         .thenReturn(
           CustomerPreferences(
             id = "ane.trotro@rigo.lo",
@@ -83,7 +83,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
                   """.trimIndent()
         )
       verify(customerService)
-        .saveCustomerPreferences("Ane", NO_PREFERENCE, 1, "Trotro", FRENCH)
+        .createCustomerPreferences("Ane", NO_PREFERENCE, 1, "Trotro", FRENCH)
     }
 
   @Test
@@ -97,7 +97,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
         classPreference = 1,
         profileName = "Trotro"
       )
-      `when`(customerService.saveCustomerPreferences("Ane", NO_PREFERENCE, 1, "Trotro", null))
+      `when`(customerService.createCustomerPreferences("Ane", NO_PREFERENCE, 1, "Trotro", null))
         .thenReturn(
           CustomerPreferences(
             id = "ane.trotro@rigo.lo",
@@ -130,7 +130,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
                   """.trimIndent()
         )
       verify(customerService)
-        .saveCustomerPreferences("Ane", NO_PREFERENCE, 1, "Trotro", null)
+        .createCustomerPreferences("Ane", NO_PREFERENCE, 1, "Trotro", null)
     }
 
   @Test
@@ -159,9 +159,9 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .value(startsWith("1 error(s) while validating createCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(containsString("The language is not valid. Accepted languages are : fr,de,es,en,it,pt"))
 
-    // FIXME noteworthy https://discuss.kotlinlang.org/t/how-to-use-mockito-with-kotlin/324/13
+    // noteworthy https://discuss.kotlinlang.org/t/how-to-use-mockito-with-kotlin/324/13
     // any() must not be null at the second argument
-    verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+    verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
 
   @Test
@@ -182,7 +182,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .expectStatus().isForbidden
       .expectBody(String::class.java)
       .isEqualTo<Nothing>("CSRF Token has been associated to this client")
-    verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+    verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
 
   @Test
@@ -205,7 +205,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
         .exchange()
         .expectStatus().isForbidden
         .expectBody().json("")
-      verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+      verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
     }
 
 
@@ -232,7 +232,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .expectBody().json("{\"code\":\"VALIDATION_ERROR\"}")
     // Here we don't get the fancy message because of DecodingException due to non-null field
 
-    verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+    verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
 
   @Test
@@ -257,7 +257,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
       .expectBody().json("{\"code\":\"VALIDATION_ERROR\"}")
     // Here we don't get the fancy message because of DecodingException due to non-null field
-    verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+    verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
 
   @Test
@@ -285,14 +285,14 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .value(startsWith("1 error(s) while validating createCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(containsString("Max value for class preference is 2"))
 
-    verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+    verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
 
   @Test
   fun `POST customers preferences should return 400 bad request when profileName is null`(): Unit = runBlocking {
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.write")
-    val toCreate = // TODO Note Autre différence avec la version Java
+    val toCreate = //Note Autre différence avec la version Java
       """
             {
             "seatPreference":"NEAR_CORRIDOR",
@@ -314,7 +314,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .expectBody().json("{\"code\":\"VALIDATION_ERROR\"}")
     // Here we don't get the fancy message because of DecodingException due to non-null field
 
-    verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), isNull())
+    verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), isNull())
   }
 
   @Test
@@ -343,7 +343,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
         .jsonPath("$.message")
         .value(startsWith("1 error(s) while validating createCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The profile name contains forbidden characters"))
-      verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+      verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
     }
 
   @Test
@@ -368,7 +368,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
       .expectBody().json("""{"code":"VALIDATION_ERROR"}""")
     // Here we don't get the fancy message because of DecodingException due to non-null field
-    verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+    verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
 
   @Test
@@ -397,7 +397,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .jsonPath("$.message")
       .value(startsWith("1 error(s) while validating createCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(containsString("The profile name should have a size between 1 and 50 characters"))
-    verify(customerService, never()).saveCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
+    verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
 
   @Test
@@ -412,7 +412,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
         language = "fr"
       )
 
-      `when`(customerService.saveCustomerPreferences("boom", NEAR_WINDOW, 2, "Boom", FRENCH))
+      `when`(customerService.createCustomerPreferences("boom", NEAR_WINDOW, 2, "Boom", FRENCH))
         .thenThrow(RuntimeException("Boom badaboum!!!"))
 
       // When && Then
@@ -425,16 +425,17 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
         .exchange()
         .expectStatus().is5xxServerError
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
-        .expectBody().json("""
+        .expectBody().json(
+          """
         {
           "code":"UNEXPECTED_ERROR",
           "message":"Something horribly wrong happened, I could tell you what but then I’d have to kill you."
         }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
   /**
-   * FIXME
    * Look at this thread for more explanation of this weird thing
    * https://discuss.kotlinlang.org/t/how-to-use-mockito-with-kotlin/324
    */

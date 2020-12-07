@@ -9,7 +9,8 @@ import reactor.core.publisher.Mono
 import java.time.Duration
 
 // because Spring Data does not implement a reactive version of ReactiveCrudRepository for Redis
-interface CustomerCacheRepository { /* FIXME Is the above still true today ? extends ReactiveCrudRepository<Customer, String> */
+// https://jira.spring.io/browse/DATAREDIS-831
+interface CustomerCacheRepository { /* extends ReactiveCrudRepository<Customer, String> */
     /**
      * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
      * entity instance completely.

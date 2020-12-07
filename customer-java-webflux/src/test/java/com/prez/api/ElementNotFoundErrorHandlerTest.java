@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.reactive.function.server.MockServerRequest;
+import org.springframework.web.reactive.function.server.EntityResponse;
 import org.springframework.web.reactive.function.server.HandlerFunction;
+import org.springframework.web.reactive.function.server.RenderingResponse;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
@@ -31,11 +33,13 @@ class ElementNotFoundErrorHandlerTest {
     final MockServerRequest serverRequest = MockServerRequest.builder().build();
 
     // When
-    final ServerResponse serverResponse = toTest.filter(serverRequest, webServiceException).block();
+    final EntityResponse serverResponse = (EntityResponse) toTest.filter(serverRequest, webServiceException).block();
 
     // Then
     assertThat(serverResponse.statusCode()).isEqualTo(NOT_FOUND);
-    // FIXME we are not able to test the body
+    assertThat(serverResponse.entity())
+        .hasFieldOrPropertyWithValue("code", "NOT_FOUND")
+        .hasFieldOrPropertyWithValue("message", "No result for the given Being id=Nonexistent");
   }
 
   @Test

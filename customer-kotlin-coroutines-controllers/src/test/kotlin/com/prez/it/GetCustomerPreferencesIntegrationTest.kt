@@ -90,18 +90,21 @@ internal class GetCustomerPreferencesIntegrationTest(
   fun `should return OK when found customer preferences`() {
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read")
-    mongoOperations.save(CustomerPreferences(
-      customerId = "trotro",
-      profileName = "rigolo",
-      seatPreference = NO_PREFERENCE,
-      classPreference = 2
-    )
+    mongoOperations.save(
+      CustomerPreferences(
+        customerId = "trotro",
+        profileName = "rigolo",
+        seatPreference = NO_PREFERENCE,
+        classPreference = 2
+      )
     ).block()
-    mongoOperations.save(CustomerPreferences(
-      customerId = "trotro",
-      profileName = "drole",
-      seatPreference = NEAR_WINDOW,
-      classPreference = 1)
+    mongoOperations.save(
+      CustomerPreferences(
+        customerId = "trotro",
+        profileName = "drole",
+        seatPreference = NEAR_WINDOW,
+        classPreference = 1
+      )
     ).block()
 
     // When && Then
@@ -110,9 +113,9 @@ internal class GetCustomerPreferencesIntegrationTest(
       .accept(MediaType.APPLICATION_JSON)
       .exchange()
       .expectStatus().isOk
-      .expectBody().json("""
-          {
-            "profiles":[
+      .expectBody().json(
+        """
+            [
               {
                 "customerId":"trotro",
                 "profileName":"rigolo",
@@ -124,8 +127,8 @@ internal class GetCustomerPreferencesIntegrationTest(
                 "seatPreference":"NEAR_WINDOW",
                 "classPreference":1
               }]
-          }
-        """.trimIndent())
+        """.trimIndent()
+      )
 
   }
 }

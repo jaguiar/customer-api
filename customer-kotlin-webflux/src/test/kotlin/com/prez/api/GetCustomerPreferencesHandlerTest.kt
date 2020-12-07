@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
-import reactor.core.publisher.Mono
+import reactor.core.publisher.Flux
 
 
 @SpringBootTest
@@ -34,11 +34,11 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().isUnauthorized
-        .expectBody()
-        .isEmpty
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isUnauthorized
+      .expectBody()
+      .isEmpty
     verify(customerService, never()).getCustomerPreferences(ArgumentMatchers.anyString())
   }
 
@@ -49,11 +49,11 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")
-        .header("Authorization", "Bearer $accessToken")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().isForbidden
-        .expectBody().json("")
+      .header("Authorization", "Bearer $accessToken")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isForbidden
+      .expectBody().json("")
     verify(customerService, never()).getCustomerPreferences(ArgumentMatchers.anyString())
   }
 
@@ -63,20 +63,22 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read")
     `when`(customerService.getCustomerPreferences("trotro"))
-        .thenReturn(Mono.error(NotFoundException("trotro", "Ane")))
+      .thenReturn(Flux.empty())
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")
-        .header("Authorization", "Bearer $accessToken")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().isNotFound
-        .expectBody().json("""
+      .header("Authorization", "Bearer $accessToken")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isNotFound
+      .expectBody().json(
+        """
           {
             "code":"NOT_FOUND",
-            "message":"No result for the given Ane id=trotro"
+            "message":"No result for the given customer id=trotro"
           }
-        """.trimIndent())
+        """.trimIndent()
+      )
   }
 
   @Test
@@ -85,29 +87,33 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("trotro", 3600, "customer.read")
     `when`(customerService.getCustomerPreferences("trotro"))
-        .thenReturn(Mono.just(listOf(CustomerPreferences(
+      .thenReturn(
+        Flux.just(
+          CustomerPreferences(
             customerId = "trotro",
             profileName = "rigolo",
             seatPreference = SeatPreference.NO_PREFERENCE,
             classPreference = 2
-        ))))
+          )
+        )
+      )
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")
-        .header("Authorization", "Bearer $accessToken")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().isOk
-        .expectBody().json("""
-            {
-              "profiles":[{
+      .header("Authorization", "Bearer $accessToken")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isOk
+      .expectBody().json(
+        """
+             [{
                 "customerId":"trotro",
                 "seatPreference":"NO_PREFERENCE",
                 "classPreference":2,
                 "profileName":"rigolo"
               }]
-            }
-            """.trimIndent())
+            """.trimIndent()
+      )
 
     verify(customerService).getCustomerPreferences("trotro")
   }
@@ -118,19 +124,21 @@ internal class GetCustomerPreferencesHandlerTest(@Autowired val webTestClient: W
     // Given
     val accessToken = fakeTokenGenerator.generateNotExpiredSignedToken("boom", 3600, "customer.read")
     `when`(customerService.getCustomerPreferences("boom"))
-        .thenThrow(RuntimeException("Boom badaboum"))
+      .thenThrow(RuntimeException("Boom badaboum"))
 
     // When && Then
     webTestClient.get().uri("/customers/preferences")
-        .header("Authorization", "Bearer $accessToken")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchange()
-        .expectStatus().is5xxServerError
-        .expectBody().json("""
+      .header("Authorization", "Bearer $accessToken")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().is5xxServerError
+      .expectBody().json(
+        """
         {
           "code":"UNEXPECTED_ERROR",
           "message":"Something horribly wrong happened, I could tell you what but then I’d have to kill you."
         }
-        """.trimIndent())
+        """.trimIndent()
+      )
   }
 }

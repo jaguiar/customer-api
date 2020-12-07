@@ -45,8 +45,8 @@ public class CustomerService {
         );
   }
 
-  public CustomerPreferences saveCustomerPreferences(String customerId, SeatPreference seatPreference,
-                                                             Integer classPreference, String profileName, Locale language) {
+  public CustomerPreferences createCustomerPreferences(String customerId, SeatPreference seatPreference,
+                                                       Integer classPreference, String profileName, Locale language) {
     LOGGER.debug("saveCustomerPreferences : " +
                     "seatPreference \"{}\", classPreference \"{}\" and profileName \"{}\"" +
                     " with locale\"{}\" for customer \"{}\"",
@@ -63,7 +63,6 @@ public class CustomerService {
 
   public List<CustomerPreferences> getCustomerPreferences(String customerId) {
     LOGGER.debug("getCustomerPreferences for customer: \"{}\"", customerId);
-    // FIXME mieux gérer l'exception
     List<CustomerPreferences> preferences = database.findByCustomerId(customerId);
     if (preferences == null || preferences.isEmpty()) {
       throw new NotFoundException(customerId, "customer");

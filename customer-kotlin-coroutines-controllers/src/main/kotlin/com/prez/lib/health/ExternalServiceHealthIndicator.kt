@@ -52,7 +52,7 @@ class ExternalServiceHealthIndicator(
         String::class.java
       ) // we need to consume the body if any if we do not want to die a terrible death : https://docs.spring.io/spring/docs/5.1.5.RELEASE/spring-framework-reference/web-reactive.html#webflux-client-retrieve
       .defaultIfEmpty("") //to handle no content body
-      .flatMap { b: String ->
+      .flatMap {
         Mono.just(
           Health.Builder().up().withDetail("name", serviceName).withDetail("url", serviceUrl).build()
         )

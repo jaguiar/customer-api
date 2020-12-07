@@ -21,7 +21,7 @@ open class UsingMongoDB {
 
   internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
-      mongodb.withReuse(true) // FIXME ? another difference with Java version
+      mongodb.withReuse(true) // another difference with Java version
       mongodb.start()
       TestPropertyValues.of(
           "spring.data.mongodb.uri=mongodb://127.0.0.1:" + mongodb.getMappedPort(MONGODB_PORT),

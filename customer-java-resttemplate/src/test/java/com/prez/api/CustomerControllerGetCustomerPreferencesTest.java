@@ -110,10 +110,10 @@ class CustomerControllerGetCustomerPreferencesTest {
         .header("Authorization", "Bearer " + accessToken)
         .accept(APPLICATION_JSON))
         .andExpect(status().is(200))
-        .andExpect(content().json("{\"profiles\":[{\"customerId\":\"trotro\","
+        .andExpect(content().json("[{\"customerId\":\"trotro\","
             + "\"seatPreference\":\"NO_PREFERENCE\","
             + "\"classPreference\":2,"
-            + "\"profileName\":\"rigolo\"}]}"));
+            + "\"profileName\":\"rigolo\"}]"));
     verify(customerService).getCustomerPreferences("trotro");
   }
 }

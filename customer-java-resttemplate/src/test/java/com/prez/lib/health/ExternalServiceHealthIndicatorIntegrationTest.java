@@ -5,10 +5,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.head;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.time.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -18,10 +18,10 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 
 @Tag("integration")
-public class ExternalServiceHealthIndicatorTest {
+class ExternalServiceHealthIndicatorIntegrationTest {
 
   private final static String INDICATOR_NAME = "LaCompagnieCreole";
-  private final static Duration TIMEOUT = Duration.ofSeconds(5);
+
 
   private static final WireMockRule wireMockRule = new WireMockRule(options()
       .dynamicPort());
@@ -42,14 +42,14 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when Health is UP")
-  public void health_shouldReturnHealth_whenHealthIsUp() {
+  void health_shouldReturnHealth_whenHealthIsUp() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withBody("Decalecatan, decalecatan, ohe, ohe !").withStatus(200))
     );
 
     //Act
-    Health result = toTest.health().block(TIMEOUT);
+    Health result = toTest.health();
 
     //Assert
     assertEquals(Status.UP, result.getStatus());
@@ -59,67 +59,71 @@ public class ExternalServiceHealthIndicatorTest {
 
   @Test
   @DisplayName("health shouldReturn Health when Health is DOWN (5xx)")
-  public void health_shouldReturnHealth_whenHealthIsDown5xx() {
+  void health_shouldReturnHealth_whenHealthIsDown5xx() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withBody("I'm dead").withStatus(500))
     );
 
     //Act
-    Health result = toTest.health().block(TIMEOUT);
+    Health result = toTest.health();
 
     //Assert
     assertEquals(Status.DOWN, result.getStatus());
     assertEquals(INDICATOR_NAME, result.getDetails().get("name"));
-    assertEquals("500 Internal Server Error from HEAD http://localhost:" + wireMockRule.port(),
-        result.getDetails().get("error"));
+    assertEquals((String) result.getDetails().get("url"), "http://localhost:" + wireMockRule.port());
+    assertThat((String) result.getDetails().get("error")).contains("500 Server Error");
   }
 
 
   @Test
   @DisplayName("health shouldReturn Health when Health is DOWN (4xx)")
-  public void health_shouldReturnHealth_whenHealthIsDown_4xx() {
+  void health_shouldReturnHealth_whenHealthIsDown_4xx() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withStatus(404))
     );
 
     //Act
-    Health result = toTest.health().block(TIMEOUT);
+    Health result = toTest.health();
 
     //Assert
     assertEquals(Status.DOWN, result.getStatus());
     assertEquals(INDICATOR_NAME, result.getDetails().get("name"));
-    assertEquals("404 Not Found from HEAD http://localhost:" + wireMockRule.port(), result.getDetails().get("error"));
+    assertThat((String) result.getDetails().get("url"))
+        .contains("http://localhost:" + wireMockRule.port());
+    assertThat((String) result.getDetails().get("error"))
+        .contains("404 Not Found");
   }
 
   @Test
   @DisplayName("health shouldReturn Health when there is a timeout")
-  public void health_shouldReturnHealth_whenTimeout() {
+  void health_shouldReturnHealth_whenTimeout() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withFixedDelay(3000))
     );
 
     //Act
-    Health result = toTest.health().block(TIMEOUT);
+    Health result = toTest.health();
 
     //Assert
     assertEquals(Status.DOWN, result.getStatus());
     assertEquals(INDICATOR_NAME, result.getDetails().get("name"));
-    assertEquals("io.netty.handler.timeout.ReadTimeoutException", result.getDetails().get("error"));
+    String error = (String) result.getDetails().get("error");
+    assertThat(error).contains("Read timed out");
   }
 
   @Test
   @DisplayName("health shouldReturn Health when the body is empty")
-  public void health_shouldReturnHealth_whenEmptyBody() {
+  void health_shouldReturnHealth_whenEmptyBody() {
     //Arrange
     wireMockRule.stubFor(
         head(urlEqualTo("/")).willReturn(aResponse().withStatus(200))
     );
 
     //Act
-    Health result = toTest.health().block(TIMEOUT);
+    Health result = toTest.health();
 
     //Assert
     assertEquals(Status.UP, result.getStatus());

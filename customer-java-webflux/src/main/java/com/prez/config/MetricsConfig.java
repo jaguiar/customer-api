@@ -12,7 +12,6 @@ public class MetricsConfig {
 
   @Bean(name = "customerWSSummary")
   public DistributionSummary customerSourceSummary(MeterRegistry metricRegistry) {
-    // FIXME config ~xxxx requêtes pour un serveur en heure
     return DistributionSummary.builder("customer.webservice.get")
         .description("Error/success ratio for customer web service call")
         .distributionStatisticBufferLength(5)
