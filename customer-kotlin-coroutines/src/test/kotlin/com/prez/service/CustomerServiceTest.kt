@@ -7,12 +7,14 @@ import com.prez.model.Customer
 import com.prez.model.CustomerPreferences
 import com.prez.model.LoyaltyProgram
 import com.prez.model.LoyaltyStatus._019875
+import com.prez.model.SeatPreference.NEAR_CORRIDOR
 import com.prez.model.SeatPreference.NEAR_WINDOW
 import com.prez.ws.CustomerWSClient
 import com.prez.ws.model.Email
 import com.prez.ws.model.GetCustomerWSResponse
 import com.prez.ws.model.PersonalDetails
 import com.prez.ws.model.PersonalInformation
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -27,6 +29,7 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.util.Locale.ENGLISH
@@ -137,7 +140,7 @@ class CustomerServiceTest {
   @Test
   fun `createCustomerPreferences should save with customerPreferencesRepository`(): Unit = runBlocking {
     // Given
-    val expected: CustomerPreferences = CustomerPreferences(
+    val expected = CustomerPreferences(
       id = "Iprefer007",
       customerId = "James",
       seatPreference = NEAR_WINDOW,
@@ -171,7 +174,62 @@ class CustomerServiceTest {
     verify(customerPreferencesRepository).save(captured)
   }
 
-  // TODO get customer preferences
+  @Test
+  fun `getCustomerPreferences should return found customer preferences from repository when present`(): Unit = runBlocking {
+    // Given
+    val doubleZero7 = CustomerPreferences(
+      id = "Iprefer007",
+      customerId = "James",
+      seatPreference = NEAR_WINDOW,
+      classPreference = 1,
+      profileName = "Bond",
+      language = ENGLISH
+    )
+    val gordon = CustomerPreferences(
+      id = "IpreferJim",
+      customerId = "James",
+      seatPreference = NEAR_CORRIDOR,
+      classPreference = 2,
+      profileName = "Gordon",
+      language = ENGLISH
+    )
+
+    `when`(customerPreferencesRepository.findByCustomerId("James")).thenReturn(Flux.just(doubleZero7, gordon))
+
+    // When
+    val customerPreferences = toTest.getCustomerPreferences("James").toList()
+
+    // Then
+    assertThat(customerPreferences).isNotNull
+    assertThat(customerPreferences).hasSize(2)
+    assertThat(customerPreferences[0])
+      .hasFieldOrPropertyWithValue("id", "Iprefer007")
+      .hasFieldOrPropertyWithValue("customerId", "James")
+      .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+      .hasFieldOrPropertyWithValue("classPreference", 1)
+      .hasFieldOrPropertyWithValue("profileName", "Bond")
+      .hasFieldOrPropertyWithValue("language", ENGLISH)
+    assertThat(customerPreferences[1])
+      .hasFieldOrPropertyWithValue("customerId", "James")
+      .hasFieldOrPropertyWithValue("seatPreference", NEAR_CORRIDOR)
+      .hasFieldOrPropertyWithValue("classPreference", 2)
+      .hasFieldOrPropertyWithValue("profileName", "Gordon")
+      .hasFieldOrPropertyWithValue("language", ENGLISH)
+    verify(customerPreferencesRepository).findByCustomerId("James")
+  }
+
+  @Test
+  fun `getCustomerPreferences should return nothing when no customer preferences in repository`(): Unit = runBlocking {
+    // Given
+    `when`(customerPreferencesRepository.findByCustomerId("James")).thenReturn(Flux.empty())
+
+    // When
+    val customerPreferences = toTest.getCustomerPreferences("James").toList()
+
+    // Then
+    assertThat(customerPreferences).isEmpty()
+    verify(customerPreferencesRepository).findByCustomerId("James")
+  }
 
   /*
    Et là ... vous vous demandez surement pourquoi ces 2 fonctions ?

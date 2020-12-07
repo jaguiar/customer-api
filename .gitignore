@@ -1,0 +1,13 @@
+*.iml
+.idea/
+target/
+*.class
+.DS_Store
+.vscode/
+.project
+.classpath
+.settings/
+node/
+node_modules/
+elasticsearch-data/
+.editorconfig

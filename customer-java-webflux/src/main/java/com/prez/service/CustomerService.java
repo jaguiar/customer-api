@@ -7,7 +7,6 @@ import com.prez.model.Customer;
 import com.prez.model.CustomerPreferences;
 import com.prez.model.SeatPreference;
 import com.prez.ws.CustomerWSClient;
-import com.prez.ws.model.CreateCustomerPreferencesWSRequest;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;

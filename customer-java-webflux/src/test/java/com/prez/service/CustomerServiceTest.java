@@ -1,6 +1,7 @@
 package com.prez.service;
 
 import static com.prez.model.LoyaltyStatus._019875;
+import static com.prez.model.SeatPreference.NEAR_CORRIDOR;
 import static com.prez.model.SeatPreference.NEAR_WINDOW;
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +23,7 @@ import com.prez.ws.model.GetCustomerWSResponse;
 import com.prez.ws.model.PersonalDetails;
 import com.prez.ws.model.PersonalInformation;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
@@ -173,5 +176,68 @@ class CustomerServiceTest {
         .hasFieldOrPropertyWithValue("language", ENGLISH);
 
     verify(customerPreferencesRepository).save(captured);
+  }
+
+  @Test
+  @DisplayName("getCustomerPreferences should return found customer preferences from repository when present")
+  void shouldReturnFoundPreferencesFromRepository() {
+    // Given
+    final CustomerPreferences doubleZero7 = CustomerPreferences.builder()
+        .id("Iprefer007")
+        .customerId("James")
+        .seatPreference(NEAR_WINDOW)
+        .classPreference(1)
+        .profileName("Bond")
+        .language(ENGLISH)
+        .build();
+    final CustomerPreferences gordon = CustomerPreferences.builder()
+        .id("IpreferJim")
+        .customerId("James")
+        .seatPreference(NEAR_CORRIDOR)
+        .classPreference(2)
+        .profileName("Gordon")
+        .language(ENGLISH)
+        .build();
+
+    when(customerPreferencesRepository.findByCustomerId("James")).thenReturn(Flux.just(doubleZero7, gordon));
+
+    // When
+    final List<CustomerPreferences> customerPreferences =
+        toTest.getCustomerPreferences("James").collectList().block();
+
+    // Then
+    assertThat(customerPreferences).isNotNull();
+    assertThat(customerPreferences).hasSize(2);
+    assertThat(customerPreferences.get(0))
+        .hasFieldOrPropertyWithValue("id", "Iprefer007")
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+        .hasFieldOrPropertyWithValue("classPreference", 1)
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH);
+
+    assertThat(customerPreferences.get(1))
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_CORRIDOR)
+        .hasFieldOrPropertyWithValue("classPreference", 2)
+        .hasFieldOrPropertyWithValue("profileName", "Gordon")
+        .hasFieldOrPropertyWithValue("language", ENGLISH);
+
+    verify(customerPreferencesRepository).findByCustomerId("James");
+  }
+
+  @Test
+  @DisplayName("getCustomerPreferences should return nothing when no customer preferences in repository")
+  void shouldReturnEmptyWhenNoCustomerPreferencesInRepository() {
+    // Given
+    when(customerPreferencesRepository.findByCustomerId("James")).thenReturn(Flux.empty());
+
+    // When
+    final List<CustomerPreferences> customerPreferences =
+        toTest.getCustomerPreferences("James").collectList().block();
+
+    // Then
+    assertThat(customerPreferences).isEmpty();
+    verify(customerPreferencesRepository).findByCustomerId("James");
   }
 }

@@ -15,9 +15,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.test.context.ActiveProfiles;
 
 @Tag("docker")
 @DataMongoTest
+@ActiveProfiles("test")
 class CustomerPreferencesRepositoryTest extends UsingMongoDB {
     @Autowired
     private ReactiveMongoOperations mongoOperations;

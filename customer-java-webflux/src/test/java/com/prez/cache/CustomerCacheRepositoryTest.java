@@ -18,9 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
 @Tag("docker")
 @SpringBootTest
+@ActiveProfiles("test")
 class CustomerCacheRepositoryTest extends UsingRedis {
 
   @Autowired

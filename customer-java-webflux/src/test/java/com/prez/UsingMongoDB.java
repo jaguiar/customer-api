@@ -14,8 +14,7 @@ public class UsingMongoDB {
 
     @Container
     public static GenericContainer<?> mongodb = new GenericContainer<>(DockerImageName.parse("mongo:4.0"))
-            .withExposedPorts(MONGODB_PORT)
-            .withReuse(true);
+            .withExposedPorts(MONGODB_PORT);
 
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override

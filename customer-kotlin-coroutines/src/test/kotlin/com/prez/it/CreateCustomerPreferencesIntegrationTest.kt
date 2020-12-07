@@ -3,7 +3,6 @@ package com.prez.it
 import com.prez.UsingMongoDBAndRedis
 import com.prez.model.Customer
 import com.prez.utils.FakeTokenGenerator
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
@@ -25,8 +24,6 @@ class CreateCustomerPreferencesIntegrationTest(
 ) : UsingMongoDBAndRedis() {
   companion object {
     private val fakeTokenGenerator: FakeTokenGenerator = FakeTokenGenerator("test-authorization-server")
-    private val validToken =
-      fakeTokenGenerator.generateNotExpiredSignedToken("subzero", 3600, "customer.read customer.write")
   }
 
   @BeforeEach

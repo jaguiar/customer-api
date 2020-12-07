@@ -7,6 +7,7 @@ import com.prez.model.Customer
 import com.prez.model.CustomerPreferences
 import com.prez.model.LoyaltyProgram
 import com.prez.model.LoyaltyStatus._019875
+import com.prez.model.SeatPreference.NEAR_CORRIDOR
 import com.prez.model.SeatPreference.NEAR_WINDOW
 import com.prez.ws.CustomerWSClient
 import com.prez.ws.model.Email
@@ -27,6 +28,7 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.util.Locale.ENGLISH
@@ -69,22 +71,22 @@ class CustomerServiceTest {
   fun `getCustomerInfo should not call Customer web service when customer found in cache`() {
     // Given the cache does found the customer 123456789
     val expected = Customer(
-      customerId = "123456789",
-      firstName = "Jack",
-      lastName = "Bauer",
-      phoneNumber = null,
-      email = "jb@boom.com",
-      birthDate = LocalDate.of(1966, 2, 18),
-      loyaltyProgram = LoyaltyProgram(
-        number = "008",
-        status = _019875,
-        statusRefLabel = "_019875 IT IS",
-        validityStartDate = LocalDate.now(),
-        validityEndDate = LocalDate.MAX
-      )
+        customerId = "123456789",
+        firstName = "Jack",
+        lastName = "Bauer",
+        phoneNumber = null,
+        email = "jb@boom.com",
+        birthDate = LocalDate.of(1966, 2, 18),
+        loyaltyProgram = LoyaltyProgram(
+            number = "008",
+            status = _019875,
+            statusRefLabel = "_019875 IT IS",
+            validityStartDate = LocalDate.now(),
+            validityEndDate = LocalDate.MAX
+        )
     )
     `when`(customerCacheRepository.findById("123456789")).thenReturn(
-      Mono.just(expected)
+        Mono.just(expected)
     )
 
     // When I get the customer 123456789
@@ -102,21 +104,21 @@ class CustomerServiceTest {
     `when`(customerCacheRepository.findById("123456789")).thenReturn(Mono.empty())
     // The WS is called
     `when`(customerWSClient.getCustomer("123456789"))
-      .thenReturn(
-        Mono.just(
-          GetCustomerWSResponse(
-            id = "123456789",
-            personalInformation = PersonalInformation(
-              civility = null,
-              firstName = "Jack",
-              lastName = "Bower",
-              alive = null,
-              birthdate = null
-            ),
-            personalDetails = PersonalDetails(email = Email("jb@boom.com"), cell = null)
-          )
+        .thenReturn(
+            Mono.just(
+                GetCustomerWSResponse(
+                    id = "123456789",
+                    personalInformation = PersonalInformation(
+                        civility = null,
+                        firstName = "Jack",
+                        lastName = "Bower",
+                        alive = null,
+                        birthdate = null
+                    ),
+                    personalDetails = PersonalDetails(email = Email("jb@boom.com"), cell = null)
+                )
+            )
         )
-      )
     `when`(customerCacheRepository.save(any())).thenReturn(Mono.just(true))
 
     // When
@@ -137,41 +139,94 @@ class CustomerServiceTest {
   @Test
   fun `createCustomerPreferences should save with customerPreferencesRepository`() {
     // Given
-    val expected: CustomerPreferences = CustomerPreferences(
-      id = "Iprefer007",
-      customerId = "James",
-      seatPreference = NEAR_WINDOW,
-      classPreference = 1,
-      profileName = "Bond",
-      language = ENGLISH
+    val expected = CustomerPreferences(
+        id = "Iprefer007",
+        customerId = "James",
+        seatPreference = NEAR_WINDOW,
+        classPreference = 1,
+        profileName = "Bond",
+        language = ENGLISH
     )
     val captureRequest = ArgumentCaptor.forClass(CustomerPreferences::class.java)
     `when`(customerPreferencesRepository.save(captureRequest.capture()))
-      .thenReturn(Mono.just(expected))
+        .thenReturn(Mono.just(expected))
 
     // When I create a customer preferences
     val customerPreferences =
-      toTest.createCustomerPreferences("James", NEAR_WINDOW, 1, "Bond", ENGLISH).block()
+        toTest.createCustomerPreferences("James", NEAR_WINDOW, 1, "Bond", ENGLISH).block()
 
     // Then
     assertThat(customerPreferences)
-      .hasFieldOrPropertyWithValue("id", "Iprefer007")
-      .hasFieldOrPropertyWithValue("customerId", "James")
-      .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
-      .hasFieldOrPropertyWithValue("classPreference", 1)
-      .hasFieldOrPropertyWithValue("profileName", "Bond")
-      .hasFieldOrPropertyWithValue("language", ENGLISH)
+        .hasFieldOrPropertyWithValue("id", "Iprefer007")
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+        .hasFieldOrPropertyWithValue("classPreference", 1)
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH)
     val captured = captureRequest.value
     assertThat(captured)
-      .hasFieldOrPropertyWithValue("customerId", "James")
-      .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
-      .hasFieldOrPropertyWithValue("classPreference", 1)
-      .hasFieldOrPropertyWithValue("profileName", "Bond")
-      .hasFieldOrPropertyWithValue("language", ENGLISH)
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+        .hasFieldOrPropertyWithValue("classPreference", 1)
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH)
     verify(customerPreferencesRepository).save(captured)
   }
 
-  // TODO get customer preferences
+  @Test
+  fun `getCustomerPreferences should return found customer preferences from repository when present`() {
+    // Given
+    val doubleZero7 = CustomerPreferences(
+        id = "Iprefer007",
+        customerId = "James",
+        seatPreference = NEAR_WINDOW,
+        classPreference = 1,
+        profileName = "Bond",
+        language = ENGLISH)
+    val gordon = CustomerPreferences(
+        id = "IpreferJim",
+        customerId = "James",
+        seatPreference = NEAR_CORRIDOR,
+        classPreference = 2,
+        profileName = "Gordon",
+        language = ENGLISH)
+
+    `when`(customerPreferencesRepository.findByCustomerId("James")).thenReturn(Flux.just(doubleZero7, gordon))
+
+    // When
+    val customerPreferences = toTest.getCustomerPreferences("James").collectList().block()
+
+    // Then
+    assertThat(customerPreferences).isNotNull
+    assertThat(customerPreferences).hasSize(2)
+    assertThat(customerPreferences[0])
+        .hasFieldOrPropertyWithValue("id", "Iprefer007")
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_WINDOW)
+        .hasFieldOrPropertyWithValue("classPreference", 1)
+        .hasFieldOrPropertyWithValue("profileName", "Bond")
+        .hasFieldOrPropertyWithValue("language", ENGLISH)
+    assertThat(customerPreferences[1])
+        .hasFieldOrPropertyWithValue("customerId", "James")
+        .hasFieldOrPropertyWithValue("seatPreference", NEAR_CORRIDOR)
+        .hasFieldOrPropertyWithValue("classPreference", 2)
+        .hasFieldOrPropertyWithValue("profileName", "Gordon")
+        .hasFieldOrPropertyWithValue("language", ENGLISH)
+    verify(customerPreferencesRepository).findByCustomerId("James")
+  }
+
+  @Test
+  fun `getCustomerPreferences should return nothing when no customer preferences in repository`() {
+    // Given
+    `when`(customerPreferencesRepository.findByCustomerId("James")).thenReturn(Flux.empty())
+
+    // When
+    val customerPreferences = toTest.getCustomerPreferences("James").collectList().block()
+
+    // Then
+    assertThat(customerPreferences).isEmpty()
+    verify(customerPreferencesRepository).findByCustomerId("James")
+  }
 
   /*
    Et là ... vous vous demandez surement pourquoi ces 2 fonctions ?

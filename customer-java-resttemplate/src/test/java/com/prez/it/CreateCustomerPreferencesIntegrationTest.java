@@ -59,6 +59,7 @@ class CreateCustomerPreferencesIntegrationTest extends UsingMongoDBAndRedis {
     httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     httpHeaders.setAccept(singletonList(MediaType.APPLICATION_JSON));
+    mongoOperations.dropCollection("preferences");
   }
 
   @AfterEach
