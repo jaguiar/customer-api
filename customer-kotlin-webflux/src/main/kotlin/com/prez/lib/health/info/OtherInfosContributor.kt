@@ -15,6 +15,4 @@ class OtherInfosContributor(private val isSnapshot: Boolean, private val applica
     builder.withDetail("startDate", START_DATE.toString())
     builder.withDetail("applicationType", applicationType)
   }
-
-
 }

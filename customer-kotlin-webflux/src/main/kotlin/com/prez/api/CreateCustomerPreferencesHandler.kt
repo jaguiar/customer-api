@@ -16,28 +16,33 @@ import java.net.URI
 import java.util.logging.Level
 
 @Component
-class CreateCustomerPreferencesHandler(validator: Validator, val customerService: CustomerService) :
-    AbstractValidationHandler<CreateCustomerPreferencesRequest, Validator>(
-        CreateCustomerPreferencesRequest::class.java,
-        validator
-    ) {
+class CreateCustomerPreferencesHandler(
+  validator: Validator,
+  private val customerService: CustomerService
+) :
+  AbstractValidationHandler<CreateCustomerPreferencesRequest, Validator>(
+    CreateCustomerPreferencesRequest::class.java,
+    validator
+  ) {
 
-  private val logger = LoggerFactory.getLogger(CreateCustomerPreferencesHandler::class.java)
+  companion object {
+    private val logger = LoggerFactory.getLogger(CreateCustomerPreferencesHandler::class.java)
+  }
 
   override fun processBody(
-      validBody: CreateCustomerPreferencesRequest,
-      originalRequest: ServerRequest
+    validBody: CreateCustomerPreferencesRequest,
+    originalRequest: ServerRequest
   ): Mono<ServerResponse> {
     logger.info("CreateCustomerPreferences : {}", originalRequest.uri())
     return originalRequest.principal()
-        .flatMap { principal ->
-          customerService.createCustomerPreferences(
-              principal.name, validBody.seatPreference, validBody.classPreference,
-              validBody.profileName, LocaleUtils.toLocale(validBody.language)
-          )
-        }
-        .map { it.toCustomerPreferencesProfileResponse() }
-        .flatMap { created -> created(URI.create("/customers/preferences/${created.id}")).bodyValue(created) }
-        .log(Loggers.getLogger(GetCustomerPreferencesHandler::class.java), Level.FINE, true)
+      .flatMap { principal ->
+        customerService.createCustomerPreferences(
+          principal.name, validBody.seatPreference, validBody.classPreference,
+          validBody.profileName, LocaleUtils.toLocale(validBody.language)
+        )
+      }
+      .map { it.toCustomerPreferencesProfileResponse() }
+      .flatMap { created -> created(URI.create("/customers/preferences/${created.id}")).bodyValue(created) }
+      .log(Loggers.getLogger(GetCustomerPreferencesHandler::class.java), Level.FINE, true)
   }
 }

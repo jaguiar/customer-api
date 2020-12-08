@@ -120,6 +120,30 @@ class CreateCustomerPreferencesIntegrationTest(
   }
 
   @Test
+  fun `should return Bad Request when no body`() {
+    // Given
+    val validToken: String = fakeTokenGenerator.generateNotExpiredSignedToken("cached", 3600, "customer.write")
+
+    // When
+    client
+      .post()
+      .uri("/customers/preferences")
+      .header("Authorization", "Bearer $validToken")
+      .accept(MediaType.APPLICATION_JSON)
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus().isBadRequest
+      .expectBody()
+      .jsonPath("$.code").isEqualTo("VALIDATION_ERROR")
+      .jsonPath("$.message").value(Matchers.startsWith("400 BAD_REQUEST \"3 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
+      .jsonPath("$.message").value(Matchers.containsString("The profile name contains forbidden characters"))
+      .jsonPath("$.message").value(Matchers.containsString("Max value for class preference is 2"))
+      .jsonPath("$.message").value(Matchers.containsString("The language is not valid. Accepted languages are : fr,de,es,en,it,pt"))
+    // Then
+  }
+
+  @Test
   fun `should return 403 forbidden when not authenticated user`() {
     // Given no authentication
     val validRequest = """
