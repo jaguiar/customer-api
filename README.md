@@ -14,10 +14,16 @@ mvn clean install -P docker
 # Run
 To test the example follow the steps below.
 
-1. Launch the docker-compose in /customer-api : 
+1. Launch the docker-compose in /customer-api 
+   On Linux
     ```sh
     docker-compose up --no-start && docker-compose start
     ```
+   On MacOS
+   ```sh
+   docker-compose -f docker-compose-mac.yml up --no-start && docker-compose -f docker-compose-mac.yml start
+   ```
+
 2. Launch the authorization server in the /authentication project (on port 8081)
     ```sh
     mvn spring-boot:run
