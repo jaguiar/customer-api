@@ -422,7 +422,7 @@ class CustomerWSClientTest {
                                 records = listOf(
                                     Record(
                                         otherId = "ER28-0652",
-                                        type = NestedValue(value = "LOYALY"),
+                                        type = NestedValue(value = "LOYALTY"),
                                         map = listOf(
                                             mapOf(
                                                 "key" to "some_key",
