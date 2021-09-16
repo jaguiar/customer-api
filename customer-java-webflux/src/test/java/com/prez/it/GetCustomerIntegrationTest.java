@@ -27,9 +27,11 @@ import com.prez.model.Customer;
 import com.prez.model.LoyaltyProgram;
 import com.prez.model.RailPass;
 import com.prez.utils.FakeTokenGenerator;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -155,13 +157,14 @@ class GetCustomerIntegrationTest extends UsingMongoDBAndRedis {
   @DisplayName("GET customers should return customer info with both loyaltyProgram and railpasses if it is cached")
   void GET_customers_should_return_customer_info_with_both_loyaltyProgram_and_railpasses_if_it_is_cached() {
     //When
+    LocalDate birthDate = LocalDate.of(1952, 2, 29);
     customerInfoRedisTemplate.opsForValue().set(
         "Customer:subzero", Customer.builder()
             .customerId("subzero")
             .email("mission.impossible@connect.fr")
             .firstName("Jim")
             .lastName("Phelps")
-            .birthDate(LocalDate.of(1952, 2, 29))
+            .birthDate(birthDate)
             .phoneNumber("06-07-08-09-10")
             .loyaltyProgram(LoyaltyProgram.builder()
                 .number("29090109625088082")
@@ -192,7 +195,9 @@ class GetCustomerIntegrationTest extends UsingMongoDBAndRedis {
         .expectStatus().isOk()
         .expectBody()
         .json(
-            "{\"customerId\":\"subzero\",\"firstName\":\"Jim\",\"lastName\":\"Phelps\",\"age\":68,\"email\":\"mission.impossible@connect.fr\",\"loyaltyProgram\":{\"number\":\"29090109625088082\",\"label\":\"Grey\",\"validityStartDate\":\"2019-08-12\",\"validityEndDate\":\"2019-08-13\"},\"railPasses\":[{\"number\":\"29090102420412755\",\"label\":\"So Young!\",\"validityStartDate\":\"2020-04-18\",\"validityEndDate\":\"2020-03-14\"}]}\n");
+            "{\"customerId\":\"subzero\",\"firstName\":\"Jim\",\"lastName\":\"Phelps\",\"age\":"
+                    + Period.between(birthDate, LocalDate.now()).getYears()
+                    + ",\"email\":\"mission.impossible@connect.fr\",\"loyaltyProgram\":{\"number\":\"29090109625088082\",\"label\":\"Grey\",\"validityStartDate\":\"2019-08-12\",\"validityEndDate\":\"2019-08-13\"},\"railPasses\":[{\"number\":\"29090102420412755\",\"label\":\"So Young!\",\"validityStartDate\":\"2020-04-18\",\"validityEndDate\":\"2020-03-14\"}]}\n");
 
     verify(
         0, getRequestedFor(urlEqualTo("/customers/subzero"))

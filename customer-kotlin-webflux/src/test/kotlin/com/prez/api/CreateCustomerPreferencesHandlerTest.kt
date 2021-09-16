@@ -158,7 +158,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
                 .exchange()
                 .expectStatus().isForbidden
                 .expectBody(String::class.java)
-                .isEqualTo<Nothing>("CSRF Token has been associated to this client")
+                .value<Nothing>(containsString("CSRF token"))
         verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
     }
 
@@ -312,7 +312,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().json("{\"code\":\"VALIDATION_ERROR\"}")
                 .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
-                .jsonPath("$.message").value(containsString("The profile name contains forbidden characters"));
+                .jsonPath("$.message").value(containsString("The profile name contains forbidden characters"))
         verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
     }
 
@@ -363,7 +363,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody().json("{\"code\":\"VALIDATION_ERROR\"}")
                 .jsonPath("$.message").value(startsWith("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
-                .jsonPath("$.message").value(containsString("The profile name should have a size between 1 and 50 characters"));
+                .jsonPath("$.message").value(containsString("The profile name should have a size between 1 and 50 characters"))
         verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
     }
 

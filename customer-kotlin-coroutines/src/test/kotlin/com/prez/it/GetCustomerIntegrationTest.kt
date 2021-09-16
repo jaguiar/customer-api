@@ -42,6 +42,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.time.Period
 import java.util.Date
 
 @Tag("docker")
@@ -171,13 +172,14 @@ internal class GetCustomerIntegrationTest(
   @Test
   fun `GET customers should return customer info with both loyaltyProgram and railpasses if it is cached`() {
     //When
+    val birthDate = LocalDate.of(1952, 2, 29)
     customerInfoRedisTemplate.opsForValue().set(
       "Customer:subzero", Customer(
         customerId = "subzero",
         email = "mission.impossible@connect.fr",
         firstName = "Jim",
         lastName = "Phelps",
-        birthDate = LocalDate.of(1952, 2, 29),
+        birthDate = birthDate,
         phoneNumber = null,
         loyaltyProgram = LoyaltyProgram(
           number = "29090109625088082",
@@ -198,7 +200,7 @@ internal class GetCustomerIntegrationTest(
       )
     ).block()
 
-    //Test & Assert
+    // Test & Assert
     client
       .get()
       .uri("/customers")
@@ -212,7 +214,7 @@ internal class GetCustomerIntegrationTest(
           "customerId":"subzero",
           "firstName":"Jim",
           "lastName":"Phelps",
-          "age":68,
+          "age":${Period.between(birthDate, LocalDate.now()).years},
           "email":"mission.impossible@connect.fr",
           "loyaltyProgram": {
             "number":"29090109625088082",

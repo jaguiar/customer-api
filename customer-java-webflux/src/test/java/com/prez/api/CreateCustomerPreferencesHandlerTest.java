@@ -176,7 +176,7 @@ class CreateCustomerPreferencesHandlerTest {
         .exchange()
         .expectStatus().isForbidden()
         .expectBody(String.class)
-        .isEqualTo("CSRF Token has been associated to this client");
+        .value(containsString("CSRF token"));
     verify(customerService, never())
         .createCustomerPreferences(anyString(), any(SeatPreference.class), anyInt(), anyString(), any(Locale.class));
   }

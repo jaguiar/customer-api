@@ -10,24 +10,24 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.4.RELEASE</version>
+        <version>2.5.4</version>
     </parent>
 
     <name>customer-kotlin-coroutines</name>
     <description>Resource server for customer data - kotlin webflux with coroutines version</description>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--kotlin.compiler.incremental>true</kotlin.compiler.incremental-->
-        <kotlin.version>1.4.10</kotlin.version>
-        <kotlinx-coroutines.version>1.4.0</kotlinx-coroutines.version>
+        <kotlin.version>1.5.30</kotlin.version>
+        <kotlinx-coroutines.version>1.5.2</kotlinx-coroutines.version>
 
         <!-- lib versions -->
-        <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
-        <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
+        <spring-boot.version>2.5.4</spring-boot.version>
+        <spring-cloud.version>2020.0.3</spring-cloud.version>
 
         <jackson.version>2.11.3</jackson.version>
         <logback.version>1.2.3</logback.version>
@@ -238,6 +238,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zipkin</artifactId>
+            <version>2.2.8.RELEASE</version>
         </dependency>
 
         <!-- logging -->
