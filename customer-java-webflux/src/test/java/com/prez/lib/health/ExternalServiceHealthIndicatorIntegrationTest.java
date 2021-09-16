@@ -5,10 +5,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.head;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.time.Duration;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -55,6 +58,7 @@ class ExternalServiceHealthIndicatorIntegrationTest {
     assertEquals(Status.UP, result.getStatus());
     assertEquals(INDICATOR_NAME, result.getDetails().get("name"));
     assertEquals("http://localhost:" + wireMockRule.port(), result.getDetails().get("url"));
+
   }
 
   @Test
@@ -107,7 +111,8 @@ class ExternalServiceHealthIndicatorIntegrationTest {
     //Assert
     assertEquals(Status.DOWN, result.getStatus());
     assertEquals(INDICATOR_NAME, result.getDetails().get("name"));
-    assertEquals("io.netty.handler.timeout.ReadTimeoutException", result.getDetails().get("error"));
+    String actualError = (String) result.getDetails().get("error");
+    assertTrue(StringUtils.contains(actualError, "io.netty.handler.timeout.ReadTimeoutException"));
   }
 
   @Test
