@@ -33,8 +33,8 @@
         <logback.version>1.2.3</logback.version>
         <junit5.version>5.7.0</junit5.version>
         <mockito.version>3.5.13</mockito.version>
-        <!-- because you cannot use a lower version on mac: https://github.com/testcontainers/testcontainers-java/issues/3166 -->
-        <testcontainers.version>1.15.0-rc2</testcontainers.version>
+        <!-- because there is an issue with ryuk: https://github.com/testcontainers/testcontainers-java/issues/3574 -->
+        <testcontainers.version>1.16.0</testcontainers.version>
         <logstash-logback-encoder.version>6.4</logstash-logback-encoder.version>
         <wiremock.version>2.27.2</wiremock.version>
         <java-jwt.version>3.8.0</java-jwt.version>
