@@ -181,7 +181,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .exchange()
       .expectStatus().isForbidden
       .expectBody(String::class.java)
-      .isEqualTo<Nothing>("CSRF Token has been associated to this client")
+      .value<Nothing>(containsString("CSRF token"))
     verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
 
