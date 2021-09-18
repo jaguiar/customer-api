@@ -1,5 +1,5 @@
 <div class="row pt-4">
-  <h2 class="col-sm-12"><small>Your information</small></h2>
+  <h2 class="col-sm-12"><small>Your customer account details</small></h2>
 </div>
 <div class="row">
   <div class="col-sm-3">
@@ -19,7 +19,7 @@
   </div>
   <div class="col-sm-8"><span>{{customer.email}}</span></div>
 </div>
-<div *ngIf="customer.birthDate" class="row">
+<div *ngIf="customer.age" class="row">
   <div class="col-sm-3">
     <label>Age</label>
   </div>
@@ -36,24 +36,33 @@
     <button class="btn btn-primary" (click)="getCustomer()" type="submit">Refresh</button>
   </div>
 </div>
-<!-- Customer preferences form -->
+<!-- Create Customer preferences form -->
 <div class="row pt-4">
-  <h2 class="col-sm-12"><small>Your preferences profiles</small></h2>
+  <h2 class="col-sm-12"><small>Choose a profile to clone</small></h2>
 </div>
 <div class="row">
   <div class="col-sm-8 col-sm-offset-2">
     <form [formGroup]="userForm" (ngSubmit)="onSubmitForm()">
       <div class="form-group">
-        <select formControlName="selectedProfile" (change)="onProfileChange()">
+        <label for="selected-profile">Customer Preferences profiles</label>
+        <select id="selected-profile" class="form-control" formControlName="selectedProfile" (change)="onProfileChange()">
           <option [ngValue]="null" disabled>Choose your profile</option>
           <option *ngFor="let prf of allProfiles" [ngValue]="prf.id" >
             {{ prf.profileName }}
           </option>
         </select>
-      </div>   
+      </div>
+      <div *ngIf="warningMessage" class="alert alert-warning alert-dismissible" (click)="closeMessage()">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Well ...</strong> It seems there are no saved preferences yet. 
+        Don't display the following message in real life : {{warningMessage}}
+      </div>
+      <div class="row pt-4">
+        <h2 class="col-sm-12"><small>New preferences profile</small></h2>
+      </div>  
       <div class="form-group">
         <label for="profileName">Profile Name</label>
-        <input type="text" id="profileName" class="form-control" formControlName="profileName" placeholder="myProfile">
+        <input type="text" id="profileName" class="form-control" formControlName="profileName" placeholder="Type your profile name">
       </div>
       <div *ngIf="userForm.controls['profileName'].invalid && (userForm.controls['profileName'].dirty || userForm.controls['profileName'].touched)" class="alert alert-danger">
         <div *ngIf="userForm.controls['profileName'].errors.required">Profile name is required</div>
@@ -83,17 +92,13 @@
       </div>
       <div *ngIf="displaySuccessMsg" class="alert alert-success alert-dismissible" (click)="closeMessage()">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Success!</strong> Preferences were sucessfully saved.
+        <strong>Success!</strong> Preferences profile sucessfully created.
       </div>
       <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible" (click)="closeMessage()">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failure!</strong> Preferences could not be saved. Error is : {{errorMessage}}
+        <strong>Failure!</strong> Preferences could not be created. Error is : {{errorMessage}}
       </div>
-      <div *ngIf="warningMessage" class="alert alert-warning alert-dismissible" (click)="closeMessage()">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Actually ...</strong> It seems there are no saved preferences. FYI : {{warningMessage}}
-      </div>
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary">Create</button>
     </form>
   </div>
 

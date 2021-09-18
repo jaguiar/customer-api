@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "auth-code": {
+    "dummy-oauth-client": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -42,18 +42,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "auth-code:build"
+            "browserTarget": "dummy-oauth-client:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "auth-code:build:production"
+              "browserTarget": "dummy-oauth-client:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "auth-code:build"
+            "browserTarget": "dummy-oauth-client:build"
           }
         },
         "lint": {
@@ -68,13 +68,13 @@
         }
       }
     },
-    "auth-code-e2e": {
+    "dummy-oauth-client-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application"
     }
   },
-  "defaultProject": "auth-code",
+  "defaultProject": "dummy-oauth-client",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

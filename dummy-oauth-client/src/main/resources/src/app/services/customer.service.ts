@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Cookie } from 'ng2-cookies';
+import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from "rxjs";
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { CustomerPreferencesProfile, SaveCustomerPreferencesRequest } from '../models/Customer.model';
@@ -20,12 +20,13 @@ export class CustomerService {
    allProfiles = new Subject<CustomerPreferencesProfile[]>();
 
   constructor(
-    private _http: HttpClient){}
+    private _http: HttpClient,
+    private cookieService: CookieService){}
 
   getCustomerVersion(): Observable<any>{
     console.log('Retrieving authenticated customer');
     var headers = new HttpHeaders({'Accept': 'application/json',
-    'Authorization': 'Bearer ' + Cookie.get('access_token'),
+    'Authorization': 'Bearer ' + this.cookieService.get('access_token'),
     'user-device-platform': 'ANDROID',
     'user-app-client-version': 'devoxx-2020'
     });
@@ -36,7 +37,7 @@ export class CustomerService {
   getCustomer(resourceUrl: string) : Observable<any>{
     console.log('Retrieving authenticated customer');
     var headers = new HttpHeaders({'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-    'Authorization': 'Bearer ' + Cookie.get('access_token'),
+    'Authorization': 'Bearer ' + this.cookieService.get('access_token'),
     'user-device-platform': 'ANDROID',
     'user-app-client-version': 'devoxx-2020'
     });
@@ -62,11 +63,11 @@ export class CustomerService {
   createCustomerPreferences(toCreate: SaveCustomerPreferencesRequest) {
     console.log('Calling createCustomerPreferences');
     const headers = new HttpHeaders({'Content-type': 'application/json; charset=utf-8',
-        'Authorization': 'Bearer ' + Cookie.get('access_token'),
+        'Authorization': 'Bearer ' + this.cookieService.get('access_token'),
         'user-device-platform': 'ANDROID',
         'user-app-client-version': 'devoxx-2020'
         });
-    const userName = Cookie.get('user_name');    
+    const userName = this.cookieService.get('user_name');    
     const url = this.customerUrl + '/preferences' ;    
     this._http.post<CustomerPreferencesProfile>(url, toCreate, { headers: headers })
                    .subscribe(data => {
@@ -84,11 +85,11 @@ export class CustomerService {
   getCustomerPreferences() {
     console.log('Calling getCustomerPreferences');
     const headers = new HttpHeaders({'Content-type': 'application/json; charset=utf-8',
-        'Authorization': 'Bearer ' + Cookie.get('access_token'),
+        'Authorization': 'Bearer ' + this.cookieService.get('access_token'),
         'user-device-platform': 'ANDROID',
         'user-app-client-version': 'devoxx-2020'
         });
-    const userName = Cookie.get('user_name');    
+    const userName = this.cookieService.get('user_name');    
     const url = this.customerUrl + '/preferences';
     this._http.get<CustomerPreferencesProfile[]>(url, { headers: headers })
                    .subscribe(data => {
