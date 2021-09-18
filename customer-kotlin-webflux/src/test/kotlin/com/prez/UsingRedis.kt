@@ -15,7 +15,7 @@ open class UsingRedis {
     const val REDIS_PORT = 6379
 
     @Container
-    var redis: GenericContainer<Nothing> = GenericContainer<Nothing>(DockerImageName.parse("redis:6.0.9"))
+    var redis: GenericContainer<Nothing> = GenericContainer<Nothing>(DockerImageName.parse("redis:6.2"))
         .withExposedPorts(REDIS_PORT)
   }
 

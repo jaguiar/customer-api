@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -106,7 +107,7 @@ class ExternalServiceHealthIndicatorTest {
     //Assert
     assertEquals(Status.DOWN, result?.status)
     assertEquals(INDICATOR_NAME, result?.details?.get("name"))
-    assertEquals("io.netty.handler.timeout.ReadTimeoutException", result?.details?.get("error"))
+    assertTrue((result?.details?.get("error") as String).contains("io.netty.handler.timeout.ReadTimeoutException"))
   }
 
   @Test

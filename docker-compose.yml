@@ -1,7 +1,7 @@
-version: '3.2'
+version: '3.7'
 services:
   mongo:
-    image: mongo:4.0
+    image: mongo:4.2
     ports:
       - "27017:27017"
     volumes:
@@ -10,7 +10,7 @@ services:
       - prez
     
   redis:
-    image: redis:6.0.9
+    image: redis:6.2
     ports:
       - "6379:6379"
     volumes:
@@ -20,22 +20,22 @@ services:
 
   # The zipkin process services the UI, and also exposes a POST endpoint that
   # instrumentation can send trace data to. Scribe is disabled by default.
-  rabbitmq:
-    image: rabbitmq:3-management
-    restart: always
-    ports:
-      - 5672:5672
-      - 15671:15671
-      - 15672:15672
-    networks:
-      - prez
+  #rabbitmq:
+  #  image: rabbitmq:3-management
+  #  restart: always
+  #  ports:
+  #    - 5672:5672
+  #    - 15671:15671
+  #    - 15672:15672
+  #  networks:
+  #    - prez
 
   zipkin-server:
     image: openzipkin/zipkin
     ports:
       - 9411:9411
-    environment:
-      - zipkin.collector.rabbitmq.uri=amqp://guest:guest@rabbitmq:5672
+    #environment:
+    #  - zipkin.collector.rabbitmq.uri=amqp://guest:guest@rabbitmq:5672
     networks:
       - prez
 
@@ -51,7 +51,7 @@ services:
   elasticsearch:
     # pour linux, écrire "vm.max_map_count=262144" dans le fichier /etc/sysctl.d/elasticsearch.conf
     # puis reboot ou bien, sysctl --system
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     container_name: elasticsearch
     volumes:
       #- ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
@@ -83,11 +83,11 @@ services:
 #      - prez
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.6.1
+    image: docker.elastic.co/logstash/logstash:7.14.1
     #build:
     #  context: logstash/
     #  args:
-    #    ELK_VERSION: 7.6.1
+    #    ELK_VERSION: 7.14.1
     volumes:
     #  - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
@@ -104,7 +104,7 @@ services:
       - elasticsearch
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.6.1
+    image: docker.elastic.co/kibana/kibana:7.14.1
     #volumes:
     #  - ./kibana.yml:/usr/share/kibana/config/kibana.yml
     environment: 

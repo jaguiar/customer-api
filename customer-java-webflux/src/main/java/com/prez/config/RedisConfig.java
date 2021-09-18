@@ -25,6 +25,6 @@ public class RedisConfig {
     valueSerializer.setObjectMapper(objectMapper);
     RedisSerializationContext<String, Customer> context = builder.value(valueSerializer).build();
 
-    return new ReactiveRedisTemplate(factory, context);
+    return new ReactiveRedisTemplate<>(factory, context);
   }
 }

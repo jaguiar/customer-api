@@ -13,7 +13,7 @@ public class UsingMongoDB {
     public static final int MONGODB_PORT = 27017;
 
     @Container
-    public static GenericContainer<?> mongodb = new GenericContainer<>(DockerImageName.parse("mongo:4.0"))
+    public static GenericContainer<?> mongodb = new GenericContainer<>(DockerImageName.parse("mongo:4.2"))
             .withExposedPorts(MONGODB_PORT);
 
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
