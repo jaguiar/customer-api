@@ -14,7 +14,7 @@
     </parent>
 
     <name>customer-kotlin-coroutines-controllers</name>
-    <description>Resource server for customer data - kotlin webflux with coroutines version</description>
+    <description>Resource server for customer data - kotlin webflux with coroutines annotation style version</description>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -29,18 +29,18 @@
         <spring-boot.version>2.5.4</spring-boot.version>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
 
-        <jackson.version>2.11.3</jackson.version>
-        <logback.version>1.2.3</logback.version>
-        <junit5.version>5.7.0</junit5.version>
-        <mockito.version>3.5.13</mockito.version>
+        <jackson.version>2.12.5</jackson.version>
+        <logback.version>1.2.6</logback.version>
+        <junit5.version>5.8.0</junit5.version>
+        <mockito.version>3.12.4</mockito.version>
         <!-- because there is an issue with ryuk: https://github.com/testcontainers/testcontainers-java/issues/3574 -->
         <testcontainers.version>1.16.0</testcontainers.version>
-        <logstash-logback-encoder.version>6.4</logstash-logback-encoder.version>
+        <logstash-logback-encoder.version>6.6</logstash-logback-encoder.version>
         <wiremock.version>2.27.2</wiremock.version>
-        <java-jwt.version>3.8.0</java-jwt.version>
-        <assertj-core.version>3.18.1</assertj-core.version>
+        <java-jwt.version>3.18.1</java-jwt.version>
+        <assertj-core.version>3.20.2</assertj-core.version>
         <commons-lang3.version>3.9</commons-lang3.version>
-        <slf4j-api.version>1.7.28</slf4j-api.version>
+        <slf4j-api.version>1.7.32</slf4j-api.version>
     </properties>
 
     <dependencyManagement>
@@ -366,7 +366,7 @@
                     <configuration>
                         <excludes>
                             <exclude>**/*IntegrationTest.java</exclude>
-                            <exclude>**/*WSClient.java</exclude>
+                            <exclude>**/*WSClientTest.java</exclude>
                             <!--
                             Les tests de la couche repository sont désactivés par défault tant que docker n'a pas été installé sur le serveur
                             jenkins. utiliser le profil docker pour les executer localement.
@@ -527,7 +527,7 @@
                     <compilerPlugins>
                         <plugin>spring</plugin>
                     </compilerPlugins>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>11</jvmTarget>
                 </configuration>
                 <executions>
                     <execution>
@@ -580,6 +580,17 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
             </plugin>
         </plugins>
         <resources>

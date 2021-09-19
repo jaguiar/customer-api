@@ -136,17 +136,13 @@ spring:
   # Tracing with Sleuth
   # Logs : https://cloud.spring.io/spring-cloud-static/spring-cloud-sleuth/2.1.0.RELEASE/multi/multi__propagation.html
   sleuth:
-    baggage-keys:
-      - user-device-platform
-      - user-app-client-version
-    propagation-keys:
-      - user-device-platform
-      - user-app-client-version
-    log:
-      slf4j:
-        whitelisted-mdc-keys:
-          - user-device-platform
-          - user-app-client-version
+    baggage:
+      remote-fields:
+        - user-device-platform
+        - user-app-client-version
+      correlation-fields:
+        - user-device-platform
+        - user-app-client-version
 
     # For span aggregation purpose
     sampler:
@@ -161,3 +157,8 @@ spring:
       client:
         composite-indicator:
           enabled: false
+
+  # zipkin configuration (span aggregator)
+  zipkin:
+    service:
+      name: ${spring.application.name:kotlin-webflux}

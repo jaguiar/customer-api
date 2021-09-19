@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Cookie } from 'ng2-cookies';
+import { CookieService } from 'ngx-cookie-service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -11,7 +11,8 @@ export class AuthenticationService {
    private redirectUri = 'http://localhost:8089/';
 
   constructor(
-    private _http: HttpClient){}
+    private _http: HttpClient,
+    private cookieService: CookieService){}
 
   retrieveToken(code: string){
     let params = new URLSearchParams();
@@ -30,21 +31,21 @@ export class AuthenticationService {
 
   saveToken(token: Token){
     var expireDate = new Date().getTime() + (1000 * token.expires_in);
-    Cookie.set("access_token", token.access_token, expireDate);
-    Cookie.set("user_name", token.sub, expireDate);
+    this.cookieService.set("access_token", token.access_token, expireDate);
+    this.cookieService.set("user_name", token.sub, expireDate);
   }
 
   checkCredentials(){
-    return Cookie.check('access_token');
+    return this.cookieService.check('access_token');
   }
 
   getLoggedUser(){
-      return Cookie.get('user_name');
+      return this.cookieService.get('user_name');
   }
 
   logout() {
-    Cookie.delete('access_token');
-    Cookie.delete('user_name');
+    this.cookieService.delete('access_token');
+    this.cookieService.delete('user_name');
     window.location.reload();
   }
 

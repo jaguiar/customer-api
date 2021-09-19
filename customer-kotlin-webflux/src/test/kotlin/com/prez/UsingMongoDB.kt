@@ -15,7 +15,7 @@ open class UsingMongoDB {
     const val MONGODB_PORT = 27017
 
     @Container
-    var mongodb: GenericContainer<Nothing> = GenericContainer<Nothing>(DockerImageName.parse("mongo:4.0"))
+    var mongodb: GenericContainer<Nothing> = GenericContainer<Nothing>(DockerImageName.parse("mongo:4.2"))
         .withExposedPorts(MONGODB_PORT)
   }
 

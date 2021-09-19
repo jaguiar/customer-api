@@ -38,7 +38,7 @@ class EnvInfosContributor(private val environment: ConfigurableEnvironment, sens
 }
 
 private fun obfuscateSensiblesProps(key: String): String {
-  return if (sensiblePropsNamePattern.matcher(key.toLowerCase()).matches()) OBFUSCATED else environment.getProperty(key)
+  return if (sensiblePropsNamePattern.matcher(key.lowercase()).matches()) OBFUSCATED else environment.getProperty(key)
 }
 }
 

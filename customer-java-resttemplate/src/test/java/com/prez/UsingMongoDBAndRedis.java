@@ -14,11 +14,11 @@ public class UsingMongoDBAndRedis {
     public static final int REDIS_PORT = 6379;
 
     @Container
-    public static GenericContainer<?> mongodb = new GenericContainer<>(DockerImageName.parse("mongo:4.0"))
+    public static GenericContainer<?> mongodb = new GenericContainer<>(DockerImageName.parse("mongo:4.2"))
             .withExposedPorts(MONGODB_PORT); // we don't reuse container for integration tests because we get timeouts
 
     @Container
-    public static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:6.0.9"))
+    public static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:6.2"))
             .withExposedPorts(REDIS_PORT); // we don't reuse container for integration tests because we get timeouts
 
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

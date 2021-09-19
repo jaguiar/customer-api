@@ -413,7 +413,7 @@ class CustomerWSClientTest {
                         ),
                         photos = Photos(
                             file = File(
-                                id = "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/222748af-ba4b-4a58-91ce-817ab8454d33/photos/file"
+                                id = "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/72f028e2-fbb8-48b3-b943-bf4daad961ed/photos/file"
                             )
                         ),
                         misc = listOf(
@@ -424,7 +424,7 @@ class CustomerWSClientTest {
                                 records = listOf(
                                     Record(
                                         otherId = "ER28-0652",
-                                        type = NestedValue(value = "LOYALY"),
+                                        type = NestedValue(value = "LOYALTY"),
                                         map = listOf(
                                             mapOf(
                                                 "key" to "some_key",
@@ -516,8 +516,8 @@ class CustomerWSClientTest {
                                                 "value" to "2021-12-23"
                                             ),
                                             mapOf(
-                                                "key" to "new_product_code ",
-                                                " value " to " FAMILY"
+                                                "key" to "new_product_code",
+                                                "value" to "FAMILY"
                                             ),
                                             mapOf(
                                                 "key" to "pass_validity_start",

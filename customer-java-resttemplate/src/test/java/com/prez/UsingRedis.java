@@ -15,7 +15,7 @@ public class UsingRedis {
   public static final int REDIS_PORT = 6379;
 
   @Container
-  public static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:6.0.9"))
+  public static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:6.2"))
       .withExposedPorts(REDIS_PORT)
       .withReuse(true);
 

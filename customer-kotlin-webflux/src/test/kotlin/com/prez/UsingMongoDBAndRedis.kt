@@ -16,11 +16,11 @@ open class UsingMongoDBAndRedis {
     const val REDIS_PORT = 6379
 
     @Container
-    var mongodb: GenericContainer<*> = GenericContainer<Nothing>(DockerImageName.parse("mongo:4.0"))
+    var mongodb: GenericContainer<*> = GenericContainer<Nothing>(DockerImageName.parse("mongo:4.2"))
         .withExposedPorts(MONGODB_PORT)
 
     @Container
-    var redis: GenericContainer<*> = GenericContainer<Nothing>(DockerImageName.parse("redis:6.0.9"))
+    var redis: GenericContainer<*> = GenericContainer<Nothing>(DockerImageName.parse("redis:6.2"))
         .withExposedPorts(UsingRedis.REDIS_PORT)
   }
 

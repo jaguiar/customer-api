@@ -52,7 +52,7 @@ class DisconnectedClientWebExceptionHandler : WebExceptionHandler {
      * Completely copied from [org.springframework.web.server.adapter.HttpWebHandlerAdapter.isDisconnectedClientError]
      */
     private fun isDisconnectedClientError(ex: Throwable): Boolean {
-        val message = NestedExceptionUtils.getMostSpecificCause(ex).message?.toLowerCase().orEmpty()
+        val message = NestedExceptionUtils.getMostSpecificCause(ex).message?.lowercase().orEmpty()
         return message.contains("broken pipe")
                 || message.contains("connection reset by peer")
                 || (disconnectedClientExceptions.contains(ex.javaClass.simpleName))

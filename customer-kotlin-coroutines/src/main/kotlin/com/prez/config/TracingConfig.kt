@@ -1,6 +1,6 @@
 package com.prez.config
 
-import brave.handler.FinishedSpanHandler
+import brave.handler.SpanHandler
 import com.prez.lib.tracing.AuditSpanHandler
 import com.prez.lib.tracing.CleanLoggingContextFilter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -19,7 +19,7 @@ class TracingConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    fun auditFinishedSpan(): FinishedSpanHandler {
+    fun auditFinishedSpan(): SpanHandler {
         return AuditSpanHandler()
     }
 
