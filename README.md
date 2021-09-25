@@ -10,9 +10,9 @@ This is a simple project with a resource server providing customer data manageme
 * customer-kotlin-coroutines : Resource server for customer data - kotlin webflux with **coroutines functional style** version
 * customer-kotlin-coroutines-controllers : Resource server for customer data - kotlin webflux with **coroutines annotation style** version
 
-# Prequisite
+# Prerequisite
 
-You will need to install the following language/tools to run the demo project
+You will need to install the following languages/tools to run the demo project
 
 * Java JDK 11+
 * Kotlin 1.4+
