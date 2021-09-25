@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<restMockResponse>
+    <body>{
+	"id": "mia",
+	"creationDate": "2017-12-11T08:51:37Z",
+	"updatedTime": "2020-02-27T16:58:47Z",
+	"personalInformation": {
+		"civility": {
+			"value": "M"
+		},
+		"lastName": "Miam",
+		"firstName": "Mia",
+		"birthdate": "1980-05-17",
+		"alive": true
+	},
+	"personalDetails": {
+		"address": {
+			"street": "21 RUE KERVEGAN",
+			"zipvalue": "44000",
+			"city": "NANTES",
+			"country": "FR",
+			"default": false
+		},
+		"email": {
+			"address": "mia.miam@yopmail.com",
+			"default": true,
+			"confirmed": {
+				"value": "CHECKED"
+			}
+		},
+		"phone": {
+			"number": "0033250697952"
+		},
+		"cell": {
+			"number": "0033650607070"
+		}
+	},
+	"cards": {
+		"records": [
+			{
+				"number": "29090108605511527",
+				"type": {
+					"value": "BOOM"
+				},
+				"ticketless": true,
+				"activationDate": "2020-03-30",
+				"disableStatus": {
+					"value": "000"
+				},
+				"expirationDate": "2023-11-25"
+			},
+			{
+				"number": "29090103625088082",
+				"type": {
+					"value": "LOYALTY"
+				},
+				"ticketless": true,
+				"requestDate": "2019-11-10",
+				"activationDate": "2017-12-26",
+				"disableStatus": {
+					"value": "000"
+				},
+				"expirationDate": "2022-11-20",
+				"status": {
+					"value": "A"
+				}
+			},
+			{
+				"number": "29090113600311527",
+				"type": {
+					"value": "FAMILY"
+				},
+				"ticketless": true,
+				"activationDate": "2019-07-24",
+				"disableStatus": {
+					"value": "000"
+				},
+				"expiryDate": "2021-12-23"
+			}
+		]
+	},
+	"services": {
+		"list": [
+			{
+				"updateCause": "something",
+				"name": {
+					"value": "fda"
+				},
+				"status": {
+					"value": "subscribed"
+				},
+				"updatedTime": "2019-08-29T15:26:31Z",
+				"migrated": "true"
+			},
+			{
+				"name": {
+					"value": "loyalty"
+				},
+				"status": {
+					"value": "E0E0E0"
+				},
+				"updatedTime": "2019-11-10T00:00:00Z"
+			},
+			{
+				"updateCause": "cgu",
+				"name": {
+					"value": "dematerialization"
+				},
+				"status": {
+					"value": "subscribed"
+				},
+				"updatedTime": "2019-08-29T15:28:09Z"
+			},
+			{
+				"updateCause": "cgu",
+				"name": {
+					"value": "photo"
+				},
+				"status": {
+					"value": "subscribed"
+				},
+				"updatedTime": "2019-08-29T15:28:06Z",
+				"eligibility": null
+			}
+		]
+	},
+	"photos": {
+		"file": {
+			"@id": "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/72f028e2-fbb8-48b3-b943-bf4daad961ed/photos/file"
+		},
+		"data": {
+			"@id": "http://localhost:8080/castlemock/web/rest/Project/fsHJCG/application/f5tXVc/resource/kLUscw/72f028e2-fbb8-48b3-b943-bf4daad961ed/photos/data"
+		}
+	},
+	"misc": [
+		{
+			"type": {
+				"value": "LOYALTY"
+			},
+			"count": 1,
+			"hasMore": true,
+			"records": [
+				{
+					"otherId": "29090109625088082",
+					"type": {
+						"value": "LOYALTY"
+					},
+					"fields": [
+						{
+							"key": "some_key",
+							"value": "some_value"
+						},
+						{
+							"key": "loyalty_status_label",
+							"value": "Platinium"
+						},
+						{
+							"key": "status_d",
+							"value": "2019-11-10"
+						},
+						{
+							"key": "how_are_you_today",
+							"value": "I_am_fine_thank_you"
+						},
+						{
+							"key": "validity_end",
+							"value": "2020-11-09"
+						},
+						{
+							"key": "loyalty_number",
+							"value": "29090109625088082"
+						},
+						{
+							"key": "disable_status",
+							"value": "000"
+						},
+						{
+							"key": "old_product_code",
+							"value": "FIDELITE"
+						},
+						{
+							"key": "validity_start",
+							"value": "2019-11-10"
+						},
+						{
+							"key": "loyalty_status",
+							"value": "E0E0E0"
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": {
+				"value": "PRODUCT"
+			},
+			"count": 2,
+			"hasMore": false,
+			"records": [
+				{
+					"otherId": "29090113600311527",
+					"type": {
+						"value": "PASS"
+					},
+					"from": "NOWHERE",
+					"fields": [
+						{
+							"key": "pass_number",
+							"value": "29090113600311527"
+						},
+						{
+							"key": "some_other_key",
+							"value": "for_no_reason"
+						},
+						{
+							"key": "pass_validity_end",
+							"value": "2021-12-23"
+						},
+						{
+							"key": "sous_type",
+							"value": "PASS_QUI_S_ACHETE"
+						},
+						{
+							"key": "old_pass_label",
+							"value": "Pass Famille"
+						},
+						{
+							"key": "pass_is_active",
+							"value": "000"
+						},
+						{
+							"key": "some_reference",
+							"value": "UWVDJW"
+						},
+						{
+							"key": "pass_label",
+							"value": "CARTE AVANTAGE FAMILLE"
+						},
+						{
+							"key": "some_date_key",
+							"value": "2021-12-23"
+						},
+						{
+							"key": "new_product_code",
+							"value": "FAMILY"
+						},
+						{
+							"key": "pass_validity_start",
+							"value": "2019-12-23"
+						}
+					]
+				},
+				{
+					"otherId": "29090113600311527",
+					"type": {
+						"value": "PASS"
+					},
+					"from": "NOWHERE",
+					"fields": [
+						{
+							"key": "pass_number",
+							"value": "29090113600311527"
+						},
+						{
+							"key": "some_other_key",
+							"value": "for_no_reason"
+						},
+						{
+							"key": "pass_validity_end",
+							"value": "2019-12-23"
+						},
+						{
+							"key": "sous_type",
+							"value": "PASS_QUI_S_ACHETE"
+						},
+						{
+							"key": "old_pass_label",
+							"value": "Pass Famille"
+						},
+						{
+							"key": "pass_is_active",
+							"value": "000"
+						},
+						{
+							"key": "some_reference",
+							"value": "ZZWWEE"
+						},
+						{
+							"key": "pass_label",
+							"value": "CARTE AVANTAGE FAMILLE"
+						},
+						{
+							"key": "some_date_key",
+							"value": "2020-12-23"
+						},
+						{
+							"key": "new_product_code",
+							"value": "FAMILY"
+						},
+						{
+							"key": "pass_validity_start",
+							"value": "2018-12-23"
+						}
+					]
+				}
+			]
+		}
+	]
+}</body>
+    <contentEncodings/>
+    <headerQueries/>
+    <httpHeaders/>
+    <httpStatusCode>200</httpStatusCode>
+    <id>FjNH9h</id>
+    <jsonPathExpressions/>
+    <methodId>tYRmoZ</methodId>
+    <name>Mia</name>
+    <parameterQueries>
+        <parameterQuery>
+            <matchAny>false</matchAny>
+            <matchCase>true</matchCase>
+            <matchRegex>false</matchRegex>
+            <parameter>customerId</parameter>
+            <query>mia</query>
+        </parameterQuery>
+    </parameterQueries>
+    <status>ENABLED</status>
+    <usingExpressions>false</usingExpressions>
+    <xpathExpressions/>
+</restMockResponse>

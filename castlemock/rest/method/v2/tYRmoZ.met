@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <restMethod>
     <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+    <defaultMockResponseId>-- select an option --</defaultMockResponseId>
     <httpMethod>GET</httpMethod>
     <id>tYRmoZ</id>
     <name>GetCustomer</name>
     <networkDelay>0</networkDelay>
     <resourceId>dk9R2A</resourceId>
-    <responseStrategy>RANDOM</responseStrategy>
+    <responseStrategy>QUERY_MATCH</responseStrategy>
     <simulateNetworkDelay>false</simulateNetworkDelay>
     <status>MOCKED</status>
 </restMethod>
