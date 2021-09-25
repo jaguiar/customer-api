@@ -9,6 +9,7 @@ import com.prez.api.GetCustomerPreferencesHandler
 import com.prez.api.GlobalErrorHandler
 import com.prez.api.ValidationErrorHandler
 import com.prez.api.WebServiceExceptionHandlerFilter
+import com.prez.api.dto.CreateCustomerPreferencesRequest
 import com.prez.lib.tracing.SpanCustomizationApiFilter
 import kotlinx.coroutines.FlowPreview
 import org.springframework.context.annotation.Bean
@@ -58,7 +59,11 @@ class WebfluxConfiguration(val spanCustomizer: SpanCustomizer) {
   @Bean
   fun createCustomerPreferences(createCustomerPreferencesHandler: CreateCustomerPreferencesHandler) = coRouter {
     (POST("/customers/preferences") and (accept(APPLICATION_JSON)))
+      // Version with ServerRequest extension
       .invoke(createCustomerPreferencesHandler::createCustomerPreferences)
+      /* // Version with the AbstractValidatorHandler,
+         // lambda expression with type parameter is needed here otherwise Kotlin won't be able to infer the type
+      .invoke { req -> createCustomerPreferencesHandler.handleRequest<CreateCustomerPreferencesRequest>(req) } */
   }.filter(SpanCustomizationApiFilter(spanCustomizer))
     .filter(CustomJwtTokenHandler())
     .filter(ValidationErrorHandler())
