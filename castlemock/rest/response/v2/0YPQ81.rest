@@ -315,7 +315,15 @@
     <jsonPathExpressions/>
     <methodId>tYRmoZ</methodId>
     <name>John</name>
-    <parameterQueries/>
+    <parameterQueries>
+        <parameterQuery>
+            <matchAny>false</matchAny>
+            <matchCase>true</matchCase>
+            <matchRegex>false</matchRegex>
+            <parameter>customerId</parameter>
+            <query>john</query>
+        </parameterQuery>
+    </parameterQueries>
     <status>ENABLED</status>
     <usingExpressions>false</usingExpressions>
     <xpathExpressions/>
