@@ -3,7 +3,7 @@ This is a simple project with a resource server providing customer data manageme
 
 ## Schema
 
-![Demo project](DevoxxDemo.jpg)
+![Demo project](DevoxxDemo.png)
 
 
 ## The different versions of the customer-api (customer data management) resource server
