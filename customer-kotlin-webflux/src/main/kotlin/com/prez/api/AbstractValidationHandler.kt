@@ -1,7 +1,6 @@
 package com.prez.api
 
 import com.prez.api.dto.ErrorResponse
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
@@ -16,7 +15,6 @@ abstract class AbstractValidationHandler<T, U : Validator> protected constructor
     private val validationClass: Class<T>,
     private val validator: U
 ) {
-  private val logger = LoggerFactory.getLogger(this.javaClass)
 
   fun handleRequest(request: ServerRequest): Mono<ServerResponse> {
     return request.bodyToMono(validationClass)

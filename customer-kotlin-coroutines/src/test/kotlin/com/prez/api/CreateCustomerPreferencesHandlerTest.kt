@@ -9,7 +9,6 @@ import com.prez.service.CustomerService
 import com.prez.utils.FakeTokenGenerator
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.startsWith
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
@@ -156,7 +155,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
       .expectBody().json("{\"code\":\"VALIDATION_ERROR\"}")
       .jsonPath("$.message")
-      .value(startsWith("400 BAD_REQUEST \"1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
+      .value(containsString("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(containsString("The language is not valid. Accepted languages are : fr,de,es,en,it,pt"))
 
     // https://discuss.kotlinlang.org/t/how-to-use-mockito-with-kotlin/324/13
@@ -282,7 +281,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
       .expectBody().json("{\"code\":\"VALIDATION_ERROR\"}")
       .jsonPath("$.message")
-      .value(startsWith("400 BAD_REQUEST \"1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
+      .value(containsString("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(containsString("Max value for class preference is 2"))
 
     verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
@@ -341,7 +340,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
         .expectHeader().contentType(MediaType.APPLICATION_JSON)
         .expectBody().json("""{"code":"VALIDATION_ERROR"}""")
         .jsonPath("$.message")
-        .value(startsWith("400 BAD_REQUEST \"1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
+        .value(containsString("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
         .jsonPath("$.message").value(containsString("The profile name contains forbidden characters"))
       verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
     }
@@ -395,7 +394,7 @@ internal class CreateCustomerPreferencesHandlerTest(@Autowired private val webTe
       .expectHeader().contentType(MediaType.APPLICATION_JSON)
       .expectBody().json("""{"code":"VALIDATION_ERROR"}""")
       .jsonPath("$.message")
-      .value(startsWith("400 BAD_REQUEST \"1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
+      .value(containsString("1 error(s) while validating com.prez.api.dto.CreateCustomerPreferencesRequest : "))
       .jsonPath("$.message").value(containsString("The profile name should have a size between 1 and 50 characters"))
     verify(customerService, never()).createCustomerPreferences(anyString(), anyObject(), anyInt(), anyString(), any())
   }
