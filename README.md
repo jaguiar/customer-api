@@ -39,6 +39,7 @@ mvn clean install -P docker
 To test the example follow the steps below.
 
 1. Launch the docker-compose in /customer-api 
+
    On Linux
     ```sh
     docker-compose up --no-start && docker-compose start
@@ -48,7 +49,7 @@ To test the example follow the steps below.
    docker-compose -f docker-compose-mac.yml up --no-start && docker-compose -f docker-compose-mac.yml start
    ```
 
-2. Launch the authorization server in the /authentication project (on port 8081)
+2. Launch the authorization server in the [/authentication](https://github.com/jaguiar/authentication) project (in a separate git repo) (on port 8081)
     ```sh
     mvn spring-boot:run
     ```
