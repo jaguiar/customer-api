@@ -17,7 +17,7 @@ APP_VERSION: devoxx
 # Cache config
 redis:
   hostname: localhost
-  port: 6379
+  port: 6380
 
 # Authorization service config
 authorization-server:
