@@ -1,6 +1,10 @@
 # About
 This is a simple project with a resource server providing customer data management, an oauth2 authorization server and a client web application.
 
+## Schema
+
+![Demo project](DevoxxDemo.jpg)
+
 
 ## The different versions of the customer-api (customer data management) resource server
 
