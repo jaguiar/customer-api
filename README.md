@@ -1,7 +1,27 @@
 # About
 This is a simple project with a resource server providing customer data management, an oauth2 authorization server and a client web application.
 
+
+## The different versions of the customer-api (customer data management) resource server
+
+* customer-java-resttemplate : Resource server for customer data - Java RestTemplate version
+* customer-java-webflux : Resource server for customer data - Java webflux version
+* customer-kotlin-webflux : Resource server for customer data - kotlin Webflux version
+* customer-kotlin-coroutines : Resource server for customer data - kotlin webflux with **coroutines functional style** version
+* customer-kotlin-coroutines-controllers : Resource server for customer data - kotlin webflux with **coroutines annotation style** version
+
+# Prequisite
+
+You will need to install the following language/tools to run the demo project
+
+* Java JDK 11+
+* Kotlin 1.4+
+* Maven 3.6+
+* Docker 18+
+* Nodejs 16+
+
 # Build
+
 Go to the respective folders of the projects and run
 ```sh
 mvn clean install
@@ -28,7 +48,7 @@ To test the example follow the steps below.
     ```sh
     mvn spring-boot:run
     ```
-3. Launch the resource server in /customer-api (you can choose coroutines, webflux, resttemplate. All versions run on port 4600
+3. Launch the resource server in /customer-api (you can choose coroutines, webflux, resttemplate). All versions run on port 4600
     ```sh
     mvn spring-boot:run
     ```
